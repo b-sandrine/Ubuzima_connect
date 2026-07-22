@@ -50,4 +50,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get welcomeMessage => 'Bienvenue sur Ubuzima Connect';
+
+  @override
+  String get continueLabel => 'Continuer';
+
+  @override
+  String get roleSelectionTitle =>
+      'Comment allez-vous utiliser Ubuzima Connect ?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Choisissez le rôle qui vous correspond. Vous pourrez le modifier plus tard dans les Paramètres.';
+
+  @override
+  String get rolePatient => 'Patient';
+
+  @override
+  String get rolePatientDescription =>
+      'Consultez votre dossier médical, vos rendez-vous et vos ordonnances.';
+
+  @override
+  String get roleCommunityHealthWorker => 'Agent de santé communautaire';
+
+  @override
+  String get roleCommunityHealthWorkerDescription =>
+      'Visitez les ménages, enregistrez les évaluations et orientez les patients.';
+
+  @override
+  String get roleDoctor => 'Médecin';
+
+  @override
+  String get roleDoctorDescription =>
+      'Examinez les orientations, rédigez des ordonnances et gérez les rendez-vous.';
 }
