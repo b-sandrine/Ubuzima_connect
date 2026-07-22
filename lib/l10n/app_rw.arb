@@ -13,5 +13,14 @@
   "offlineBannerMessage": "Nta interineti ufite. Impinduka zizahuzwa nyuma yo kongera guhuza na interineti.",
   "login": "Injira",
   "home": "Ahabanza",
-  "welcomeMessage": "Murakaza neza kuri Ubuzima Connect"
+  "welcomeMessage": "Murakaza neza kuri Ubuzima Connect",
+  "continueLabel": "Komeza",
+  "roleSelectionTitle": "Uzakoresha ute Ubuzima Connect?",
+  "roleSelectionSubtitle": "Hitamo uruhare rukwerekeye. Ushobora kuruhindura nyuma muri Igenamiterere.",
+  "rolePatient": "Umurwayi",
+  "rolePatientDescription": "Reba amateka y'ubuzima bwawe, gahunda zo kwivuza, n'imiti wandikiwe.",
+  "roleCommunityHealthWorker": "Umujyanama w'ubuzima",
+  "roleCommunityHealthWorkerDescription": "Sura ingo, andika isuzuma, kandi wohereze abarwayi ku bavuzi.",
+  "roleDoctor": "Muganga",
+  "roleDoctorDescription": "Suzuma aboherejwe, wandike imiti, kandi ucunge gahunda zo kwivuza."
 }

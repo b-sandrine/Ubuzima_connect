@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../features/authentication/authentication_routes.dart';
 import 'app_routes.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
@@ -37,7 +38,8 @@ class AppRouter {
         path: AppRoutes.home,
         builder: (context, state) => const PlaceholderPage(title: 'Home'),
       ),
-      // Feature route contributions are appended here, e.g.:
+      ...AuthenticationRoutes.routes,
+      // Further feature route contributions are appended here, e.g.:
       //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,
     ],

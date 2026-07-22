@@ -50,4 +50,35 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get welcomeMessage => 'Murakaza neza kuri Ubuzima Connect';
+
+  @override
+  String get continueLabel => 'Komeza';
+
+  @override
+  String get roleSelectionTitle => 'Uzakoresha ute Ubuzima Connect?';
+
+  @override
+  String get roleSelectionSubtitle =>
+      'Hitamo uruhare rukwerekeye. Ushobora kuruhindura nyuma muri Igenamiterere.';
+
+  @override
+  String get rolePatient => 'Umurwayi';
+
+  @override
+  String get rolePatientDescription =>
+      'Reba amateka y\'ubuzima bwawe, gahunda zo kwivuza, n\'imiti wandikiwe.';
+
+  @override
+  String get roleCommunityHealthWorker => 'Umujyanama w\'ubuzima';
+
+  @override
+  String get roleCommunityHealthWorkerDescription =>
+      'Sura ingo, andika isuzuma, kandi wohereze abarwayi ku bavuzi.';
+
+  @override
+  String get roleDoctor => 'Muganga';
+
+  @override
+  String get roleDoctorDescription =>
+      'Suzuma aboherejwe, wandike imiti, kandi ucunge gahunda zo kwivuza.';
 }

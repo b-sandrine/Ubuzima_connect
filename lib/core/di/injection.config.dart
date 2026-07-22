@@ -20,6 +20,18 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:logger/logger.dart' as _i974;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
+import '../../features/authentication/data/datasources/local/role_selection_local_data_source.dart'
+    as _i838;
+import '../../features/authentication/data/repositories/role_selection_repository_impl.dart'
+    as _i1028;
+import '../../features/authentication/domain/repositories/role_selection_repository.dart'
+    as _i451;
+import '../../features/authentication/domain/usecases/get_selected_role.dart'
+    as _i999;
+import '../../features/authentication/domain/usecases/save_selected_role.dart'
+    as _i945;
+import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
+    as _i41;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
@@ -74,6 +86,10 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
+  gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
+    () =>
+        _i838.RoleSelectionLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
+  );
   gh.lazySingleton<_i910.FirebaseMessagingService>(
     () => _i910.FirebaseMessagingService(
       gh<_i892.FirebaseMessaging>(),
@@ -89,8 +105,25 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i282.AppRouter>(
     () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
   );
+  gh.lazySingleton<_i451.RoleSelectionRepository>(
+    () => _i1028.RoleSelectionRepositoryImpl(
+      gh<_i838.RoleSelectionLocalDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
+  );
+  gh.factory<_i999.GetSelectedRole>(
+    () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
+  );
+  gh.factory<_i945.SaveSelectedRole>(
+    () => _i945.SaveSelectedRole(gh<_i451.RoleSelectionRepository>()),
+  );
+  gh.factory<_i41.RoleSelectionBloc>(
+    () => _i41.RoleSelectionBloc(
+      gh<_i999.GetSelectedRole>(),
+      gh<_i945.SaveSelectedRole>(),
+    ),
   );
   return getIt;
 }

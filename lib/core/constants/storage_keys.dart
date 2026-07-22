@@ -12,5 +12,6 @@ abstract final class StorageKeys {
   static const String selectedLocale = 'prefs.selected_locale';
   static const String themeMode = 'prefs.theme_mode';
   static const String onboardingComplete = 'prefs.onboarding_complete';
+  static const String selectedRole = 'prefs.selected_role';
   static const String lastSyncTimestamp = 'prefs.last_sync_timestamp';
 }

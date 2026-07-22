@@ -14,5 +14,15 @@
   "offlineBannerMessage": "You're offline. Changes will sync when you're back online.",
   "login": "Login",
   "home": "Home",
-  "welcomeMessage": "Welcome to Ubuzima Connect"
+  "welcomeMessage": "Welcome to Ubuzima Connect",
+  "continueLabel": "Continue",
+  "roleSelectionTitle": "How will you use Ubuzima Connect?",
+  "@roleSelectionTitle": {"description": "Heading on the role selection screen (AUTH-05)."},
+  "roleSelectionSubtitle": "Choose the role that describes you. You can change this later in Settings.",
+  "rolePatient": "Patient",
+  "rolePatientDescription": "View your health records, appointments, and prescriptions.",
+  "roleCommunityHealthWorker": "Community Health Worker",
+  "roleCommunityHealthWorkerDescription": "Visit households, record assessments, and refer patients.",
+  "roleDoctor": "Doctor",
+  "roleDoctorDescription": "Review referrals, write prescriptions, and manage appointments."
 }

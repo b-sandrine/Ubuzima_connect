@@ -183,6 +183,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome to Ubuzima Connect'**
   String get welcomeMessage;
+
+  /// No description provided for @continueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueLabel;
+
+  /// Heading on the role selection screen (AUTH-05).
+  ///
+  /// In en, this message translates to:
+  /// **'How will you use Ubuzima Connect?'**
+  String get roleSelectionTitle;
+
+  /// No description provided for @roleSelectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the role that describes you. You can change this later in Settings.'**
+  String get roleSelectionSubtitle;
+
+  /// No description provided for @rolePatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get rolePatient;
+
+  /// No description provided for @rolePatientDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View your health records, appointments, and prescriptions.'**
+  String get rolePatientDescription;
+
+  /// No description provided for @roleCommunityHealthWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Community Health Worker'**
+  String get roleCommunityHealthWorker;
+
+  /// No description provided for @roleCommunityHealthWorkerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit households, record assessments, and refer patients.'**
+  String get roleCommunityHealthWorkerDescription;
+
+  /// No description provided for @roleDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get roleDoctor;
+
+  /// No description provided for @roleDoctorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review referrals, write prescriptions, and manage appointments.'**
+  String get roleDoctorDescription;
 }
 
 class _AppLocalizationsDelegate
