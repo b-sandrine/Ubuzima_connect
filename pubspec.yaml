@@ -1,0 +1,93 @@
+name: ubuzima_connect
+description: "Ubuzima Connect — offline-first healthcare platform for Rwanda connecting Community Health Workers, Doctors, and Patients."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  intl: ^0.20.2
+
+  # State management
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  equatable: ^2.0.5
+
+  # Functional, typed error handling (Either<Failure, T> across repositories)
+  dartz: ^0.10.1
+
+  # Code generation runtime
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+
+  # Dependency injection
+  get_it: ^8.0.2
+  injectable: ^3.0.0
+
+  # Routing
+  go_router: ^15.1.2
+
+  # Firebase
+  firebase_core: ^3.10.0
+  firebase_auth: ^5.3.4
+  cloud_firestore: ^5.6.1
+  firebase_storage: ^12.4.0
+  firebase_messaging: ^15.1.6
+
+  # Local persistence (offline-first)
+  sqflite: ^2.4.1
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.3.4
+  flutter_secure_storage: ^9.2.4
+
+  # Connectivity, sync queueing, offline IDs
+  connectivity_plus: ^6.1.1
+  uuid: ^4.5.1
+
+  # Location — Google Maps, GPS, nearby-pharmacy / medicine locator
+  google_maps_flutter: ^2.10.0
+  geolocator: ^13.0.2
+
+  # Runtime permissions (location, camera, notifications)
+  permission_handler: ^11.3.1
+
+  # Logging facade
+  logger: ^2.5.0
+
+  # Cached network images (avatars, attachments)
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # Code generation
+  build_runner: ^2.4.13
+  freezed: ^3.0.0
+  json_serializable: ^6.9.0
+  injectable_generator: ^3.0.2
+
+  # Testing
+  bloc_test: ^9.1.7
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/images/
+    - assets/icons/

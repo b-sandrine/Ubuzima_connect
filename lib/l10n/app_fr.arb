@@ -1,0 +1,17 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Ubuzima Connect",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "retry": "Réessayer",
+  "ok": "OK",
+  "yes": "Oui",
+  "no": "Non",
+  "loading": "Chargement...",
+  "noInternetConnection": "Aucune connexion Internet",
+  "somethingWentWrong": "Une erreur est survenue",
+  "offlineBannerMessage": "Vous êtes hors ligne. Les modifications seront synchronisées dès que vous serez de nouveau en ligne.",
+  "login": "Connexion",
+  "home": "Accueil",
+  "welcomeMessage": "Bienvenue sur Ubuzima Connect"
+}

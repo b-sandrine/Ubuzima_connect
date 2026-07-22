@@ -1,0 +1,17 @@
+{
+  "@@locale": "rw",
+  "appTitle": "Ubuzima Connect",
+  "save": "Bika",
+  "cancel": "Hagarika",
+  "retry": "Ongera ugerageze",
+  "ok": "Yego",
+  "yes": "Yego",
+  "no": "Oya",
+  "loading": "Birimo gupakira...",
+  "noInternetConnection": "Nta interineti ihari",
+  "somethingWentWrong": "Habaye ikibazo",
+  "offlineBannerMessage": "Nta interineti ufite. Impinduka zizahuzwa nyuma yo kongera guhuza na interineti.",
+  "login": "Injira",
+  "home": "Ahabanza",
+  "welcomeMessage": "Murakaza neza kuri Ubuzima Connect"
+}

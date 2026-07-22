@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  "appTitle": "Ubuzima Connect",
+  "@appTitle": {"description": "The application name, shown on the app bar and splash screen."},
+  "save": "Save",
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "ok": "OK",
+  "yes": "Yes",
+  "no": "No",
+  "loading": "Loading...",
+  "noInternetConnection": "No internet connection",
+  "somethingWentWrong": "Something went wrong",
+  "offlineBannerMessage": "You're offline. Changes will sync when you're back online.",
+  "login": "Login",
+  "home": "Home",
+  "welcomeMessage": "Welcome to Ubuzima Connect"
+}
