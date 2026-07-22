@@ -13,5 +13,14 @@
   "offlineBannerMessage": "Vous êtes hors ligne. Les modifications seront synchronisées dès que vous serez de nouveau en ligne.",
   "login": "Connexion",
   "home": "Accueil",
-  "welcomeMessage": "Bienvenue sur Ubuzima Connect"
+  "welcomeMessage": "Bienvenue sur Ubuzima Connect",
+  "continueLabel": "Continuer",
+  "roleSelectionTitle": "Comment allez-vous utiliser Ubuzima Connect ?",
+  "roleSelectionSubtitle": "Choisissez le rôle qui vous correspond. Vous pourrez le modifier plus tard dans les Paramètres.",
+  "rolePatient": "Patient",
+  "rolePatientDescription": "Consultez votre dossier médical, vos rendez-vous et vos ordonnances.",
+  "roleCommunityHealthWorker": "Agent de santé communautaire",
+  "roleCommunityHealthWorkerDescription": "Visitez les ménages, enregistrez les évaluations et orientez les patients.",
+  "roleDoctor": "Médecin",
+  "roleDoctorDescription": "Examinez les orientations, rédigez des ordonnances et gérez les rendez-vous."
 }

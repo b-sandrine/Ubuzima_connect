@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'core/di/injection.dart';
+import 'firebase_options.dart';
 
 /// Bring-up sequence executed once, before any widget is built: Firebase →
 /// dependency injection → error-zone-wrapped `runApp`.
@@ -17,11 +18,12 @@ Future<void> bootstrap(Widget Function() appBuilder) async {
       WidgetsFlutterBinding.ensureInitialized();
 
       try {
-        await Firebase.initializeApp();
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
       } catch (e, stackTrace) {
-        // Expected until `flutterfire configure` has been run for this
-        // project (no Firebase project is wired up yet) — see
-        // docs/ARCHITECTURE.md for the manual setup step.
+        // The app is offline-first and boots without Firebase; only the
+        // features that actually talk to Auth/Firestore degrade.
         debugPrint('Firebase.initializeApp failed: $e\n$stackTrace');
       }
 

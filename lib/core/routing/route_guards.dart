@@ -16,9 +16,14 @@ abstract final class RouteGuards {
     final status = authSessionProvider.currentStatus;
     final atLogin = state.matchedLocation == AppRoutes.login;
     final atSplash = state.matchedLocation == AppRoutes.splash;
+    final atRoleSelection = state.matchedLocation == AppRoutes.roleSelection;
 
-    if (status == AuthSessionStatus.unauthenticated && !atLogin) {
-      return AppRoutes.login;
+    // Role selection (AUTH-05) is the entry point of onboarding, so it has
+    // to be reachable without a session — as does login itself.
+    if (status == AuthSessionStatus.unauthenticated &&
+        !atLogin &&
+        !atRoleSelection) {
+      return AppRoutes.roleSelection;
     }
 
     if (status == AuthSessionStatus.authenticated && (atLogin || atSplash)) {
