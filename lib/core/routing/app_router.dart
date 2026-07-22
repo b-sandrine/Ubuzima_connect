@@ -35,6 +35,11 @@ class AppRouter {
         builder: (context, state) => const PlaceholderPage(title: 'Login'),
       ),
       GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) =>
+            const PlaceholderPage(title: 'Create Account'),
+      ),
+      GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const PlaceholderPage(title: 'Home'),
       ),

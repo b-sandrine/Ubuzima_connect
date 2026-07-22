@@ -122,12 +122,12 @@ return confirmed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( UserRole role)?  roleHighlighted,TResult Function()?  confirmed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( UserRole role)?  roleHighlighted,TResult Function( AuthDestination destination)?  confirmed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RoleSelectionStarted() when started != null:
 return started();case RoleHighlighted() when roleHighlighted != null:
 return roleHighlighted(_that.role);case RoleSelectionConfirmed() when confirmed != null:
-return confirmed();case _:
+return confirmed(_that.destination);case _:
   return orElse();
 
 }
@@ -145,12 +145,12 @@ return confirmed();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( UserRole role)  roleHighlighted,required TResult Function()  confirmed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( UserRole role)  roleHighlighted,required TResult Function( AuthDestination destination)  confirmed,}) {final _that = this;
 switch (_that) {
 case RoleSelectionStarted():
 return started();case RoleHighlighted():
 return roleHighlighted(_that.role);case RoleSelectionConfirmed():
-return confirmed();}
+return confirmed(_that.destination);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +164,12 @@ return confirmed();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( UserRole role)?  roleHighlighted,TResult? Function()?  confirmed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( UserRole role)?  roleHighlighted,TResult? Function( AuthDestination destination)?  confirmed,}) {final _that = this;
 switch (_that) {
 case RoleSelectionStarted() when started != null:
 return started();case RoleHighlighted() when roleHighlighted != null:
 return roleHighlighted(_that.role);case RoleSelectionConfirmed() when confirmed != null:
-return confirmed();case _:
+return confirmed(_that.destination);case _:
   return null;
 
 }
@@ -279,38 +279,72 @@ as UserRole,
 
 
 class RoleSelectionConfirmed implements RoleSelectionEvent {
-  const RoleSelectionConfirmed();
+  const RoleSelectionConfirmed(this.destination);
   
 
+ final  AuthDestination destination;
 
-
+/// Create a copy of RoleSelectionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RoleSelectionConfirmedCopyWith<RoleSelectionConfirmed> get copyWith => _$RoleSelectionConfirmedCopyWithImpl<RoleSelectionConfirmed>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleSelectionConfirmed);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleSelectionConfirmed&&(identical(other.destination, destination) || other.destination == destination));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,destination);
 
 @override
 String toString() {
-  return 'RoleSelectionEvent.confirmed()';
+  return 'RoleSelectionEvent.confirmed(destination: $destination)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $RoleSelectionConfirmedCopyWith<$Res> implements $RoleSelectionEventCopyWith<$Res> {
+  factory $RoleSelectionConfirmedCopyWith(RoleSelectionConfirmed value, $Res Function(RoleSelectionConfirmed) _then) = _$RoleSelectionConfirmedCopyWithImpl;
+@useResult
+$Res call({
+ AuthDestination destination
+});
 
 
+
+
+}
+/// @nodoc
+class _$RoleSelectionConfirmedCopyWithImpl<$Res>
+    implements $RoleSelectionConfirmedCopyWith<$Res> {
+  _$RoleSelectionConfirmedCopyWithImpl(this._self, this._then);
+
+  final RoleSelectionConfirmed _self;
+  final $Res Function(RoleSelectionConfirmed) _then;
+
+/// Create a copy of RoleSelectionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? destination = null,}) {
+  return _then(RoleSelectionConfirmed(
+null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as AuthDestination,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$RoleSelectionState {
 
- RoleSelectionStatus get status; UserRole? get highlightedRole; String? get errorMessage;
+ RoleSelectionStatus get status; UserRole? get highlightedRole; AuthDestination? get destination; String? get errorMessage;
 /// Create a copy of RoleSelectionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -321,16 +355,16 @@ $RoleSelectionStateCopyWith<RoleSelectionState> get copyWith => _$RoleSelectionS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleSelectionState&&(identical(other.status, status) || other.status == status)&&(identical(other.highlightedRole, highlightedRole) || other.highlightedRole == highlightedRole)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleSelectionState&&(identical(other.status, status) || other.status == status)&&(identical(other.highlightedRole, highlightedRole) || other.highlightedRole == highlightedRole)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,highlightedRole,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,highlightedRole,destination,errorMessage);
 
 @override
 String toString() {
-  return 'RoleSelectionState(status: $status, highlightedRole: $highlightedRole, errorMessage: $errorMessage)';
+  return 'RoleSelectionState(status: $status, highlightedRole: $highlightedRole, destination: $destination, errorMessage: $errorMessage)';
 }
 
 
@@ -341,7 +375,7 @@ abstract mixin class $RoleSelectionStateCopyWith<$Res>  {
   factory $RoleSelectionStateCopyWith(RoleSelectionState value, $Res Function(RoleSelectionState) _then) = _$RoleSelectionStateCopyWithImpl;
 @useResult
 $Res call({
- RoleSelectionStatus status, UserRole? highlightedRole, String? errorMessage
+ RoleSelectionStatus status, UserRole? highlightedRole, AuthDestination? destination, String? errorMessage
 });
 
 
@@ -358,11 +392,12 @@ class _$RoleSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of RoleSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? highlightedRole = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? highlightedRole = freezed,Object? destination = freezed,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as RoleSelectionStatus,highlightedRole: freezed == highlightedRole ? _self.highlightedRole : highlightedRole // ignore: cast_nullable_to_non_nullable
-as UserRole?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as UserRole?,destination: freezed == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as AuthDestination?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -448,10 +483,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RoleSelectionStatus status,  UserRole? highlightedRole,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RoleSelectionStatus status,  UserRole? highlightedRole,  AuthDestination? destination,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoleSelectionState() when $default != null:
-return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
+return $default(_that.status,_that.highlightedRole,_that.destination,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -469,10 +504,10 @@ return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RoleSelectionStatus status,  UserRole? highlightedRole,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RoleSelectionStatus status,  UserRole? highlightedRole,  AuthDestination? destination,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _RoleSelectionState():
-return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
+return $default(_that.status,_that.highlightedRole,_that.destination,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -489,10 +524,10 @@ return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RoleSelectionStatus status,  UserRole? highlightedRole,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RoleSelectionStatus status,  UserRole? highlightedRole,  AuthDestination? destination,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _RoleSelectionState() when $default != null:
-return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
+return $default(_that.status,_that.highlightedRole,_that.destination,_that.errorMessage);case _:
   return null;
 
 }
@@ -504,11 +539,12 @@ return $default(_that.status,_that.highlightedRole,_that.errorMessage);case _:
 
 
 class _RoleSelectionState extends RoleSelectionState {
-  const _RoleSelectionState({this.status = RoleSelectionStatus.editing, this.highlightedRole, this.errorMessage}): super._();
+  const _RoleSelectionState({this.status = RoleSelectionStatus.editing, this.highlightedRole, this.destination, this.errorMessage}): super._();
   
 
 @override@JsonKey() final  RoleSelectionStatus status;
 @override final  UserRole? highlightedRole;
+@override final  AuthDestination? destination;
 @override final  String? errorMessage;
 
 /// Create a copy of RoleSelectionState
@@ -521,16 +557,16 @@ _$RoleSelectionStateCopyWith<_RoleSelectionState> get copyWith => __$RoleSelecti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoleSelectionState&&(identical(other.status, status) || other.status == status)&&(identical(other.highlightedRole, highlightedRole) || other.highlightedRole == highlightedRole)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoleSelectionState&&(identical(other.status, status) || other.status == status)&&(identical(other.highlightedRole, highlightedRole) || other.highlightedRole == highlightedRole)&&(identical(other.destination, destination) || other.destination == destination)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,highlightedRole,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,highlightedRole,destination,errorMessage);
 
 @override
 String toString() {
-  return 'RoleSelectionState(status: $status, highlightedRole: $highlightedRole, errorMessage: $errorMessage)';
+  return 'RoleSelectionState(status: $status, highlightedRole: $highlightedRole, destination: $destination, errorMessage: $errorMessage)';
 }
 
 
@@ -541,7 +577,7 @@ abstract mixin class _$RoleSelectionStateCopyWith<$Res> implements $RoleSelectio
   factory _$RoleSelectionStateCopyWith(_RoleSelectionState value, $Res Function(_RoleSelectionState) _then) = __$RoleSelectionStateCopyWithImpl;
 @override @useResult
 $Res call({
- RoleSelectionStatus status, UserRole? highlightedRole, String? errorMessage
+ RoleSelectionStatus status, UserRole? highlightedRole, AuthDestination? destination, String? errorMessage
 });
 
 
@@ -558,11 +594,12 @@ class __$RoleSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of RoleSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? highlightedRole = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? highlightedRole = freezed,Object? destination = freezed,Object? errorMessage = freezed,}) {
   return _then(_RoleSelectionState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as RoleSelectionStatus,highlightedRole: freezed == highlightedRole ? _self.highlightedRole : highlightedRole // ignore: cast_nullable_to_non_nullable
-as UserRole?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as UserRole?,destination: freezed == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as AuthDestination?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
