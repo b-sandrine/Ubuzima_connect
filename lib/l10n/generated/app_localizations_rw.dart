@@ -55,30 +55,61 @@ class AppLocalizationsRw extends AppLocalizations {
   String get continueLabel => 'Komeza';
 
   @override
-  String get roleSelectionTitle => 'Uzakoresha ute Ubuzima Connect?';
+  String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';
 
   @override
   String get roleSelectionSubtitle =>
-      'Hitamo uruhare rukwerekeye. Ushobora kuruhindura nyuma muri Igenamiterere.';
+      'Guha abakozi b\'ubuzima mu Rwanda ibikoresho byoroshye kandi byizewe, kugira ngo bavure neza.';
 
   @override
   String get rolePatient => 'Umurwayi';
 
   @override
-  String get rolePatientDescription =>
-      'Reba amateka y\'ubuzima bwawe, gahunda zo kwivuza, n\'imiti wandikiwe.';
+  String get rolePatientDescription => 'Amateka y\'ubuzima n\'igenamigambi';
 
   @override
-  String get roleCommunityHealthWorker => 'Umujyanama w\'ubuzima';
+  String get roleCommunityHealthWorker => 'Umujyanama w\'Ubuzima';
 
   @override
   String get roleCommunityHealthWorkerDescription =>
-      'Sura ingo, andika isuzuma, kandi wohereze abarwayi ku bavuzi.';
+      'Abarwayi, kohereza no gusura';
 
   @override
   String get roleDoctor => 'Muganga';
 
   @override
-  String get roleDoctorDescription =>
-      'Suzuma aboherejwe, wandike imiti, kandi ucunge gahunda zo kwivuza.';
+  String get roleDoctorDescription => 'Gusuzuma, kwandika imiti no kohereza';
+
+  @override
+  String get rwandaHealth => 'Ubuzima mu Rwanda';
+
+  @override
+  String get selectYourRole => 'Hitamo uruhare rwawe';
+
+  @override
+  String get signIn => 'Injira';
+
+  @override
+  String get createAccount => 'Fungura konti';
+
+  @override
+  String get securedAndTrusted => 'Umutekano n\'Ikizere';
+
+  @override
+  String get trustHipaaAligned => 'Byubahiriza HIPAA';
+
+  @override
+  String get trustOfflineReady => 'Bikora nta murandasi';
+
+  @override
+  String get trustMadeForRwanda => 'Byakorewe u Rwanda';
+
+  @override
+  String get roleBadgeChw => 'AJK';
+
+  @override
+  String get roleBadgePatient => 'Umurwayi';
+
+  @override
+  String get roleBadgeDoctor => 'MD';
 }

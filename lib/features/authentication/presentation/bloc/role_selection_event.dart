@@ -9,5 +9,9 @@ sealed class RoleSelectionEvent with _$RoleSelectionEvent {
   const factory RoleSelectionEvent.roleHighlighted(UserRole role) =
       RoleHighlighted;
 
-  const factory RoleSelectionEvent.confirmed() = RoleSelectionConfirmed;
+  /// Saves the highlighted role and then hands off to whichever auth screen
+  /// the user asked for — the design offers Sign In and Create Account as
+  /// two peer actions rather than a single Continue.
+  const factory RoleSelectionEvent.confirmed(AuthDestination destination) =
+      RoleSelectionConfirmed;
 }

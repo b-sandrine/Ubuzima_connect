@@ -65,15 +65,18 @@ void main() {
     ).thenAnswer((_) async => const Right(unit)),
     build: build,
     seed: () => const RoleSelectionState(highlightedRole: UserRole.patient),
-    act: (bloc) => bloc.add(const RoleSelectionEvent.confirmed()),
+    act: (bloc) =>
+        bloc.add(const RoleSelectionEvent.confirmed(AuthDestination.signIn)),
     expect: () => const [
       RoleSelectionState(
         status: RoleSelectionStatus.saving,
         highlightedRole: UserRole.patient,
+        destination: AuthDestination.signIn,
       ),
       RoleSelectionState(
         status: RoleSelectionStatus.saved,
         highlightedRole: UserRole.patient,
+        destination: AuthDestination.signIn,
       ),
     ],
     verify: (_) => verify(() => saveSelectedRole(UserRole.patient)).called(1),
@@ -86,15 +89,19 @@ void main() {
     ).thenAnswer((_) async => const Left(CacheFailure('no space left'))),
     build: build,
     seed: () => const RoleSelectionState(highlightedRole: UserRole.patient),
-    act: (bloc) => bloc.add(const RoleSelectionEvent.confirmed()),
+    act: (bloc) => bloc.add(
+      const RoleSelectionEvent.confirmed(AuthDestination.createAccount),
+    ),
     expect: () => const [
       RoleSelectionState(
         status: RoleSelectionStatus.saving,
         highlightedRole: UserRole.patient,
+        destination: AuthDestination.createAccount,
       ),
       RoleSelectionState(
         status: RoleSelectionStatus.failure,
         highlightedRole: UserRole.patient,
+        destination: AuthDestination.createAccount,
         errorMessage: 'no space left',
       ),
     ],
@@ -103,7 +110,8 @@ void main() {
   blocTest<RoleSelectionBloc, RoleSelectionState>(
     'confirming with nothing highlighted is ignored',
     build: build,
-    act: (bloc) => bloc.add(const RoleSelectionEvent.confirmed()),
+    act: (bloc) =>
+        bloc.add(const RoleSelectionEvent.confirmed(AuthDestination.signIn)),
     expect: () => const <RoleSelectionState>[],
     verify: (_) => verifyNever(() => saveSelectedRole(any())),
   );

@@ -35,6 +35,7 @@ import '../../features/authentication/presentation/bloc/role_selection_bloc.dart
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
+import '../localization/locale_cubit.dart' as _i960;
 import '../logging/app_logger.dart' as _i354;
 import '../network/network_info.dart' as _i932;
 import '../permissions/permission_service.dart' as _i271;
@@ -112,6 +113,9 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
+  );
+  gh.lazySingleton<_i960.LocaleCubit>(
+    () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),

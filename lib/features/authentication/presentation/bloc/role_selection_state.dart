@@ -2,11 +2,15 @@ part of 'role_selection_bloc.dart';
 
 enum RoleSelectionStatus { editing, saving, saved, failure }
 
+/// Which auth screen the user is heading for once their role is saved.
+enum AuthDestination { signIn, createAccount }
+
 @freezed
 abstract class RoleSelectionState with _$RoleSelectionState {
   const factory RoleSelectionState({
     @Default(RoleSelectionStatus.editing) RoleSelectionStatus status,
     UserRole? highlightedRole,
+    AuthDestination? destination,
     String? errorMessage,
   }) = _RoleSelectionState;
 

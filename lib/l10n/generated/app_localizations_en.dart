@@ -55,30 +55,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueLabel => 'Continue';
 
   @override
-  String get roleSelectionTitle => 'How will you use Ubuzima Connect?';
+  String get roleSelectionTitle => 'Community Healthcare';
 
   @override
   String get roleSelectionSubtitle =>
-      'Choose the role that describes you. You can change this later in Settings.';
+      'Empowering health workers across Rwanda with smart, calm tools for better care.';
 
   @override
   String get rolePatient => 'Patient';
 
   @override
-  String get rolePatientDescription =>
-      'View your health records, appointments, and prescriptions.';
+  String get rolePatientDescription => 'Health records & appointments';
 
   @override
   String get roleCommunityHealthWorker => 'Community Health Worker';
 
   @override
   String get roleCommunityHealthWorkerDescription =>
-      'Visit households, record assessments, and refer patients.';
+      'Patients, referrals & field visits';
 
   @override
-  String get roleDoctor => 'Doctor';
+  String get roleDoctor => 'Doctor / Clinician';
 
   @override
-  String get roleDoctorDescription =>
-      'Review referrals, write prescriptions, and manage appointments.';
+  String get roleDoctorDescription => 'Diagnose, prescribe & refer';
+
+  @override
+  String get rwandaHealth => 'Rwanda Health';
+
+  @override
+  String get selectYourRole => 'Select your role';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get securedAndTrusted => 'Secured & Trusted';
+
+  @override
+  String get trustHipaaAligned => 'HIPAA Aligned';
+
+  @override
+  String get trustOfflineReady => 'Offline Ready';
+
+  @override
+  String get trustMadeForRwanda => 'Made for Rwanda';
+
+  @override
+  String get roleBadgeChw => 'CHW';
+
+  @override
+  String get roleBadgePatient => 'Patient';
+
+  @override
+  String get roleBadgeDoctor => 'MD';
 }

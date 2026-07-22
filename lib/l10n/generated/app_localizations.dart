@@ -193,13 +193,13 @@ abstract class AppLocalizations {
   /// Heading on the role selection screen (AUTH-05).
   ///
   /// In en, this message translates to:
-  /// **'How will you use Ubuzima Connect?'**
+  /// **'Community Healthcare'**
   String get roleSelectionTitle;
 
   /// No description provided for @roleSelectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose the role that describes you. You can change this later in Settings.'**
+  /// **'Empowering health workers across Rwanda with smart, calm tools for better care.'**
   String get roleSelectionSubtitle;
 
   /// No description provided for @rolePatient.
@@ -211,7 +211,7 @@ abstract class AppLocalizations {
   /// No description provided for @rolePatientDescription.
   ///
   /// In en, this message translates to:
-  /// **'View your health records, appointments, and prescriptions.'**
+  /// **'Health records & appointments'**
   String get rolePatientDescription;
 
   /// No description provided for @roleCommunityHealthWorker.
@@ -223,20 +223,86 @@ abstract class AppLocalizations {
   /// No description provided for @roleCommunityHealthWorkerDescription.
   ///
   /// In en, this message translates to:
-  /// **'Visit households, record assessments, and refer patients.'**
+  /// **'Patients, referrals & field visits'**
   String get roleCommunityHealthWorkerDescription;
 
   /// No description provided for @roleDoctor.
   ///
   /// In en, this message translates to:
-  /// **'Doctor'**
+  /// **'Doctor / Clinician'**
   String get roleDoctor;
 
   /// No description provided for @roleDoctorDescription.
   ///
   /// In en, this message translates to:
-  /// **'Review referrals, write prescriptions, and manage appointments.'**
+  /// **'Diagnose, prescribe & refer'**
   String get roleDoctorDescription;
+
+  /// Small green eyebrow label above the headline on the role selection screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Rwanda Health'**
+  String get rwandaHealth;
+
+  /// Section label above the three role cards on AUTH-05.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your role'**
+  String get selectYourRole;
+
+  /// Primary action on AUTH-05; saves the role then opens the login screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// Secondary action on AUTH-05; saves the role then opens registration.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// Caption above the trust badges in the AUTH-05 footer.
+  ///
+  /// In en, this message translates to:
+  /// **'Secured & Trusted'**
+  String get securedAndTrusted;
+
+  /// No description provided for @trustHipaaAligned.
+  ///
+  /// In en, this message translates to:
+  /// **'HIPAA Aligned'**
+  String get trustHipaaAligned;
+
+  /// No description provided for @trustOfflineReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Ready'**
+  String get trustOfflineReady;
+
+  /// No description provided for @trustMadeForRwanda.
+  ///
+  /// In en, this message translates to:
+  /// **'Made for Rwanda'**
+  String get trustMadeForRwanda;
+
+  /// Short badge shown beside the Community Health Worker role title.
+  ///
+  /// In en, this message translates to:
+  /// **'CHW'**
+  String get roleBadgeChw;
+
+  /// No description provided for @roleBadgePatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get roleBadgePatient;
+
+  /// No description provided for @roleBadgeDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'MD'**
+  String get roleBadgeDoctor;
 }
 
 class _AppLocalizationsDelegate
