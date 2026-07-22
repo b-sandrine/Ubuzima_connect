@@ -55,31 +55,61 @@ class AppLocalizationsFr extends AppLocalizations {
   String get continueLabel => 'Continuer';
 
   @override
-  String get roleSelectionTitle =>
-      'Comment allez-vous utiliser Ubuzima Connect ?';
+  String get roleSelectionTitle => 'Santé communautaire';
 
   @override
   String get roleSelectionSubtitle =>
-      'Choisissez le rôle qui vous correspond. Vous pourrez le modifier plus tard dans les Paramètres.';
+      'Des outils simples et fiables pour les agents de santé du Rwanda, au service de meilleurs soins.';
 
   @override
   String get rolePatient => 'Patient';
 
   @override
-  String get rolePatientDescription =>
-      'Consultez votre dossier médical, vos rendez-vous et vos ordonnances.';
+  String get rolePatientDescription => 'Dossiers de santé et rendez-vous';
 
   @override
   String get roleCommunityHealthWorker => 'Agent de santé communautaire';
 
   @override
   String get roleCommunityHealthWorkerDescription =>
-      'Visitez les ménages, enregistrez les évaluations et orientez les patients.';
+      'Patients, orientations et visites';
 
   @override
-  String get roleDoctor => 'Médecin';
+  String get roleDoctor => 'Médecin / Clinicien';
 
   @override
-  String get roleDoctorDescription =>
-      'Examinez les orientations, rédigez des ordonnances et gérez les rendez-vous.';
+  String get roleDoctorDescription => 'Diagnostiquer, prescrire, orienter';
+
+  @override
+  String get rwandaHealth => 'Santé Rwanda';
+
+  @override
+  String get selectYourRole => 'Choisissez votre rôle';
+
+  @override
+  String get signIn => 'Se connecter';
+
+  @override
+  String get createAccount => 'Créer un compte';
+
+  @override
+  String get securedAndTrusted => 'Sécurisé et fiable';
+
+  @override
+  String get trustHipaaAligned => 'Conforme HIPAA';
+
+  @override
+  String get trustOfflineReady => 'Hors ligne';
+
+  @override
+  String get trustMadeForRwanda => 'Conçu pour le Rwanda';
+
+  @override
+  String get roleBadgeChw => 'ASC';
+
+  @override
+  String get roleBadgePatient => 'Patient';
+
+  @override
+  String get roleBadgeDoctor => 'MD';
 }

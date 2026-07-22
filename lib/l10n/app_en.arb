@@ -1,7 +1,9 @@
 {
   "@@locale": "en",
   "appTitle": "Ubuzima Connect",
-  "@appTitle": {"description": "The application name, shown on the app bar and splash screen."},
+  "@appTitle": {
+    "description": "The application name, shown on the app bar and splash screen."
+  },
   "save": "Save",
   "cancel": "Cancel",
   "retry": "Retry",
@@ -16,13 +18,44 @@
   "home": "Home",
   "welcomeMessage": "Welcome to Ubuzima Connect",
   "continueLabel": "Continue",
-  "roleSelectionTitle": "How will you use Ubuzima Connect?",
-  "@roleSelectionTitle": {"description": "Heading on the role selection screen (AUTH-05)."},
-  "roleSelectionSubtitle": "Choose the role that describes you. You can change this later in Settings.",
+  "roleSelectionTitle": "Community Healthcare",
+  "@roleSelectionTitle": {
+    "description": "Heading on the role selection screen (AUTH-05)."
+  },
+  "roleSelectionSubtitle": "Empowering health workers across Rwanda with smart, calm tools for better care.",
   "rolePatient": "Patient",
-  "rolePatientDescription": "View your health records, appointments, and prescriptions.",
+  "rolePatientDescription": "Health records & appointments",
   "roleCommunityHealthWorker": "Community Health Worker",
-  "roleCommunityHealthWorkerDescription": "Visit households, record assessments, and refer patients.",
-  "roleDoctor": "Doctor",
-  "roleDoctorDescription": "Review referrals, write prescriptions, and manage appointments."
+  "roleCommunityHealthWorkerDescription": "Patients, referrals & field visits",
+  "roleDoctor": "Doctor / Clinician",
+  "roleDoctorDescription": "Diagnose, prescribe & refer",
+  "rwandaHealth": "Rwanda Health",
+  "@rwandaHealth": {
+    "description": "Small green eyebrow label above the headline on the role selection screen."
+  },
+  "selectYourRole": "Select your role",
+  "@selectYourRole": {
+    "description": "Section label above the three role cards on AUTH-05."
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Primary action on AUTH-05; saves the role then opens the login screen."
+  },
+  "createAccount": "Create Account",
+  "@createAccount": {
+    "description": "Secondary action on AUTH-05; saves the role then opens registration."
+  },
+  "securedAndTrusted": "Secured & Trusted",
+  "@securedAndTrusted": {
+    "description": "Caption above the trust badges in the AUTH-05 footer."
+  },
+  "trustHipaaAligned": "HIPAA Aligned",
+  "trustOfflineReady": "Offline Ready",
+  "trustMadeForRwanda": "Made for Rwanda",
+  "roleBadgeChw": "CHW",
+  "@roleBadgeChw": {
+    "description": "Short badge shown beside the Community Health Worker role title."
+  },
+  "roleBadgePatient": "Patient",
+  "roleBadgeDoctor": "MD"
 }

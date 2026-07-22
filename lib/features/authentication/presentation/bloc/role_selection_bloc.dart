@@ -56,7 +56,13 @@ class RoleSelectionBloc extends Bloc<RoleSelectionEvent, RoleSelectionState> {
     final role = state.highlightedRole;
     if (role == null) return;
 
-    emit(state.copyWith(status: RoleSelectionStatus.saving, errorMessage: null));
+    emit(
+      state.copyWith(
+        status: RoleSelectionStatus.saving,
+        destination: event.destination,
+        errorMessage: null,
+      ),
+    );
 
     final result = await _saveSelectedRole(role);
 
