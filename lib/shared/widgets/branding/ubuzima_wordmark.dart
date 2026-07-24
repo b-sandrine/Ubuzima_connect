@@ -40,30 +40,38 @@ class UbuzimaWordmark extends StatelessWidget {
           ),
         ),
         SizedBox(width: compact ? 8 : 12),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Ubuzima',
-              style: TextStyle(
-                fontSize: compact ? 18 : 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
-                height: 1.1,
-              ),
-            ),
-            if (!compact)
-              const Text(
-                'RWANDA HEALTH',
+        // Flexible so a cramped header (a wide context pill beside it) makes
+        // the wordmark ellipsize rather than overflow the row.
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Ubuzima',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.6,
-                  color: AppColors.textTertiary,
+                  fontSize: compact ? 18 : 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                  height: 1.1,
                 ),
               ),
-          ],
+              if (!compact)
+                const Text(
+                  'RWANDA HEALTH',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.6,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );
