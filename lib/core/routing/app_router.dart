@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../features/authentication/authentication_routes.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
+import '../../features/medical_records/medical_records_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
 import 'app_routes.dart';
@@ -50,6 +51,7 @@ class AppRouter {
       ...PrescriptionsRoutes.routes,
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
+      ...MedicalRecordsRoutes.routes,
       // Further feature route contributions are appended here, e.g.:
       //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,

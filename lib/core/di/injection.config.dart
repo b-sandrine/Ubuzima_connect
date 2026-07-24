@@ -32,6 +32,16 @@ import '../../features/authentication/domain/usecases/save_selected_role.dart'
     as _i945;
 import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
     as _i41;
+import '../../features/medical_records/data/datasources/local/timeline_local_data_source.dart'
+    as _i231;
+import '../../features/medical_records/data/repositories/timeline_repository_impl.dart'
+    as _i659;
+import '../../features/medical_records/domain/repositories/timeline_repository.dart'
+    as _i984;
+import '../../features/medical_records/domain/usecases/get_patient_timeline.dart'
+    as _i209;
+import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
+    as _i855;
 import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
     as _i325;
 import '../../features/prescriptions/data/repositories/medication_repository_impl.dart'
@@ -118,6 +128,9 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i325.MedicationLocalDataSource>(
     () => _i325.MedicationLocalDataSourceImpl(),
   );
+  gh.lazySingleton<_i231.TimelineLocalDataSource>(
+    () => _i231.TimelineLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i565.AuthSessionProvider>(
     () => _i565.NoOpAuthSessionProvider(),
   );
@@ -135,6 +148,9 @@ Future<_i174.GetIt> init(
       gh<_i892.FirebaseMessaging>(),
       gh<_i354.AppLogger>(),
     ),
+  );
+  gh.lazySingleton<_i984.TimelineRepository>(
+    () => _i659.TimelineRepositoryImpl(gh<_i231.TimelineLocalDataSource>()),
   );
   gh.lazySingleton<_i726.AnalyticsService>(
     () => _i726.NoOpAnalyticsService(gh<_i354.AppLogger>()),
@@ -168,12 +184,18 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
   );
+  gh.factory<_i209.GetPatientTimeline>(
+    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
+  );
   gh.factory<_i92.MedicationBloc>(
     () => _i92.MedicationBloc(
       gh<_i566.GetTodaySchedule>(),
       gh<_i340.MarkDoseTaken>(),
       gh<_i843.RequestRefill>(),
     ),
+  );
+  gh.factory<_i855.TimelineBloc>(
+    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
