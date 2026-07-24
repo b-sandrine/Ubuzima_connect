@@ -32,6 +32,46 @@ import '../../features/authentication/domain/usecases/save_selected_role.dart'
     as _i945;
 import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
     as _i41;
+import '../../features/medical_records/data/datasources/local/timeline_local_data_source.dart'
+    as _i231;
+import '../../features/medical_records/data/repositories/timeline_repository_impl.dart'
+    as _i659;
+import '../../features/medical_records/domain/repositories/timeline_repository.dart'
+    as _i984;
+import '../../features/medical_records/domain/usecases/get_patient_timeline.dart'
+    as _i209;
+import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
+    as _i855;
+import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
+    as _i325;
+import '../../features/prescriptions/data/repositories/medication_repository_impl.dart'
+    as _i521;
+import '../../features/prescriptions/domain/repositories/medication_repository.dart'
+    as _i552;
+import '../../features/prescriptions/domain/usecases/get_today_schedule.dart'
+    as _i566;
+import '../../features/prescriptions/domain/usecases/mark_dose_taken.dart'
+    as _i340;
+import '../../features/prescriptions/domain/usecases/request_refill.dart'
+    as _i843;
+import '../../features/prescriptions/presentation/bloc/medication_bloc.dart'
+    as _i92;
+import '../../features/referrals/data/datasources/local/referral_local_data_source.dart'
+    as _i33;
+import '../../features/referrals/data/repositories/referral_repository_impl.dart'
+    as _i1054;
+import '../../features/referrals/domain/repositories/referral_repository.dart'
+    as _i710;
+import '../../features/referrals/domain/usecases/accept_referral.dart' as _i407;
+import '../../features/referrals/domain/usecases/create_referral.dart' as _i888;
+import '../../features/referrals/domain/usecases/decline_referral.dart'
+    as _i315;
+import '../../features/referrals/domain/usecases/get_referral_board.dart'
+    as _i572;
+import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
+    as _i460;
+import '../../features/referrals/presentation/bloc/referral_form_bloc.dart'
+    as _i668;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
@@ -79,13 +119,25 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i271.PermissionService>(
     () => _i271.PermissionServiceImpl(),
   );
+  gh.lazySingleton<_i33.ReferralLocalDataSource>(
+    () => _i33.ReferralLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i744.LocalStorageService>(
     () => _i744.LocalStorageServiceImpl(gh<_i460.SharedPreferences>()),
+  );
+  gh.lazySingleton<_i325.MedicationLocalDataSource>(
+    () => _i325.MedicationLocalDataSourceImpl(),
+  );
+  gh.lazySingleton<_i231.TimelineLocalDataSource>(
+    () => _i231.TimelineLocalDataSourceImpl(),
   );
   gh.lazySingleton<_i565.AuthSessionProvider>(
     () => _i565.NoOpAuthSessionProvider(),
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
+  gh.lazySingleton<_i552.MedicationRepository>(
+    () => _i521.MedicationRepositoryImpl(gh<_i325.MedicationLocalDataSource>()),
+  );
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
@@ -96,6 +148,9 @@ Future<_i174.GetIt> init(
       gh<_i892.FirebaseMessaging>(),
       gh<_i354.AppLogger>(),
     ),
+  );
+  gh.lazySingleton<_i984.TimelineRepository>(
+    () => _i659.TimelineRepositoryImpl(gh<_i231.TimelineLocalDataSource>()),
   );
   gh.lazySingleton<_i726.AnalyticsService>(
     () => _i726.NoOpAnalyticsService(gh<_i354.AppLogger>()),
@@ -114,8 +169,33 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
   );
+  gh.factory<_i566.GetTodaySchedule>(
+    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i340.MarkDoseTaken>(
+    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i843.RequestRefill>(
+    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
+  );
+  gh.lazySingleton<_i710.ReferralRepository>(
+    () => _i1054.ReferralRepositoryImpl(gh<_i33.ReferralLocalDataSource>()),
+  );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
+  );
+  gh.factory<_i209.GetPatientTimeline>(
+    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
+  );
+  gh.factory<_i92.MedicationBloc>(
+    () => _i92.MedicationBloc(
+      gh<_i566.GetTodaySchedule>(),
+      gh<_i340.MarkDoseTaken>(),
+      gh<_i843.RequestRefill>(),
+    ),
+  );
+  gh.factory<_i855.TimelineBloc>(
+    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
@@ -123,11 +203,33 @@ Future<_i174.GetIt> init(
   gh.factory<_i945.SaveSelectedRole>(
     () => _i945.SaveSelectedRole(gh<_i451.RoleSelectionRepository>()),
   );
+  gh.factory<_i407.AcceptReferral>(
+    () => _i407.AcceptReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i888.CreateReferral>(
+    () => _i888.CreateReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i315.DeclineReferral>(
+    () => _i315.DeclineReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i572.GetReferralBoard>(
+    () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i460.ReferralBoardBloc>(
+    () => _i460.ReferralBoardBloc(
+      gh<_i572.GetReferralBoard>(),
+      gh<_i407.AcceptReferral>(),
+      gh<_i315.DeclineReferral>(),
+    ),
+  );
   gh.factory<_i41.RoleSelectionBloc>(
     () => _i41.RoleSelectionBloc(
       gh<_i999.GetSelectedRole>(),
       gh<_i945.SaveSelectedRole>(),
     ),
+  );
+  gh.factory<_i668.ReferralFormBloc>(
+    () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
   );
   return getIt;
 }
