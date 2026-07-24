@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
@@ -53,7 +54,7 @@ class RoleOptionCard extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: isSelected
-                      ? const Color(0x2216A34A)
+                      ? const Color(0x2210B981)
                       : const Color(0x0A0F172A),
                   blurRadius: isSelected ? 16 : 8,
                   offset: const Offset(0, 3),
@@ -66,10 +67,26 @@ class RoleOptionCard extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: accentTint,
+                    // The selected role's tile fills with its accent gradient
+                    // and a white glyph; the rest stay soft tint + accent.
+                    color: isSelected ? null : accentTint,
+                    gradient: isSelected
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color.lerp(accent, Colors.white, 0.25)!,
+                              accent,
+                            ],
+                          )
+                        : null,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(icon, color: accent, size: 24),
+                  child: Icon(
+                    icon,
+                    color: isSelected ? Colors.white : accent,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -163,7 +180,7 @@ class _SelectionRing extends StatelessWidget {
         ),
       ),
       child: isSelected
-          ? const Icon(Icons.check, size: 16, color: Colors.white)
+          ? const Icon(LucideIcons.check, size: 15, color: Colors.white)
           : null,
     );
   }
