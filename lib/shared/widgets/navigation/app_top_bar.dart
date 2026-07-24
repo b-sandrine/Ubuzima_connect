@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../branding/ubuzima_wordmark.dart';
@@ -31,7 +32,7 @@ class AppTopBar extends StatelessWidget {
     return Row(
       children: [
         if (onBack != null) ...[
-          _CircleButton(icon: Icons.arrow_back_ios_new, onTap: onBack!),
+          _CircleButton(icon: LucideIcons.chevronLeft, onTap: onBack!),
           const SizedBox(width: 10),
         ],
         // The wordmark takes the free space and stays left-aligned, so the

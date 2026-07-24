@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/medication_schedule.dart';
@@ -34,9 +35,9 @@ class RefillBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
-              Icons.warning_amber_rounded,
+              LucideIcons.triangleAlert,
               color: AppColors.warning,
-              size: 22,
+              size: 20,
             ),
           ),
           const SizedBox(width: 12),
@@ -90,7 +91,7 @@ class _RequestButton extends StatelessWidget {
         child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.check, size: 15, color: AppColors.primary),
+            Icon(LucideIcons.check, size: 15, color: AppColors.primary),
             SizedBox(width: 5),
             Text(
               'Requested',

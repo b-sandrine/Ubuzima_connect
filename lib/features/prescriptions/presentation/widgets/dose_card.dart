@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
@@ -7,11 +8,20 @@ import '../../domain/entities/medication_dose.dart';
 /// One row on the Today schedule. The whole card tints to the dose's status
 /// and the trailing control changes shape: a filled tick when taken, a
 /// "Take" button when due, a time badge when still pending.
+///
+/// [tileColor] colours only the leading pill tile — the design gives each
+/// dose its own hue there, independent of the status tint on the card.
 class DoseCard extends StatelessWidget {
   final MedicationDose dose;
+  final Color tileColor;
   final VoidCallback onTake;
 
-  const DoseCard({super.key, required this.dose, required this.onTake});
+  const DoseCard({
+    super.key,
+    required this.dose,
+    required this.tileColor,
+    required this.onTake,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +41,10 @@ class DoseCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.16),
+              color: tileColor.withValues(alpha: 0.16),
               borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(Icons.medication, color: accent, size: 22),
+            child: Icon(LucideIcons.pill, color: tileColor, size: 22),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -101,13 +111,15 @@ class DoseCard extends StatelessWidget {
   }
 
   IconData? _tagIcon(DoseTag tag) {
-    if (tag.kind == DoseTagKind.condition) return Icons.favorite;
     final label = tag.label.toLowerCase();
-    if (label.contains('water')) return Icons.water_drop;
-    if (label.contains('food') || label.contains('meal')) {
-      return Icons.restaurant;
+    if (tag.kind == DoseTagKind.condition) {
+      return label.contains('diabetes') ? LucideIcons.flame : LucideIcons.heart;
     }
-    if (label.contains('evening')) return Icons.nightlight_round;
+    if (label.contains('water')) return LucideIcons.droplet;
+    if (label.contains('food') || label.contains('meal')) {
+      return LucideIcons.utensils;
+    }
+    if (label.contains('evening')) return LucideIcons.moon;
     return null;
   }
 }
@@ -130,7 +142,7 @@ class _Trailing extends StatelessWidget {
         return const CircleAvatar(
           radius: 15,
           backgroundColor: AppColors.primary,
-          child: Icon(Icons.check, size: 18, color: Colors.white),
+          child: Icon(LucideIcons.check, size: 17, color: Colors.white),
         );
       case DoseStatus.dueSoon:
         return Material(
@@ -148,7 +160,7 @@ class _Trailing extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check, size: 15, color: accent),
+                  Icon(LucideIcons.check, size: 15, color: accent),
                   const SizedBox(width: 5),
                   Text(
                     'Take',
