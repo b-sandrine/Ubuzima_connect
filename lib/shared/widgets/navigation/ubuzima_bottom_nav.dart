@@ -11,9 +11,11 @@ class BottomNavItem {
   /// hides the badge; the raised centre action shows a dot instead.
   final int? badgeCount;
 
-  /// A small amber notification dot instead of a numbered badge (some
-  /// screens show an unread dot on Alerts rather than a count).
+  /// A small notification dot instead of a numbered badge (some screens show
+  /// an unread dot on Alerts rather than a count). [dotColor] varies per
+  /// screen in the design — amber on some, red on others.
   final bool showDot;
+  final Color dotColor;
 
   /// The centre "Register" action in the design sits in a raised green
   /// circle rather than reading as a flat tab.
@@ -24,6 +26,7 @@ class BottomNavItem {
     required this.label,
     this.badgeCount,
     this.showDot = false,
+    this.dotColor = AppColors.warning,
     this.isPrimary = false,
   });
 }
@@ -112,6 +115,7 @@ class _NavSlot extends StatelessWidget {
               color: color,
               badgeCount: item.badgeCount,
               showDot: item.showDot,
+              dotColor: item.dotColor,
             ),
             const SizedBox(height: 4),
             Text(
@@ -189,12 +193,14 @@ class _IconWithBadge extends StatelessWidget {
   final Color color;
   final int? badgeCount;
   final bool showDot;
+  final Color dotColor;
 
   const _IconWithBadge({
     required this.icon,
     required this.color,
     this.badgeCount,
     this.showDot = false,
+    this.dotColor = AppColors.warning,
   });
 
   @override
@@ -211,7 +217,7 @@ class _IconWithBadge extends StatelessWidget {
               width: 9,
               height: 9,
               decoration: BoxDecoration(
-                color: AppColors.warning,
+                color: dotColor,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 1.5),
               ),

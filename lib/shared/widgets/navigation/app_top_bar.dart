@@ -15,6 +15,9 @@ class AppTopBar extends StatelessWidget {
   final String? contextLabel;
   final Color contextColor;
   final IconData? contextIcon;
+
+  /// Draws a small solid dot before the context label (the "LIVE" pill).
+  final bool contextDot;
   final List<Widget> trailing;
   final VoidCallback? onBack;
 
@@ -23,6 +26,7 @@ class AppTopBar extends StatelessWidget {
     this.contextLabel,
     this.contextColor = AppColors.primary,
     this.contextIcon,
+    this.contextDot = false,
     this.trailing = const [],
     this.onBack,
   });
@@ -50,6 +54,7 @@ class AppTopBar extends StatelessWidget {
             label: contextLabel!,
             color: contextColor,
             icon: contextIcon,
+            leadingDot: contextDot,
             filled: false,
             fontSize: 12,
           ),
