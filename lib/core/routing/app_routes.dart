@@ -8,4 +8,7 @@ abstract final class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String home = '/home';
+
+  /// PAT-03 — the patient's current-medications screen.
+  static const String patientMedications = '/medications';
 }

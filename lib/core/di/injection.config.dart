@@ -32,6 +32,20 @@ import '../../features/authentication/domain/usecases/save_selected_role.dart'
     as _i945;
 import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
     as _i41;
+import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
+    as _i325;
+import '../../features/prescriptions/data/repositories/medication_repository_impl.dart'
+    as _i521;
+import '../../features/prescriptions/domain/repositories/medication_repository.dart'
+    as _i552;
+import '../../features/prescriptions/domain/usecases/get_today_schedule.dart'
+    as _i566;
+import '../../features/prescriptions/domain/usecases/mark_dose_taken.dart'
+    as _i340;
+import '../../features/prescriptions/domain/usecases/request_refill.dart'
+    as _i843;
+import '../../features/prescriptions/presentation/bloc/medication_bloc.dart'
+    as _i92;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
@@ -82,10 +96,16 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i744.LocalStorageService>(
     () => _i744.LocalStorageServiceImpl(gh<_i460.SharedPreferences>()),
   );
+  gh.lazySingleton<_i325.MedicationLocalDataSource>(
+    () => _i325.MedicationLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i565.AuthSessionProvider>(
     () => _i565.NoOpAuthSessionProvider(),
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
+  gh.lazySingleton<_i552.MedicationRepository>(
+    () => _i521.MedicationRepositoryImpl(gh<_i325.MedicationLocalDataSource>()),
+  );
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
@@ -114,8 +134,24 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
   );
+  gh.factory<_i566.GetTodaySchedule>(
+    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i340.MarkDoseTaken>(
+    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i843.RequestRefill>(
+    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
+  );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
+  );
+  gh.factory<_i92.MedicationBloc>(
+    () => _i92.MedicationBloc(
+      gh<_i566.GetTodaySchedule>(),
+      gh<_i340.MarkDoseTaken>(),
+      gh<_i843.RequestRefill>(),
+    ),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
