@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../features/authentication/authentication_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
+import '../../features/referrals/referrals_routes.dart';
 import 'app_routes.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
@@ -46,6 +47,7 @@ class AppRouter {
       ),
       ...AuthenticationRoutes.routes,
       ...PrescriptionsRoutes.routes,
+      ...ReferralsRoutes.routes,
       // Further feature route contributions are appended here, e.g.:
       //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,

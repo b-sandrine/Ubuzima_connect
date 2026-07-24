@@ -46,6 +46,22 @@ import '../../features/prescriptions/domain/usecases/request_refill.dart'
     as _i843;
 import '../../features/prescriptions/presentation/bloc/medication_bloc.dart'
     as _i92;
+import '../../features/referrals/data/datasources/local/referral_local_data_source.dart'
+    as _i33;
+import '../../features/referrals/data/repositories/referral_repository_impl.dart'
+    as _i1054;
+import '../../features/referrals/domain/repositories/referral_repository.dart'
+    as _i710;
+import '../../features/referrals/domain/usecases/accept_referral.dart' as _i407;
+import '../../features/referrals/domain/usecases/create_referral.dart' as _i888;
+import '../../features/referrals/domain/usecases/decline_referral.dart'
+    as _i315;
+import '../../features/referrals/domain/usecases/get_referral_board.dart'
+    as _i572;
+import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
+    as _i460;
+import '../../features/referrals/presentation/bloc/referral_form_bloc.dart'
+    as _i668;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
@@ -92,6 +108,9 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i979.SyncService>(() => _i979.NoOpSyncService());
   gh.lazySingleton<_i271.PermissionService>(
     () => _i271.PermissionServiceImpl(),
+  );
+  gh.lazySingleton<_i33.ReferralLocalDataSource>(
+    () => _i33.ReferralLocalDataSourceImpl(),
   );
   gh.lazySingleton<_i744.LocalStorageService>(
     () => _i744.LocalStorageServiceImpl(gh<_i460.SharedPreferences>()),
@@ -143,6 +162,9 @@ Future<_i174.GetIt> init(
   gh.factory<_i843.RequestRefill>(
     () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
   );
+  gh.lazySingleton<_i710.ReferralRepository>(
+    () => _i1054.ReferralRepositoryImpl(gh<_i33.ReferralLocalDataSource>()),
+  );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
   );
@@ -159,11 +181,33 @@ Future<_i174.GetIt> init(
   gh.factory<_i945.SaveSelectedRole>(
     () => _i945.SaveSelectedRole(gh<_i451.RoleSelectionRepository>()),
   );
+  gh.factory<_i407.AcceptReferral>(
+    () => _i407.AcceptReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i888.CreateReferral>(
+    () => _i888.CreateReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i315.DeclineReferral>(
+    () => _i315.DeclineReferral(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i572.GetReferralBoard>(
+    () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i460.ReferralBoardBloc>(
+    () => _i460.ReferralBoardBloc(
+      gh<_i572.GetReferralBoard>(),
+      gh<_i407.AcceptReferral>(),
+      gh<_i315.DeclineReferral>(),
+    ),
+  );
   gh.factory<_i41.RoleSelectionBloc>(
     () => _i41.RoleSelectionBloc(
       gh<_i999.GetSelectedRole>(),
       gh<_i945.SaveSelectedRole>(),
     ),
+  );
+  gh.factory<_i668.ReferralFormBloc>(
+    () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
   );
   return getIt;
 }
