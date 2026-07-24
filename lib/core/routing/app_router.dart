@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/authentication/authentication_routes.dart';
+import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
 import 'app_routes.dart';
@@ -48,6 +49,7 @@ class AppRouter {
       ...AuthenticationRoutes.routes,
       ...PrescriptionsRoutes.routes,
       ...ReferralsRoutes.routes,
+      ...CommunityHealthWorkersRoutes.routes,
       // Further feature route contributions are appended here, e.g.:
       //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,
