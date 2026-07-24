@@ -11,6 +11,12 @@ class BottomNavItem {
   /// hides the badge; the raised centre action shows a dot instead.
   final int? badgeCount;
 
+  /// A small notification dot instead of a numbered badge (some screens show
+  /// an unread dot on Alerts rather than a count). [dotColor] varies per
+  /// screen in the design — amber on some, red on others.
+  final bool showDot;
+  final Color dotColor;
+
   /// The centre "Register" action in the design sits in a raised green
   /// circle rather than reading as a flat tab.
   final bool isPrimary;
@@ -19,6 +25,8 @@ class BottomNavItem {
     required this.icon,
     required this.label,
     this.badgeCount,
+    this.showDot = false,
+    this.dotColor = AppColors.warning,
     this.isPrimary = false,
   });
 }
@@ -106,6 +114,8 @@ class _NavSlot extends StatelessWidget {
               icon: item.icon,
               color: color,
               badgeCount: item.badgeCount,
+              showDot: item.showDot,
+              dotColor: item.dotColor,
             ),
             const SizedBox(height: 4),
             Text(
@@ -152,7 +162,7 @@ class _PrimarySlot extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x3316A34A),
+                    color: Color(0x3310B981),
                     blurRadius: 12,
                     offset: Offset(0, 4),
                   ),
@@ -182,11 +192,15 @@ class _IconWithBadge extends StatelessWidget {
   final IconData icon;
   final Color color;
   final int? badgeCount;
+  final bool showDot;
+  final Color dotColor;
 
   const _IconWithBadge({
     required this.icon,
     required this.color,
     this.badgeCount,
+    this.showDot = false,
+    this.dotColor = AppColors.warning,
   });
 
   @override
@@ -195,6 +209,20 @@ class _IconWithBadge extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Icon(icon, size: 24, color: color),
+        if (showDot)
+          Positioned(
+            right: -2,
+            top: -2,
+            child: Container(
+              width: 9,
+              height: 9,
+              decoration: BoxDecoration(
+                color: dotColor,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+            ),
+          ),
         if (badgeCount != null)
           Positioned(
             right: -6,

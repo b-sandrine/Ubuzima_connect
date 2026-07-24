@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../domain/entities/medication_schedule.dart';
 
@@ -17,7 +18,7 @@ class MedicationSummaryCard extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF16A34A), Color(0xFF2563EB)],
+          colors: [Color(0xFF10B981), Color(0xFF2563EB)],
         ),
         borderRadius: BorderRadius.circular(22),
         boxShadow: const [
@@ -40,7 +41,11 @@ class MedicationSummaryCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white54, width: 2),
                 ),
-                child: const Icon(Icons.person, color: Colors.white, size: 30),
+                child: const Icon(
+                  LucideIcons.userRound,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -75,16 +80,16 @@ class MedicationSummaryCard extends StatelessWidget {
             runSpacing: 8,
             children: [
               _StatChip(
-                icon: Icons.check_circle,
+                icon: LucideIcons.circleCheck,
                 label: 'Today: ${summary.takenToday}/${summary.totalToday} '
                     'taken',
               ),
               _StatChip(
-                icon: Icons.autorenew,
+                icon: LucideIcons.refreshCw,
                 label: '${summary.refillsDue} refill due',
               ),
               _StatChip(
-                icon: Icons.local_fire_department,
+                icon: LucideIcons.flame,
                 label: '${summary.streakDays}-day streak',
               ),
             ],

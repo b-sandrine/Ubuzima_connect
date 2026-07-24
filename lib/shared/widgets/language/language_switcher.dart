@@ -76,7 +76,7 @@ class _LanguagePill extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.roleChwTint : Colors.transparent,
+            color: isActive ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
               color: isActive ? AppColors.primary : Colors.transparent,

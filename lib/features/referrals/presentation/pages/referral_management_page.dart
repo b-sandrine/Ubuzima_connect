@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
@@ -51,14 +52,16 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
       bottomNavigationBar: const UbuzimaBottomNav(
         currentIndex: 1,
         items: [
-          BottomNavItem(icon: Icons.home_outlined, label: 'Home'),
-          BottomNavItem(icon: Icons.folder_outlined, label: 'Records'),
-          BottomNavItem(icon: Icons.insights_outlined, label: 'AI Insights'),
+          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
+          BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
+          BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
           BottomNavItem(
-            icon: Icons.notifications_outlined,
+            icon: LucideIcons.bell,
             label: 'Alerts',
+            showDot: true,
+            dotColor: AppColors.danger,
           ),
-          BottomNavItem(icon: Icons.settings_outlined, label: 'Settings'),
+          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
         ],
       ),
       body: AppGradientBackground(
@@ -117,9 +120,9 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
         onBack: () => Navigator.of(context).maybePop(),
         contextLabel: 'LIVE',
         contextColor: AppColors.primary,
-        contextIcon: Icons.circle,
+        contextDot: true,
         trailing: const [
-          CircleIconButton(icon: Icons.notifications_outlined, showDot: true),
+          CircleIconButton(icon: LucideIcons.bell, showDot: true),
         ],
       ),
       const SizedBox(height: 14),
@@ -138,10 +141,18 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
       ),
       const SizedBox(height: 16),
       SegmentedTabs(
-        tabs: [
-          'Incoming${board.pendingCount(ReferralDirection.incoming) > 0 ? '  ${board.pendingCount(ReferralDirection.incoming)}' : ''}',
-          'Outgoing',
-          'Follow-Up',
+        tabs: const ['Incoming', 'Outgoing', 'Follow-Up'],
+        icons: const [
+          LucideIcons.inbox,
+          LucideIcons.send,
+          LucideIcons.bookmark,
+        ],
+        badges: [
+          board.pendingCount(ReferralDirection.incoming) > 0
+              ? board.pendingCount(ReferralDirection.incoming)
+              : null,
+          null,
+          null,
         ],
         selectedIndex: state.selectedTab,
         onSelected: (i) => bloc.add(ReferralBoardEvent.tabChanged(i)),
@@ -157,8 +168,9 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
         for (final referral in state.visibleReferrals) ...[
           ReferralCard(
             referral: referral,
-            selectedRoute:
-                _routes[referral.reference] ?? referral.specialty,
+            // Routing chips stay unselected until the doctor picks one; if
+            // none is picked, Accept still routes to the referral's specialty.
+            selectedRoute: _routes[referral.reference],
             isBusy: state.actioningReference == referral.reference,
             onRouteSelected: (route) =>
                 setState(() => _routes[referral.reference] = route),
@@ -209,7 +221,11 @@ class _PatientChip extends StatelessWidget {
               color: AppColors.rolePatientTint,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.person, color: AppColors.rolePatient),
+            child: const Icon(
+              LucideIcons.userRound,
+              color: AppColors.rolePatient,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -325,7 +341,7 @@ class _NewButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x3316A34A),
+            color: Color(0x3310B981),
             blurRadius: 12,
             offset: Offset(0, 4),
           ),
@@ -341,7 +357,7 @@ class _NewButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.add, size: 18, color: Colors.white),
+                Icon(LucideIcons.plus, size: 18, color: Colors.white),
                 SizedBox(width: 6),
                 Text(
                   'New',
@@ -385,9 +401,9 @@ class _PendingBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
-              Icons.inbox_outlined,
+              LucideIcons.inbox,
               color: AppColors.danger,
-              size: 22,
+              size: 20,
             ),
           ),
           const SizedBox(width: 12),
@@ -423,7 +439,7 @@ class _PendingBanner extends StatelessWidget {
                 StatusPill(
                   label: 'Urgent',
                   color: AppColors.danger,
-                  icon: Icons.circle,
+                  leadingDot: true,
                   fontSize: 10.5,
                 ),
                 SizedBox(height: 3),
@@ -453,8 +469,8 @@ class _EmptyQueue extends StatelessWidget {
         child: Column(
           children: [
             Icon(
-              Icons.inbox_outlined,
-              size: 44,
+              LucideIcons.inbox,
+              size: 40,
               color: AppColors.textTertiary,
             ),
             SizedBox(height: 12),

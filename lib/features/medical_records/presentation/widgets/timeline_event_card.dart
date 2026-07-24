@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
@@ -131,7 +132,7 @@ class _Card extends StatelessWidget {
                         ),
                       ),
                       const Icon(
-                        Icons.expand_more,
+                        LucideIcons.chevronDown,
                         size: 18,
                         color: AppColors.textTertiary,
                       ),

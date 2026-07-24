@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -139,7 +140,7 @@ class _RoleSelectionView extends StatelessWidget {
                     const SizedBox(height: 8),
                     GradientButton(
                       label: l10n.signIn,
-                      icon: Icons.login,
+                      icon: LucideIcons.logIn,
                       isLoading:
                           isSaving &&
                           state.destination == AuthDestination.signIn,
@@ -154,7 +155,8 @@ class _RoleSelectionView extends StatelessWidget {
                     const SizedBox(height: 12),
                     OutlinedPillButton(
                       label: l10n.createAccount,
-                      icon: Icons.person_add_alt_1,
+                      icon: LucideIcons.userPlus,
+                      foreground: AppColors.primary,
                       onPressed: state.canConfirm
                           ? () => context.read<RoleSelectionBloc>().add(
                               const RoleSelectionEvent.confirmed(
@@ -185,9 +187,9 @@ class _RoleSelectionView extends StatelessWidget {
   }
 
   IconData _iconFor(UserRole role) => switch (role) {
-    UserRole.patient => Icons.accessibility_new,
-    UserRole.communityHealthWorker => Icons.badge_outlined,
-    UserRole.doctor => Icons.medical_services_outlined,
+    UserRole.patient => LucideIcons.personStanding,
+    UserRole.communityHealthWorker => LucideIcons.userRound,
+    UserRole.doctor => LucideIcons.stethoscope,
   };
 
   Color _accentFor(UserRole role) => switch (role) {
@@ -236,7 +238,7 @@ class _HeroImage extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1.55,
         child: Image.asset(
-          'assets/images/onboarding_hero.jpg',
+          'assets/images/onboarding_hero.png',
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) => const DecoratedBox(
             decoration: BoxDecoration(
@@ -305,19 +307,19 @@ class _TrustFooter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _TrustBadge(
-          icon: Icons.shield_outlined,
+          icon: LucideIcons.shieldCheck,
           label: l10n.trustHipaaAligned,
           color: AppColors.primary,
         ),
         const _TrustDivider(),
         _TrustBadge(
-          icon: Icons.wifi_off_outlined,
+          icon: LucideIcons.wifiOff,
           label: l10n.trustOfflineReady,
           color: AppColors.secondary,
         ),
         const _TrustDivider(),
         _TrustBadge(
-          icon: Icons.flag_outlined,
+          icon: LucideIcons.flag,
           label: l10n.trustMadeForRwanda,
           color: AppColors.warning,
         ),

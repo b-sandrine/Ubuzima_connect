@@ -56,6 +56,14 @@ class ShowcasePage extends StatelessWidget {
       color: AppColors.warning,
       route: AppRoutes.chwReferral,
     ),
+    _ShowcaseEntry(
+      task: 'CHW',
+      title: 'Health Record',
+      subtitle: 'CHW · patient record, AI risk & next steps',
+      icon: Icons.folder_shared_outlined,
+      color: AppColors.roleChw,
+      route: AppRoutes.chwHealthRecord,
+    ),
   ];
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// The purple "AI Medication Insight" footer card on PAT-03. Purely
 /// presentational — the insight text is supplied by the schedule.
@@ -33,7 +34,7 @@ class AiInsightCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
-                  Icons.auto_awesome,
+                  LucideIcons.sparkles,
                   size: 18,
                   color: Color(0xFF7C3AED),
                 ),

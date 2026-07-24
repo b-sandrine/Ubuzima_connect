@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// The purple "AI Timeline Analysis" footer on DOC-04, with the summary
-/// paragraph and the Ask-AI / Print actions.
+/// paragraph, the span it covers, and the Full-AI / Print actions.
 class TimelineAnalysisCard extends StatelessWidget {
   final String summary;
+  final String viewLabel;
 
-  const TimelineAnalysisCard({super.key, required this.summary});
+  const TimelineAnalysisCard({
+    super.key,
+    required this.summary,
+    required this.viewLabel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class TimelineAnalysisCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
-                  Icons.auto_awesome,
+                  LucideIcons.sparkles,
                   size: 18,
                   color: Color(0xFF7C3AED),
                 ),
@@ -49,9 +55,9 @@ class TimelineAnalysisCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text(
-                'Just now',
-                style: TextStyle(fontSize: 11, color: Color(0xFF7C6FAE)),
+              Text(
+                viewLabel,
+                style: const TextStyle(fontSize: 11, color: Color(0xFF7C6FAE)),
               ),
             ],
           ),
@@ -69,15 +75,15 @@ class TimelineAnalysisCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _Action(
-                  icon: Icons.forum_outlined,
-                  label: 'Ask AI Panel',
+                  icon: LucideIcons.maximize,
+                  label: 'Full AI Panel',
                   filled: true,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _Action(
-                  icon: Icons.print_outlined,
+                  icon: LucideIcons.printer,
                   label: 'Print',
                   filled: false,
                 ),

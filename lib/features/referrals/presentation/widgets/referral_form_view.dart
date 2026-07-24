@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/buttons/gradient_button.dart';
@@ -143,7 +144,7 @@ class ReferralFormView extends StatelessWidget {
             const SizedBox(height: 24),
             GradientButton(
               label: submitLabel,
-              icon: Icons.send_rounded,
+              icon: LucideIcons.send,
               isLoading: state.status == ReferralFormStatus.submitting,
               onPressed: state.canSubmit
                   ? () => bloc.add(const ReferralFormEvent.submitted())
@@ -412,7 +413,7 @@ class _SuccessPanel extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.check_circle,
+              LucideIcons.circleCheck,
               color: AppColors.primary,
               size: 36,
             ),
@@ -439,7 +440,7 @@ class _SuccessPanel extends StatelessWidget {
           const SizedBox(height: 20),
           GradientButton(
             label: 'Done',
-            icon: Icons.check,
+            icon: LucideIcons.check,
             onPressed: () => Navigator.of(context).maybePop(),
           ),
         ],
