@@ -32,6 +32,16 @@ import '../../features/authentication/domain/usecases/save_selected_role.dart'
     as _i945;
 import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
     as _i41;
+import '../../features/community_health_workers/data/datasources/local/health_record_local_data_source.dart'
+    as _i554;
+import '../../features/community_health_workers/data/repositories/health_record_repository_impl.dart'
+    as _i74;
+import '../../features/community_health_workers/domain/repositories/health_record_repository.dart'
+    as _i245;
+import '../../features/community_health_workers/domain/usecases/get_health_record.dart'
+    as _i509;
+import '../../features/community_health_workers/presentation/bloc/health_record_bloc.dart'
+    as _i1071;
 import '../../features/medical_records/data/datasources/local/timeline_local_data_source.dart'
     as _i231;
 import '../../features/medical_records/data/repositories/timeline_repository_impl.dart'
@@ -125,6 +135,9 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i744.LocalStorageService>(
     () => _i744.LocalStorageServiceImpl(gh<_i460.SharedPreferences>()),
   );
+  gh.lazySingleton<_i554.HealthRecordLocalDataSource>(
+    () => _i554.HealthRecordLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i325.MedicationLocalDataSource>(
     () => _i325.MedicationLocalDataSourceImpl(),
   );
@@ -160,6 +173,11 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i282.AppRouter>(
     () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
+  );
+  gh.lazySingleton<_i245.HealthRecordRepository>(
+    () => _i74.HealthRecordRepositoryImpl(
+      gh<_i554.HealthRecordLocalDataSource>(),
+    ),
   );
   gh.lazySingleton<_i451.RoleSelectionRepository>(
     () => _i1028.RoleSelectionRepositoryImpl(
@@ -215,6 +233,9 @@ Future<_i174.GetIt> init(
   gh.factory<_i572.GetReferralBoard>(
     () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
   );
+  gh.factory<_i509.GetHealthRecord>(
+    () => _i509.GetHealthRecord(gh<_i245.HealthRecordRepository>()),
+  );
   gh.factory<_i460.ReferralBoardBloc>(
     () => _i460.ReferralBoardBloc(
       gh<_i572.GetReferralBoard>(),
@@ -227,6 +248,9 @@ Future<_i174.GetIt> init(
       gh<_i999.GetSelectedRole>(),
       gh<_i945.SaveSelectedRole>(),
     ),
+  );
+  gh.factory<_i1071.HealthRecordBloc>(
+    () => _i1071.HealthRecordBloc(gh<_i509.GetHealthRecord>()),
   );
   gh.factory<_i668.ReferralFormBloc>(
     () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
