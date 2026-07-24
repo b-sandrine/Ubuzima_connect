@@ -17,27 +17,30 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
 
   PatientTimeline _seed() {
     return const PatientTimeline(
+      totalEvents: 24,
+      earlierCount: 6,
+      aiViewLabel: '7-year view',
       patient: TimelinePatient(
         name: 'Marie Uwase',
-        summary: '52F · HTN + T2DM + CKD · RW-2847',
+        summary: 'ID: RW-2847 · 52F · Kigali District',
         criticality: 'Critical',
+        careHistory: '7 yrs',
       ),
       trend: [
-        TrendPoint(label: 'Jan', systolic: 138, glucose: 8.2),
-        TrendPoint(label: 'Feb', systolic: 142, glucose: 8.8),
-        TrendPoint(label: 'Mar', systolic: 150, glucose: 9.6),
-        TrendPoint(label: 'Apr', systolic: 158, glucose: 10.9),
-        TrendPoint(label: 'May', systolic: 168, glucose: 12.4),
-        TrendPoint(label: 'Jun', systolic: 182, glucose: 13.1),
+        TrendPoint(label: '2018', systolic: 162, glucose: 7.8),
+        TrendPoint(label: '2020', systolic: 150, glucose: 8.6),
+        TrendPoint(label: '2022', systolic: 156, glucose: 11.0),
+        TrendPoint(label: '2024', systolic: 170, glucose: 13.4),
+        TrendPoint(label: '2025', systolic: 185, glucose: 15.2),
       ],
       events: [
         TimelineEvent(
           id: 'evt-htn-crisis',
           category: EventCategory.emergency,
           title: 'Hypertensive Crisis',
-          dateLabel: '1 Jun 2025',
+          dateLabel: '2 Jun 2025',
           year: 2025,
-          detail: 'BP 182/110 · IV labetalol · Admitted for 48h observation',
+          detail: 'BP 185/112 · ED admission · ICU observation',
         ),
         TimelineEvent(
           id: 'evt-labs-may',
@@ -45,7 +48,7 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           title: 'HbA1c & Renal Panel',
           dateLabel: '28 May 2025',
           year: 2025,
-          detail: 'HbA1c 9.1% · eGFR 44 · K+ 5.3 · Creatinine 168',
+          detail: 'HbA1c 9.2% · Creatinine 168 · eGFR 44',
         ),
         TimelineEvent(
           id: 'evt-rx-sitagliptin',
@@ -53,15 +56,15 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           title: 'Sitagliptin Added · Metformin Adjusted',
           dateLabel: '20 May 2025',
           year: 2025,
-          detail: 'Metformin 500mg BD + Sitagliptin 50mg OD',
+          detail: 'Metformin 1000mg BD + Sitagliptin 50mg OD',
         ),
         TimelineEvent(
-          id: 'evt-chw-review',
+          id: 'evt-opd-review',
           category: EventCategory.visit,
-          title: 'Routine CHW Review',
-          dateLabel: '12 May 2025',
+          title: 'Routine OPD Review',
+          dateLabel: '14 Mar 2025',
           year: 2025,
-          detail: 'BP 158/96 · Glucose 12.4 · Weight 74kg · Oedema noted',
+          detail: 'BP 148/90 · Glucose 12.4 · Weight 74kg',
         ),
         TimelineEvent(
           id: 'evt-ckd-dx',
@@ -69,7 +72,7 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           title: 'CKD Stage 2 Confirmed',
           dateLabel: 'Nov 2024',
           year: 2024,
-          detail: 'eGFR 44 · Referred to nephrology for monitoring',
+          detail: 'eGFR 68 · Creatinine 112 µmol/L',
         ),
         TimelineEvent(
           id: 'evt-nephro-ref',
@@ -77,31 +80,31 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           title: 'Nephrology Referral',
           dateLabel: 'Aug 2024',
           year: 2024,
-          detail: 'Rising creatinine · CHUK nephrology clinic',
+          detail: 'King Faisal Hospital · Dr. Mutimura',
         ),
         TimelineEvent(
           id: 'evt-t2dm-dx',
           category: EventCategory.diagnosis,
           title: 'Type 2 Diabetes Mellitus',
-          dateLabel: 'Mar 2023',
-          year: 2023,
-          detail: 'HbA1c 7.9% · Started on metformin · Dietary counselling',
+          dateLabel: 'Mar 2022',
+          year: 2022,
+          detail: 'FBG 11.2 mmol/L · HbA1c 8.1%',
         ),
         TimelineEvent(
           id: 'evt-htn-dx',
           category: EventCategory.diagnosis,
           title: 'Essential Hypertension',
-          dateLabel: '2019',
-          year: 2019,
-          detail: 'BP 152/94 · Single agent amlodipine · Annual review',
+          dateLabel: 'Jan 2018',
+          year: 2018,
+          detail: 'BP 162/98 · Stage 2 HTN · First diagnosis',
         ),
       ],
       aiSummary:
-          'Progressive dual-condition escalation over 6 years: hypertension '
-          '(2019) → T2DM (2023) → early CKD (2024). BP and glucose trends '
-          'have both climbed sharply since March, and the June crisis '
-          'suggests control has slipped. Consider a combined management '
-          'review and tighter monitoring.',
+          'Progressive multi-system deterioration over 7 years: '
+          'HTN (2018) → T2DM (2022) → CKD (2024) → Crisis (2025). Pattern '
+          'suggests inadequate long-term glycemic and BP control. Recommend '
+          'structured chronic disease management programme with monthly '
+          'monitoring.',
     );
   }
 }

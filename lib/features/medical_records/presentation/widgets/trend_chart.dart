@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/patient_timeline.dart';
 
-/// The "BP & Glucose Trend" card on DOC-04: two normalised line series drawn
-/// over a shared month axis, with a small legend. Each series is scaled to
-/// its own min/max so both read clearly despite very different units.
+/// The "BP & Glucose Trend" card on DOC-04: two line series over a shared
+/// year axis, each read against its own y-axis — systolic (120–200) on the
+/// left, glucose (5–20) on the right — with a legend and a dashed glucose
+/// line, matching the design.
 class TrendChart extends StatelessWidget {
   final List<TrendPoint> points;
 
   static const Color _systolicColor = AppColors.danger;
   static const Color _glucoseColor = AppColors.warning;
+
+  // Fixed axis ranges so the printed tick labels stay meaningful.
+  static const double _sysMin = 120;
+  static const double _sysMax = 200;
+  static const double _gluMin = 5;
+  static const double _gluMax = 20;
 
   const TrendChart({super.key, required this.points});
 
@@ -53,33 +60,83 @@ class TrendChart extends StatelessWidget {
           const SizedBox(height: 14),
           SizedBox(
             height: 120,
-            child: LayoutBuilder(
-              builder: (context, constraints) => CustomPaint(
-                size: Size(constraints.maxWidth, 120),
-                painter: _TrendPainter(
-                  points: points,
-                  systolicColor: _systolicColor,
-                  glucoseColor: _glucoseColor,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _AxisLabels(
+                  values: ['200', '180', '160', '140', '120'],
+                  color: AppColors.textTertiary,
                 ),
-              ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => CustomPaint(
+                      size: Size(constraints.maxWidth, constraints.maxHeight),
+                      painter: _TrendPainter(
+                        points: points,
+                        systolicColor: _systolicColor,
+                        glucoseColor: _glucoseColor,
+                        sysMin: _sysMin,
+                        sysMax: _sysMax,
+                        gluMin: _gluMin,
+                        gluMax: _gluMax,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                const _AxisLabels(
+                  values: ['20', '15', '10', '5'],
+                  color: _glucoseColor,
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              for (final point in points)
-                Text(
-                  point.label,
-                  style: const TextStyle(
-                    fontSize: 10.5,
-                    color: AppColors.textTertiary,
+          Padding(
+            // Keep the x labels under the plot, clear of the two axis gutters.
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                for (final point in points)
+                  Text(
+                    point.label,
+                    style: const TextStyle(
+                      fontSize: 10.5,
+                      color: AppColors.textTertiary,
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AxisLabels extends StatelessWidget {
+  final List<String> values;
+  final Color color;
+
+  const _AxisLabels({required this.values, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (final v in values)
+          Text(
+            v,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+      ],
     );
   }
 }
@@ -118,11 +175,19 @@ class _TrendPainter extends CustomPainter {
   final List<TrendPoint> points;
   final Color systolicColor;
   final Color glucoseColor;
+  final double sysMin;
+  final double sysMax;
+  final double gluMin;
+  final double gluMax;
 
   _TrendPainter({
     required this.points,
     required this.systolicColor,
     required this.glucoseColor,
+    required this.sysMin,
+    required this.sysMax,
+    required this.gluMin,
+    required this.gluMax,
   });
 
   @override
@@ -134,18 +199,30 @@ class _TrendPainter extends CustomPainter {
       size,
       points.map((p) => p.systolic).toList(),
       systolicColor,
+      sysMin,
+      sysMax,
+      dashed: false,
     );
     _drawSeries(
       canvas,
       size,
       points.map((p) => p.glucose).toList(),
       glucoseColor,
+      gluMin,
+      gluMax,
+      dashed: true,
     );
   }
 
-  void _drawSeries(Canvas canvas, Size size, List<double> values, Color color) {
-    final min = values.reduce((a, b) => a < b ? a : b);
-    final max = values.reduce((a, b) => a > b ? a : b);
+  void _drawSeries(
+    Canvas canvas,
+    Size size,
+    List<double> values,
+    Color color,
+    double min,
+    double max, {
+    required bool dashed,
+  }) {
     final range = (max - min).abs() < 0.001 ? 1.0 : max - min;
     const topPad = 8.0;
     const bottomPad = 8.0;
@@ -153,7 +230,7 @@ class _TrendPainter extends CustomPainter {
     final step = size.width / (values.length - 1);
 
     Offset pointAt(int i) {
-      final normalised = (values[i] - min) / range;
+      final normalised = ((values[i] - min) / range).clamp(0.0, 1.0);
       final y = topPad + (1 - normalised) * usableHeight;
       return Offset(i * step, y);
     }
@@ -180,11 +257,30 @@ class _TrendPainter extends CustomPainter {
       ..close();
 
     canvas.drawPath(fill, fillPaint);
-    canvas.drawPath(line, linePaint);
+    if (dashed) {
+      _drawDashed(canvas, line, linePaint);
+    } else {
+      canvas.drawPath(line, linePaint);
+    }
 
     final dotPaint = Paint()..color = color;
     for (var i = 0; i < values.length; i++) {
       canvas.drawCircle(pointAt(i), 2.6, dotPaint);
+    }
+  }
+
+  void _drawDashed(Canvas canvas, Path path, Paint paint) {
+    const dash = 5.0;
+    const gap = 4.0;
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      while (distance < metric.length) {
+        canvas.drawPath(
+          metric.extractPath(distance, distance + dash),
+          paint,
+        );
+        distance += dash + gap;
+      }
     }
   }
 
