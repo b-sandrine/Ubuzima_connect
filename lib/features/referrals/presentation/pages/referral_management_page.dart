@@ -126,7 +126,15 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
       _PatientChip(patient: board.patient, referralCount: board.referrals.length),
       const SizedBox(height: 18),
       _Header(
-        onNew: () => context.push(AppRoutes.newReferral),
+        // Reload on return so a referral just created via "+ New" shows up in
+        // the Outgoing queue without needing a manual refresh.
+        onNew: () {
+          context.push(AppRoutes.newReferral).then((_) {
+            if (context.mounted) {
+              bloc.add(const ReferralBoardEvent.started());
+            }
+          });
+        },
       ),
       const SizedBox(height: 16),
       SegmentedTabs(
