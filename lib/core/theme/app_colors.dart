@@ -5,25 +5,26 @@ import 'package:flutter/material.dart';
 /// states, and near-white surfaces that stay legible in the bright field
 /// conditions CHWs actually work in.
 abstract final class AppColors {
-  // Brand
-  static const Color primary = Color(0xFF16A34A); // green 600
-  static const Color primaryLight = Color(0xFF22C55E); // green 500
-  static const Color primaryDark = Color(0xFF15803D); // green 700
+  // Brand — emerald is the design file's dominant brand hue.
+  static const Color primary = Color(0xFF10B981); // emerald 500
+  static const Color primaryLight = Color(0xFF34D399); // emerald 400
+  static const Color primaryDark = Color(0xFF059669); // emerald 600
   static const Color secondary = Color(0xFF2563EB); // blue 600
 
-  /// Fill for pill buttons and patient summary cards, which the design
-  /// draws as a light-to-dark sweep rather than a flat colour.
+  /// The signature emerald sweep the design uses on pill buttons, the app
+  /// mark, and patient summary cards — a light-to-deep emerald, not a flat
+  /// fill.
   static const List<Color> primaryGradient = [
-    Color(0xFF22C55E),
-    Color(0xFF16A34A),
+    Color(0xFF34D399),
+    Color(0xFF10B981),
   ];
 
-  /// The soft mint wash sitting behind every onboarding and dashboard
-  /// screen.
+  /// The soft green-to-blue wash sitting behind every onboarding and
+  /// dashboard screen (green-50 → blue-50 in the design).
   static const List<Color> backgroundGradient = [
-    Color(0xFFE7F6EC),
-    Color(0xFFF6FBF8),
-    Color(0xFFFFFFFF),
+    Color(0xFFF0FDF4),
+    Color(0xFFF0FDFA),
+    Color(0xFFEFF6FF),
   ];
 
   // Semantic / clinical status
@@ -41,12 +42,12 @@ abstract final class AppColors {
   /// Per-role accents. Each role keeps the same hue everywhere it appears —
   /// icon tile, badge, selection ring — so the association is learned once
   /// and reused across the CHW, patient, and doctor surfaces.
-  static const Color roleChw = Color(0xFF16A34A);
-  static const Color roleChwTint = Color(0xFFDCFCE7);
-  static const Color rolePatient = Color(0xFF2563EB);
-  static const Color rolePatientTint = Color(0xFFDBEAFE);
-  static const Color roleDoctor = Color(0xFFEA580C);
-  static const Color roleDoctorTint = Color(0xFFFFEDD5);
+  static const Color roleChw = Color(0xFF10B981); // emerald 500
+  static const Color roleChwTint = Color(0xFFD1FAE5); // emerald 100
+  static const Color rolePatient = Color(0xFF3B82F6); // blue 500
+  static const Color rolePatientTint = Color(0xFFDBEAFE); // blue 100
+  static const Color roleDoctor = Color(0xFFEA580C); // orange 600
+  static const Color roleDoctorTint = Color(0xFFFFEDD5); // orange 100
 
   // Neutrals
   static const Color lightBackground = Color(0xFFF6FBF8);

@@ -6,6 +6,7 @@ import '../../features/community_health_workers/community_health_workers_routes.
 import '../../features/medical_records/medical_records_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
+import '../../features/showcase/showcase_routes.dart';
 import 'app_routes.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
@@ -25,7 +26,10 @@ class AppRouter {
   AppRouter(this._authSessionProvider);
 
   late final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.splash,
+    // Boots into the demo hub while the auth/session flow is still stubbed,
+    // so the delivered screens are reachable in the running app. Switch back
+    // to AppRoutes.splash once the real onboarding flow lands.
+    initialLocation: AppRoutes.showcase,
     debugLogDiagnostics: true,
     redirect: (context, state) =>
         RouteGuards.redirect(_authSessionProvider, state),
@@ -52,6 +56,7 @@ class AppRouter {
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
       ...MedicalRecordsRoutes.routes,
+      ...ShowcaseRoutes.routes,
       // Further feature route contributions are appended here, e.g.:
       //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,

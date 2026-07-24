@@ -66,6 +66,9 @@ dependencies:
   # Cached network images (avatars, attachments)
   cached_network_image: ^3.4.1
 
+  # Lucide icon set — the same icons used in the design file
+  lucide_icons_flutter: ^3.1.15
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -90,3 +93,16 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
