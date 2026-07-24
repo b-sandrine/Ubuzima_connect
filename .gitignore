@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local visual-verification render harness (not part of the test suite)
+test/_visual/

@@ -40,6 +40,9 @@ abstract final class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: scaffoldBackground,
+      // Inter is the design file's typeface; bundled in assets/fonts so the
+      // app matches the mockups offline.
+      fontFamily: 'Inter',
       textTheme: AppTextStyles.textTheme.apply(
         bodyColor: colorScheme.onSurface,
         displayColor: colorScheme.onSurface,
