@@ -18,14 +18,20 @@ abstract final class RouteGuards {
     final atRegister = state.matchedLocation == AppRoutes.register;
     final atSplash = state.matchedLocation == AppRoutes.splash;
     final atRoleSelection = state.matchedLocation == AppRoutes.roleSelection;
+    // Standalone feature screens delivered ahead of the auth/session flow are
+    // reachable via the demo hub without a real session.
+    final atDemoScreen = AppRoutes.demoReachable.contains(
+      state.matchedLocation,
+    );
 
     // Role selection (AUTH-05) is the entry point of onboarding, so it has
     // to be reachable without a session — as do both auth screens it hands
-    // off to.
+    // off to, and the demo-reachable feature screens.
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
         !atRegister &&
-        !atRoleSelection) {
+        !atRoleSelection &&
+        !atDemoScreen) {
       return AppRoutes.roleSelection;
     }
 
