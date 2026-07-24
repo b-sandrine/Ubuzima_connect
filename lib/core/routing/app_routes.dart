@@ -21,4 +21,19 @@ abstract final class AppRoutes {
 
   /// DOC-04 — the doctor's patient medical timeline.
   static const String patientTimeline = '/timeline';
+
+  /// Demo hub listing every delivered screen (not a product screen).
+  static const String showcase = '/showcase';
+
+  /// Routes openable from the demo hub without a real session. These are the
+  /// standalone feature screens delivered ahead of the auth/session flow, so
+  /// the guard lets them through for demoing.
+  static const Set<String> demoReachable = {
+    showcase,
+    patientMedications,
+    referralManagement,
+    newReferral,
+    chwReferral,
+    patientTimeline,
+  };
 }
