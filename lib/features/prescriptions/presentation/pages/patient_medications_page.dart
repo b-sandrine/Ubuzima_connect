@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -48,15 +49,11 @@ class _MedicationsView extends StatelessWidget {
       bottomNavigationBar: const UbuzimaBottomNav(
         currentIndex: 3,
         items: [
-          BottomNavItem(icon: Icons.home_outlined, label: 'Home'),
-          BottomNavItem(icon: Icons.folder_outlined, label: 'Records'),
-          BottomNavItem(icon: Icons.insights_outlined, label: 'AI Insights'),
-          BottomNavItem(
-            icon: Icons.notifications_outlined,
-            label: 'Alerts',
-            badgeCount: 2,
-          ),
-          BottomNavItem(icon: Icons.settings_outlined, label: 'Settings'),
+          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
+          BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
+          BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
+          BottomNavItem(icon: LucideIcons.bell, label: 'Alerts', showDot: true),
+          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
         ],
       ),
       body: AppGradientBackground(
@@ -90,10 +87,10 @@ class _MedicationsView extends StatelessWidget {
                       delegate: SliverChildListDelegate([
                         const AppTopBar(
                           contextLabel: 'MEDICATIONS',
-                          contextIcon: Icons.medication_liquid,
+                          contextIcon: LucideIcons.pill,
                           trailing: [
                             CircleIconButton(
-                              icon: Icons.notifications_outlined,
+                              icon: LucideIcons.bell,
                               showDot: true,
                             ),
                           ],
@@ -181,6 +178,7 @@ class _TodayTab extends StatelessWidget {
             for (final dose in _dosesFor(part)) ...[
               DoseCard(
                 dose: dose,
+                tileColor: _tileColorFor(dose),
                 onTake: () => context.read<MedicationBloc>().add(
                   MedicationEvent.doseMarkedTaken(dose.id),
                 ),
@@ -197,6 +195,20 @@ class _TodayTab extends StatelessWidget {
 
   List<MedicationDose> _dosesFor(DayPart part) =>
       state.doses.where((d) => d.dayPart == part).toList();
+
+  /// The design gives each dose row its own pill-tile hue in schedule order:
+  /// emerald, blue, orange, violet — cycling if there are more than four.
+  static const List<Color> _tilePalette = [
+    Color(0xFF10B981),
+    Color(0xFF3B82F6),
+    Color(0xFFF97316),
+    Color(0xFF7C3AED),
+  ];
+
+  Color _tileColorFor(MedicationDose dose) {
+    final index = state.doses.indexOf(dose);
+    return _tilePalette[index % _tilePalette.length];
+  }
 }
 
 class _DayPartHeader extends StatelessWidget {
@@ -229,7 +241,7 @@ class _DayPartHeader extends StatelessWidget {
           decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
         ),
         const SizedBox(width: 8),
-        Flexible(
+        Expanded(
           child: Text(
             '$label · $time',
             overflow: TextOverflow.ellipsis,
@@ -242,7 +254,6 @@ class _DayPartHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        const Spacer(),
         _groupPill(doses),
       ],
     );
@@ -272,8 +283,8 @@ class _ComingSoonTab extends StatelessWidget {
         child: Column(
           children: [
             Icon(
-              Icons.event_note_outlined,
-              size: 44,
+              LucideIcons.calendarClock,
+              size: 40,
               color: AppColors.textTertiary,
             ),
             const SizedBox(height: 12),

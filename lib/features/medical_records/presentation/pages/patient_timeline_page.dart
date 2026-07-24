@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -37,27 +38,19 @@ class _TimelineView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'New Entry',
-          style: TextStyle(fontWeight: FontWeight.w700),
-        ),
-      ),
       bottomNavigationBar: const UbuzimaBottomNav(
         currentIndex: 1,
         items: [
-          BottomNavItem(icon: Icons.home_outlined, label: 'Home'),
-          BottomNavItem(icon: Icons.folder_outlined, label: 'Records'),
-          BottomNavItem(icon: Icons.insights_outlined, label: 'AI Insights'),
+          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
+          BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
+          BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
           BottomNavItem(
-            icon: Icons.notifications_outlined,
+            icon: LucideIcons.bell,
             label: 'Alerts',
+            showDot: true,
+            dotColor: AppColors.danger,
           ),
-          BottomNavItem(icon: Icons.settings_outlined, label: 'Settings'),
+          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
         ],
       ),
       body: AppGradientBackground(
@@ -86,7 +79,7 @@ class _TimelineView extends StatelessWidget {
               return CustomScrollView(
                 slivers: [
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate(
                         _content(context, state, timeline),
@@ -112,12 +105,9 @@ class _TimelineView extends StatelessWidget {
     return [
       AppTopBar(
         onBack: () => Navigator.of(context).maybePop(),
-        contextLabel: 'LIVE',
-        contextColor: AppColors.primary,
-        contextIcon: Icons.circle,
         trailing: const [
-          CircleIconButton(icon: Icons.ios_share),
-          CircleIconButton(icon: Icons.notifications_outlined, showDot: true),
+          CircleIconButton(icon: LucideIcons.upload),
+          CircleIconButton(icon: LucideIcons.bell, showDot: true),
         ],
       ),
       const SizedBox(height: 14),
@@ -140,7 +130,7 @@ class _TimelineView extends StatelessWidget {
                 ),
                 SizedBox(height: 3),
                 Text(
-                  'Chronological medical history · Filterable',
+                  'Chronological health record · 2018–2025',
                   style: TextStyle(
                     fontSize: 12.5,
                     color: AppColors.textSecondary,
@@ -151,9 +141,9 @@ class _TimelineView extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           StatusPill(
-            label: '${timeline.eventCount} Events',
+            label: '${timeline.totalEvents} Events',
             color: AppColors.primary,
-            icon: Icons.event_note,
+            icon: LucideIcons.layers,
             fontSize: 11.5,
           ),
         ],
@@ -186,8 +176,7 @@ class _TimelineView extends StatelessWidget {
           ),
           Row(
             children: const [
-              Icon(Icons.picture_as_pdf_outlined,
-                  size: 15, color: AppColors.primary),
+              Icon(LucideIcons.download, size: 15, color: AppColors.primary),
               SizedBox(width: 4),
               Text(
                 'Export PDF',
@@ -215,8 +204,15 @@ class _TimelineView extends StatelessWidget {
             ),
           const SizedBox(height: 4),
         ],
-      const SizedBox(height: 8),
-      TimelineAnalysisCard(summary: timeline.aiSummary),
+      if (timeline.earlierCount > 0) ...[
+        const SizedBox(height: 4),
+        _LoadEarlierButton(count: timeline.earlierCount),
+      ],
+      const SizedBox(height: 16),
+      TimelineAnalysisCard(
+        summary: timeline.aiSummary,
+        viewLabel: timeline.aiViewLabel,
+      ),
     ];
   }
 }
@@ -247,11 +243,16 @@ class _PatientChip extends StatelessWidget {
           Container(
             width: 46,
             height: 46,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.rolePatientTint,
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.primaryLight, width: 1.5),
             ),
-            child: const Icon(Icons.person, color: AppColors.rolePatient),
+            child: const Icon(
+              LucideIcons.userRound,
+              color: AppColors.rolePatient,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -291,18 +292,20 @@ class _PatientChip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(Icons.summarize_outlined, size: 18, color: AppColors.primary),
-              SizedBox(height: 2),
               Text(
-                'Full Summary',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
+                patient.careHistory,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.primary,
                 ),
+              ),
+              const Text(
+                'care history',
+                style: TextStyle(fontSize: 11, color: AppColors.textTertiary),
               ),
             ],
           ),
@@ -329,9 +332,14 @@ class _SearchField extends StatelessWidget {
           color: AppColors.textTertiary,
         ),
         prefixIcon: const Icon(
-          Icons.search,
-          size: 20,
+          LucideIcons.search,
+          size: 18,
           color: AppColors.textTertiary,
+        ),
+        suffixIcon: const Icon(
+          LucideIcons.slidersHorizontal,
+          size: 18,
+          color: AppColors.primary,
         ),
         filled: true,
         fillColor: Colors.white,
@@ -364,13 +372,69 @@ class _YearPill extends StatelessWidget {
           color: AppColors.primary.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(999),
         ),
-        child: Text(
-          '$year',
-          style: const TextStyle(
-            fontSize: 12.5,
-            fontWeight: FontWeight.w800,
-            color: AppColors.primaryDark,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              LucideIcons.calendar,
+              size: 13,
+              color: AppColors.primaryDark,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              '$year',
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primaryDark,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The dashed "Load Earlier Records (N more)" affordance beneath the oldest
+/// loaded event, as in the design. Static for the demo timeline.
+class _LoadEarlierButton extends StatelessWidget {
+  final int count;
+
+  const _LoadEarlierButton({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              LucideIcons.rotateCcw,
+              size: 15,
+              color: AppColors.primary,
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                'Load Earlier Records ($count more)',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -387,7 +451,7 @@ class _EmptyTimeline extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Icon(Icons.search_off, size: 44, color: AppColors.textTertiary),
+            Icon(LucideIcons.searchX, size: 40, color: AppColors.textTertiary),
             SizedBox(height: 12),
             Text(
               'No events match your filter',

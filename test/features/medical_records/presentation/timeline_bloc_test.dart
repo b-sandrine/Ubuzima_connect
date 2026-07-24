@@ -11,10 +11,14 @@ import 'package:ubuzima_connect/features/medical_records/presentation/bloc/timel
 class _MockGetTimeline extends Mock implements GetPatientTimeline {}
 
 const _timeline = PatientTimeline(
+  totalEvents: 24,
+  earlierCount: 6,
+  aiViewLabel: '7-year view',
   patient: TimelinePatient(
     name: 'Marie Uwase',
     summary: '52F · HTN + T2DM + CKD',
     criticality: 'Critical',
+    careHistory: '7 yrs',
   ),
   trend: [
     TrendPoint(label: 'May', systolic: 168, glucose: 12.4),

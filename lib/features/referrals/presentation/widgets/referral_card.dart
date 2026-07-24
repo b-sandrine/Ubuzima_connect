@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
 import '../../domain/entities/referral.dart';
+
+/// The icon and colour the design gives each clinical specialty — reused by
+/// both the card header glyph and the routing chips.
+({IconData icon, Color color}) _specialtyStyle(String specialty) {
+  final key = specialty.toLowerCase();
+  if (key.contains('cardio')) {
+    return (icon: LucideIcons.heart, color: Color(0xFF3B82F6));
+  }
+  if (key.contains('neuro')) {
+    return (icon: LucideIcons.brain, color: Color(0xFF8B5CF6));
+  }
+  if (key.contains('nephro')) {
+    return (icon: LucideIcons.droplet, color: Color(0xFF10B981));
+  }
+  if (key.contains('ophthal')) {
+    return (icon: LucideIcons.eye, color: Color(0xFFEA580C));
+  }
+  if (key.contains('endocrin')) {
+    return (icon: LucideIcons.activity, color: Color(0xFF0EA5E9));
+  }
+  return (icon: LucideIcons.stethoscope, color: AppColors.secondary);
+}
+
+/// The colour a referral's urgency tints its header tile with.
+Color _urgencyColor(ReferralUrgency urgency) => switch (urgency) {
+  ReferralUrgency.urgent => AppColors.danger,
+  ReferralUrgency.pending => AppColors.warning,
+  ReferralUrgency.routine => AppColors.secondary,
+};
 
 /// One referral in the DOC-06 queue: identity, the clinical narrative, the
 /// requested timeline, optional specialty routing, and the Accept / Decline
@@ -60,21 +90,21 @@ class ReferralCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           _Section(
-            icon: Icons.person_outline,
+            icon: LucideIcons.userRound,
             label: 'Referring Physician',
             body:
                 '${referral.referringPhysician} · ${referral.referringFacility}',
           ),
           const SizedBox(height: 12),
           _Section(
-            icon: Icons.info_outline,
+            icon: LucideIcons.info,
             label: 'Reason for Referral',
             body: referral.reason,
           ),
           if (referral.clinicalSummary != null) ...[
             const SizedBox(height: 12),
             _Section(
-              icon: Icons.description_outlined,
+              icon: LucideIcons.fileText,
               label: 'Clinical Summary',
               body: referral.clinicalSummary!,
             ),
@@ -100,6 +130,7 @@ class ReferralCard extends StatelessWidget {
                 for (final option in referral.routeOptions)
                   _RouteChip(
                     label: option,
+                    style: _specialtyStyle(option),
                     isSelected: option == selectedRoute,
                     onTap: () => onRouteSelected?.call(option),
                   ),
@@ -124,20 +155,19 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final urgencyColor = _urgencyColor(referral.urgency);
+    final specialtyIcon = _specialtyStyle(referral.specialty).icon;
+
     return Row(
       children: [
         Container(
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.roleDoctorTint,
+            color: urgencyColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(
-            Icons.favorite,
-            color: AppColors.roleDoctor,
-            size: 20,
-          ),
+          child: Icon(specialtyIcon, color: urgencyColor, size: 20),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -249,7 +279,7 @@ class _TimelineRow extends StatelessWidget {
     return Row(
       children: [
         const Icon(
-          Icons.schedule,
+          LucideIcons.clock,
           size: 15,
           color: AppColors.textSecondary,
         ),
@@ -282,38 +312,56 @@ class _TimelineRow extends StatelessWidget {
 
 class _RouteChip extends StatelessWidget {
   final String label;
+  final ({IconData icon, Color color}) style;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _RouteChip({
     required this.label,
+    required this.style,
     required this.isSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Each specialty keeps its own hue: a soft tint when offered, the full
+    // colour once chosen.
+    final background = isSelected
+        ? style.color
+        : style.color.withValues(alpha: 0.1);
+    final foreground = isSelected ? Colors.white : style.color;
+
     return Material(
-      color: isSelected ? AppColors.primary : Colors.white,
+      color: background,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(999),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: isSelected ? AppColors.primary : AppColors.border,
+              color: isSelected
+                  ? style.color
+                  : style.color.withValues(alpha: 0.25),
             ),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : AppColors.textSecondary,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(style.icon, size: 14, color: foreground),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: foreground,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -371,7 +419,7 @@ class _DeclineButton extends StatelessWidget {
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.close, size: 17, color: AppColors.danger),
+              Icon(LucideIcons.x, size: 17, color: AppColors.danger),
               SizedBox(width: 6),
               Text(
                 'Decline',
@@ -422,7 +470,7 @@ class _AcceptButton extends StatelessWidget {
                   : const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.check, size: 17, color: Colors.white),
+                        Icon(LucideIcons.check, size: 17, color: Colors.white),
                         SizedBox(width: 6),
                         Text(
                           'Accept',
@@ -461,8 +509,8 @@ class _ResolvedStrip extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(accepted ? Icons.check_circle : Icons.cancel, size: 18,
-              color: color),
+          Icon(accepted ? LucideIcons.circleCheck : LucideIcons.circleX,
+              size: 18, color: color),
           const SizedBox(width: 8),
           Text(
             accepted ? 'Accepted' : 'Declined',

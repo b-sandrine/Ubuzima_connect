@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/timeline_event.dart';
@@ -21,32 +22,32 @@ class EventCategoryStyle {
     EventCategory.emergency => const EventCategoryStyle(
       color: AppColors.danger,
       label: 'Emergency',
-      icon: Icons.emergency_outlined,
+      icon: LucideIcons.triangleAlert,
     ),
     EventCategory.labResult => const EventCategoryStyle(
       color: AppColors.warning,
-      label: 'Lab Result',
-      icon: Icons.science_outlined,
+      label: 'Lab Results',
+      icon: LucideIcons.flaskConical,
     ),
     EventCategory.prescription => const EventCategoryStyle(
       color: Color(0xFF6366F1),
-      label: 'Prescription',
-      icon: Icons.medication_outlined,
+      label: 'Medication',
+      icon: LucideIcons.pill,
     ),
     EventCategory.visit => const EventCategoryStyle(
       color: AppColors.primary,
       label: 'Visit',
-      icon: Icons.event_available_outlined,
+      icon: LucideIcons.stethoscope,
     ),
     EventCategory.diagnosis => const EventCategoryStyle(
       color: AppColors.secondary,
       label: 'Diagnosis',
-      icon: Icons.assignment_outlined,
+      icon: LucideIcons.clipboardList,
     ),
     EventCategory.referral => const EventCategoryStyle(
       color: Color(0xFFF59E0B),
       label: 'Referral',
-      icon: Icons.share_outlined,
+      icon: LucideIcons.share2,
     ),
   };
 }

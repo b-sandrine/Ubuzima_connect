@@ -10,6 +10,10 @@ class StatusPill extends StatelessWidget {
   final String label;
   final Color color;
   final IconData? icon;
+
+  /// A small solid dot before the label, used by the "LIVE" and "Urgent"
+  /// status pills in the design.
+  final bool leadingDot;
   final bool filled;
   final double fontSize;
 
@@ -18,6 +22,7 @@ class StatusPill extends StatelessWidget {
     required this.label,
     required this.color,
     this.icon,
+    this.leadingDot = false,
     this.filled = true,
     this.fontSize = 11.5,
   });
@@ -34,6 +39,14 @@ class StatusPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (leadingDot) ...[
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 5),
+          ],
           if (icon != null) ...[
             Icon(icon, size: fontSize + 1.5, color: color),
             const SizedBox(width: 4),

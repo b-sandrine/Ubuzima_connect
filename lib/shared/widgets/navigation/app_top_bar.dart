@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../branding/ubuzima_wordmark.dart';
@@ -14,6 +15,9 @@ class AppTopBar extends StatelessWidget {
   final String? contextLabel;
   final Color contextColor;
   final IconData? contextIcon;
+
+  /// Draws a small solid dot before the context label (the "LIVE" pill).
+  final bool contextDot;
   final List<Widget> trailing;
   final VoidCallback? onBack;
 
@@ -22,6 +26,7 @@ class AppTopBar extends StatelessWidget {
     this.contextLabel,
     this.contextColor = AppColors.primary,
     this.contextIcon,
+    this.contextDot = false,
     this.trailing = const [],
     this.onBack,
   });
@@ -31,7 +36,7 @@ class AppTopBar extends StatelessWidget {
     return Row(
       children: [
         if (onBack != null) ...[
-          _CircleButton(icon: Icons.arrow_back_ios_new, onTap: onBack!),
+          _CircleButton(icon: LucideIcons.chevronLeft, onTap: onBack!),
           const SizedBox(width: 10),
         ],
         // The wordmark takes the free space and stays left-aligned, so the
@@ -49,6 +54,7 @@ class AppTopBar extends StatelessWidget {
             label: contextLabel!,
             color: contextColor,
             icon: contextIcon,
+            leadingDot: contextDot,
             filled: false,
             fontSize: 12,
           ),

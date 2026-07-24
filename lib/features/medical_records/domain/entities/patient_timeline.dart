@@ -8,14 +8,19 @@ class TimelinePatient extends Equatable {
   final String summary;
   final String criticality;
 
+  /// Length of the care relationship, shown at the right of the chip
+  /// (e.g. "7 yrs").
+  final String careHistory;
+
   const TimelinePatient({
     required this.name,
     required this.summary,
     required this.criticality,
+    required this.careHistory,
   });
 
   @override
-  List<Object?> get props => [name, summary, criticality];
+  List<Object?> get props => [name, summary, criticality, careHistory];
 }
 
 /// A single sample on the BP & Glucose trend chart. [systolic] and [glucose]
@@ -43,15 +48,36 @@ class PatientTimeline extends Equatable {
   final List<TimelineEvent> events;
   final String aiSummary;
 
+  /// Total number of events in the record (the "24 Events" pill), which can
+  /// exceed the number currently loaded into [events].
+  final int totalEvents;
+
+  /// How many older events are collapsed behind "Load Earlier Records".
+  final int earlierCount;
+
+  /// The span the AI analysis covers, e.g. "7-year view".
+  final String aiViewLabel;
+
   const PatientTimeline({
     required this.patient,
     required this.trend,
     required this.events,
     required this.aiSummary,
+    required this.totalEvents,
+    required this.earlierCount,
+    required this.aiViewLabel,
   });
 
   int get eventCount => events.length;
 
   @override
-  List<Object?> get props => [patient, trend, events, aiSummary];
+  List<Object?> get props => [
+    patient,
+    trend,
+    events,
+    aiSummary,
+    totalEvents,
+    earlierCount,
+    aiViewLabel,
+  ];
 }

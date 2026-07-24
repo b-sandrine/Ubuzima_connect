@@ -13,10 +13,14 @@ import 'package:ubuzima_connect/features/medical_records/presentation/widgets/ti
 class _MockGetTimeline extends Mock implements GetPatientTimeline {}
 
 const _timeline = PatientTimeline(
+  totalEvents: 24,
+  earlierCount: 6,
+  aiViewLabel: '7-year view',
   patient: TimelinePatient(
     name: 'Marie Uwase',
     summary: '52F · HTN + T2DM + CKD · RW-2847',
     criticality: 'Critical',
+    careHistory: '7 yrs',
   ),
   trend: [
     TrendPoint(label: 'Apr', systolic: 158, glucose: 10.9),
@@ -79,7 +83,7 @@ void main() {
     await pump(tester);
 
     expect(find.text('Patient Timeline'), findsOneWidget);
-    expect(find.text('3 Events'), findsOneWidget);
+    expect(find.text('24 Events'), findsOneWidget);
     expect(find.text('BP & Glucose Trend'), findsOneWidget);
     expect(find.text('Hypertensive Crisis'), findsOneWidget);
     expect(find.text('Type 2 Diabetes Mellitus'), findsOneWidget);
