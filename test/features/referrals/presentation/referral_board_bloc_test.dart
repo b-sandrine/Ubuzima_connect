@@ -7,6 +7,7 @@ import 'package:ubuzima_connect/features/referrals/domain/entities/referral.dart
 import 'package:ubuzima_connect/features/referrals/domain/entities/referral_board.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/accept_referral.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/decline_referral.dart';
+import 'package:ubuzima_connect/features/referrals/domain/usecases/delete_referral.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/get_referral_board.dart';
 import 'package:ubuzima_connect/features/referrals/presentation/bloc/referral_board_bloc.dart';
 
@@ -15,6 +16,8 @@ class _MockGetBoard extends Mock implements GetReferralBoard {}
 class _MockAccept extends Mock implements AcceptReferral {}
 
 class _MockDecline extends Mock implements DeclineReferral {}
+
+class _MockDelete extends Mock implements DeleteReferral {}
 
 Referral _referral({
   String reference = 'RW-REF-0041',
@@ -46,14 +49,17 @@ void main() {
   late _MockGetBoard getBoard;
   late _MockAccept accept;
   late _MockDecline decline;
+  late _MockDelete delete;
 
   setUp(() {
     getBoard = _MockGetBoard();
     accept = _MockAccept();
     decline = _MockDecline();
+    delete = _MockDelete();
   });
 
-  ReferralBoardBloc build() => ReferralBoardBloc(getBoard, accept, decline);
+  ReferralBoardBloc build() =>
+      ReferralBoardBloc(getBoard, accept, decline, delete);
 
   final board = ReferralBoard(patient: _patient, referrals: [_referral()]);
 

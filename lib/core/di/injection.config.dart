@@ -34,16 +34,22 @@ import '../../features/authentication/presentation/bloc/role_selection_bloc.dart
     as _i41;
 import '../../features/community_health_workers/data/datasources/local/health_record_local_data_source.dart'
     as _i554;
+import '../../features/community_health_workers/data/datasources/remote/health_record_remote_data_source.dart'
+    as _i552;
 import '../../features/community_health_workers/data/repositories/health_record_repository_impl.dart'
     as _i74;
 import '../../features/community_health_workers/domain/repositories/health_record_repository.dart'
     as _i245;
+import '../../features/community_health_workers/domain/usecases/complete_next_step.dart'
+    as _i665;
 import '../../features/community_health_workers/domain/usecases/get_health_record.dart'
     as _i509;
 import '../../features/community_health_workers/presentation/bloc/health_record_bloc.dart'
     as _i1071;
 import '../../features/medical_records/data/datasources/local/timeline_local_data_source.dart'
     as _i231;
+import '../../features/medical_records/data/datasources/remote/timeline_remote_data_source.dart'
+    as _i596;
 import '../../features/medical_records/data/repositories/timeline_repository_impl.dart'
     as _i659;
 import '../../features/medical_records/domain/repositories/timeline_repository.dart'
@@ -54,6 +60,8 @@ import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
     as _i855;
 import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
     as _i325;
+import '../../features/prescriptions/data/datasources/remote/medication_remote_data_source.dart'
+    as _i694;
 import '../../features/prescriptions/data/repositories/medication_repository_impl.dart'
     as _i521;
 import '../../features/prescriptions/domain/repositories/medication_repository.dart'
@@ -68,6 +76,8 @@ import '../../features/prescriptions/presentation/bloc/medication_bloc.dart'
     as _i92;
 import '../../features/referrals/data/datasources/local/referral_local_data_source.dart'
     as _i33;
+import '../../features/referrals/data/datasources/remote/referral_remote_data_source.dart'
+    as _i1015;
 import '../../features/referrals/data/repositories/referral_repository_impl.dart'
     as _i1054;
 import '../../features/referrals/domain/repositories/referral_repository.dart'
@@ -76,6 +86,7 @@ import '../../features/referrals/domain/usecases/accept_referral.dart' as _i407;
 import '../../features/referrals/domain/usecases/create_referral.dart' as _i888;
 import '../../features/referrals/domain/usecases/decline_referral.dart'
     as _i315;
+import '../../features/referrals/domain/usecases/delete_referral.dart' as _i173;
 import '../../features/referrals/domain/usecases/get_referral_board.dart'
     as _i572;
 import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
@@ -148,9 +159,6 @@ Future<_i174.GetIt> init(
     () => _i565.NoOpAuthSessionProvider(),
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
-  gh.lazySingleton<_i552.MedicationRepository>(
-    () => _i521.MedicationRepositoryImpl(gh<_i325.MedicationLocalDataSource>()),
-  );
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
@@ -162,9 +170,6 @@ Future<_i174.GetIt> init(
       gh<_i354.AppLogger>(),
     ),
   );
-  gh.lazySingleton<_i984.TimelineRepository>(
-    () => _i659.TimelineRepositoryImpl(gh<_i231.TimelineLocalDataSource>()),
-  );
   gh.lazySingleton<_i726.AnalyticsService>(
     () => _i726.NoOpAnalyticsService(gh<_i354.AppLogger>()),
   );
@@ -174,11 +179,6 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i282.AppRouter>(
     () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
   );
-  gh.lazySingleton<_i245.HealthRecordRepository>(
-    () => _i74.HealthRecordRepositoryImpl(
-      gh<_i554.HealthRecordLocalDataSource>(),
-    ),
-  );
   gh.lazySingleton<_i451.RoleSelectionRepository>(
     () => _i1028.RoleSelectionRepositoryImpl(
       gh<_i838.RoleSelectionLocalDataSource>(),
@@ -187,33 +187,44 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
   );
-  gh.factory<_i566.GetTodaySchedule>(
-    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
+  gh.lazySingleton<_i1015.ReferralRemoteDataSource>(
+    () => _i1015.ReferralRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i33.ReferralLocalDataSource>(),
+    ),
   );
-  gh.factory<_i340.MarkDoseTaken>(
-    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
+  gh.lazySingleton<_i552.HealthRecordRemoteDataSource>(
+    () => _i552.HealthRecordRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i554.HealthRecordLocalDataSource>(),
+    ),
   );
-  gh.factory<_i843.RequestRefill>(
-    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
-  );
-  gh.lazySingleton<_i710.ReferralRepository>(
-    () => _i1054.ReferralRepositoryImpl(gh<_i33.ReferralLocalDataSource>()),
+  gh.lazySingleton<_i694.MedicationRemoteDataSource>(
+    () => _i694.MedicationRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i325.MedicationLocalDataSource>(),
+    ),
   );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
   );
-  gh.factory<_i209.GetPatientTimeline>(
-    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
+  gh.lazySingleton<_i710.ReferralRepository>(
+    () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
   );
-  gh.factory<_i92.MedicationBloc>(
-    () => _i92.MedicationBloc(
-      gh<_i566.GetTodaySchedule>(),
-      gh<_i340.MarkDoseTaken>(),
-      gh<_i843.RequestRefill>(),
+  gh.lazySingleton<_i596.TimelineRemoteDataSource>(
+    () => _i596.TimelineRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i231.TimelineLocalDataSource>(),
     ),
   );
-  gh.factory<_i855.TimelineBloc>(
-    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
+  gh.lazySingleton<_i552.MedicationRepository>(
+    () =>
+        _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i245.HealthRecordRepository>(
+    () => _i74.HealthRecordRepositoryImpl(
+      gh<_i552.HealthRecordRemoteDataSource>(),
+    ),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
@@ -230,8 +241,14 @@ Future<_i174.GetIt> init(
   gh.factory<_i315.DeclineReferral>(
     () => _i315.DeclineReferral(gh<_i710.ReferralRepository>()),
   );
+  gh.factory<_i173.DeleteReferral>(
+    () => _i173.DeleteReferral(gh<_i710.ReferralRepository>()),
+  );
   gh.factory<_i572.GetReferralBoard>(
     () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i665.CompleteNextStep>(
+    () => _i665.CompleteNextStep(gh<_i245.HealthRecordRepository>()),
   );
   gh.factory<_i509.GetHealthRecord>(
     () => _i509.GetHealthRecord(gh<_i245.HealthRecordRepository>()),
@@ -241,7 +258,20 @@ Future<_i174.GetIt> init(
       gh<_i572.GetReferralBoard>(),
       gh<_i407.AcceptReferral>(),
       gh<_i315.DeclineReferral>(),
+      gh<_i173.DeleteReferral>(),
     ),
+  );
+  gh.factory<_i566.GetTodaySchedule>(
+    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i340.MarkDoseTaken>(
+    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i843.RequestRefill>(
+    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
+  );
+  gh.lazySingleton<_i984.TimelineRepository>(
+    () => _i659.TimelineRepositoryImpl(gh<_i596.TimelineRemoteDataSource>()),
   );
   gh.factory<_i41.RoleSelectionBloc>(
     () => _i41.RoleSelectionBloc(
@@ -249,11 +279,27 @@ Future<_i174.GetIt> init(
       gh<_i945.SaveSelectedRole>(),
     ),
   );
+  gh.factory<_i209.GetPatientTimeline>(
+    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
+  );
   gh.factory<_i1071.HealthRecordBloc>(
-    () => _i1071.HealthRecordBloc(gh<_i509.GetHealthRecord>()),
+    () => _i1071.HealthRecordBloc(
+      gh<_i509.GetHealthRecord>(),
+      gh<_i665.CompleteNextStep>(),
+    ),
+  );
+  gh.factory<_i92.MedicationBloc>(
+    () => _i92.MedicationBloc(
+      gh<_i566.GetTodaySchedule>(),
+      gh<_i340.MarkDoseTaken>(),
+      gh<_i843.RequestRefill>(),
+    ),
   );
   gh.factory<_i668.ReferralFormBloc>(
     () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
+  );
+  gh.factory<_i855.TimelineBloc>(
+    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
   return getIt;
 }

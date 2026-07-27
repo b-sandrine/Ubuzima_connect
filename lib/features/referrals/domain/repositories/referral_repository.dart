@@ -21,4 +21,7 @@ abstract interface class ReferralRepository {
   /// Submits a new referral. Returns the reference number the system
   /// assigned, so the UI can confirm it to the user.
   Future<Either<Failure, String>> createReferral(ReferralDraft draft);
+
+  /// Withdraws an outgoing referral, removing it from the board.
+  Future<Either<Failure, ReferralBoard>> deleteReferral(String reference);
 }

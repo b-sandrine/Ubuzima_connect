@@ -135,7 +135,11 @@ class _HealthRecordView extends StatelessWidget {
       const SizedBox(height: 18),
       ConditionsCard(conditions: record.conditions),
       const SizedBox(height: 18),
-      NextStepsSection(steps: record.nextSteps),
+      NextStepsSection(
+        steps: record.nextSteps,
+        onComplete: (stepId) =>
+            bloc.add(HealthRecordEvent.stepCompleted(stepId)),
+      ),
     ];
   }
 }

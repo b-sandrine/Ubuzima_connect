@@ -5,18 +5,29 @@ import '../../../../core/errors/failure.dart';
 import '../../../../core/exceptions/app_exceptions.dart';
 import '../../domain/entities/health_record.dart';
 import '../../domain/repositories/health_record_repository.dart';
-import '../datasources/local/health_record_local_data_source.dart';
+import '../datasources/remote/health_record_remote_data_source.dart';
 
 @LazySingleton(as: HealthRecordRepository)
 class HealthRecordRepositoryImpl implements HealthRecordRepository {
-  final HealthRecordLocalDataSource _localDataSource;
+  final HealthRecordRemoteDataSource _remoteDataSource;
 
-  const HealthRecordRepositoryImpl(this._localDataSource);
+  const HealthRecordRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, HealthRecord>> getHealthRecord() async {
+  Future<Either<Failure, HealthRecord>> getHealthRecord() =>
+      _guard(() => _remoteDataSource.readHealthRecord());
+
+  @override
+  Future<Either<Failure, HealthRecord>> completeNextStep(String stepId) =>
+      _guard(() => _remoteDataSource.completeNextStep(stepId));
+
+  Future<Either<Failure, HealthRecord>> _guard(
+    Future<HealthRecord> Function() action,
+  ) async {
     try {
-      return Right(_localDataSource.readHealthRecord());
+      return Right(await action());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
       return Left(CacheFailure(e.message));
     } catch (e) {
