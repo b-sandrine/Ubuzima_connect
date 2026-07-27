@@ -44,6 +44,8 @@ import '../../features/community_health_workers/presentation/bloc/health_record_
     as _i1071;
 import '../../features/medical_records/data/datasources/local/timeline_local_data_source.dart'
     as _i231;
+import '../../features/medical_records/data/datasources/remote/timeline_remote_data_source.dart'
+    as _i596;
 import '../../features/medical_records/data/repositories/timeline_repository_impl.dart'
     as _i659;
 import '../../features/medical_records/domain/repositories/timeline_repository.dart'
@@ -164,9 +166,6 @@ Future<_i174.GetIt> init(
       gh<_i354.AppLogger>(),
     ),
   );
-  gh.lazySingleton<_i984.TimelineRepository>(
-    () => _i659.TimelineRepositoryImpl(gh<_i231.TimelineLocalDataSource>()),
-  );
   gh.lazySingleton<_i726.AnalyticsService>(
     () => _i726.NoOpAnalyticsService(gh<_i354.AppLogger>()),
   );
@@ -207,15 +206,15 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i710.ReferralRepository>(
     () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
   );
-  gh.factory<_i209.GetPatientTimeline>(
-    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
+  gh.lazySingleton<_i596.TimelineRemoteDataSource>(
+    () => _i596.TimelineRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i231.TimelineLocalDataSource>(),
+    ),
   );
   gh.lazySingleton<_i552.MedicationRepository>(
     () =>
         _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
-  );
-  gh.factory<_i855.TimelineBloc>(
-    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
@@ -258,11 +257,17 @@ Future<_i174.GetIt> init(
   gh.factory<_i843.RequestRefill>(
     () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
   );
+  gh.lazySingleton<_i984.TimelineRepository>(
+    () => _i659.TimelineRepositoryImpl(gh<_i596.TimelineRemoteDataSource>()),
+  );
   gh.factory<_i41.RoleSelectionBloc>(
     () => _i41.RoleSelectionBloc(
       gh<_i999.GetSelectedRole>(),
       gh<_i945.SaveSelectedRole>(),
     ),
+  );
+  gh.factory<_i209.GetPatientTimeline>(
+    () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
   );
   gh.factory<_i1071.HealthRecordBloc>(
     () => _i1071.HealthRecordBloc(gh<_i509.GetHealthRecord>()),
@@ -276,6 +281,9 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i668.ReferralFormBloc>(
     () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
+  );
+  gh.factory<_i855.TimelineBloc>(
+    () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
   return getIt;
 }
