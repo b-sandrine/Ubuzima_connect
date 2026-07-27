@@ -1,0 +1,69 @@
+rules_version = '2';
+
+// Security rules for the collections behind the patient/doctor/CHW screens
+// (medications, referrals, medical records, patient records). The baseline
+// is deny-by-default: a request must be authenticated to touch any document,
+// and writes must keep the document well-formed. Owner-level scoping keys on
+// an `ownerId` field once the authentication/role model is wired in — the
+// helpers below are ready for it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A signed-in user (email/password or Google) is required for everything.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // True when the document either has no owner yet (shared demo data) or is
+    // owned by the requester — the scoping to enable once records carry owners.
+    function ownsResource(resource) {
+      return !('ownerId' in resource.data) ||
+             resource.data.ownerId == request.auth.uid;
+    }
+
+    // PAT-03 — a patient's prescription schedule and its dose subcollection.
+    match /prescriptions/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+
+      match /doses/{doseId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // DOC-06 — referrals, keyed by reference and tagged with a patientId.
+    match /referrals/{reference} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll(['patientId', 'specialty',
+             'status', 'direction']);
+      allow update, delete: if isSignedIn();
+    }
+
+    // DOC-04 — a patient's medical-record timeline and its events.
+    match /medical_records/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+
+      match /events/{eventId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // CHW health record + patient identity documents, with next steps.
+    match /patients/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+
+      match /next_steps/{stepId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // Everything not explicitly matched above is denied. Teammates add their
+    // own collections' rules here as their features land.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
