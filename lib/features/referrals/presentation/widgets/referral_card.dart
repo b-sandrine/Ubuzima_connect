@@ -45,6 +45,7 @@ class ReferralCard extends StatelessWidget {
   final ValueChanged<String>? onRouteSelected;
   final VoidCallback onAccept;
   final VoidCallback onDecline;
+  final VoidCallback onWithdraw;
   final bool isBusy;
 
   const ReferralCard({
@@ -52,6 +53,7 @@ class ReferralCard extends StatelessWidget {
     required this.referral,
     required this.onAccept,
     required this.onDecline,
+    required this.onWithdraw,
     this.selectedRoute,
     this.onRouteSelected,
     this.isBusy = false,
@@ -138,8 +140,11 @@ class ReferralCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 16),
-          if (isPending)
+          if (isPending && referral.direction == ReferralDirection.incoming)
             _Actions(onAccept: onAccept, onDecline: onDecline, isBusy: isBusy)
+          else if (isPending)
+            // Outgoing/follow-up referrals you sent can be withdrawn (delete).
+            _WithdrawButton(onTap: isBusy ? null : onWithdraw)
           else
             _ResolvedStrip(status: referral.status),
         ],
@@ -483,6 +488,47 @@ class _AcceptButton extends StatelessWidget {
                       ],
                     ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WithdrawButton extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const _WithdrawButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.danger.withValues(alpha: 0.06),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: 46,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.danger.withValues(alpha: 0.25)),
+          ),
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(LucideIcons.trash2, size: 16, color: AppColors.danger),
+              SizedBox(width: 6),
+              Text(
+                'Withdraw Referral',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.danger,
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -5,42 +5,35 @@ import '../../../../core/errors/failure.dart';
 import '../../../../core/exceptions/app_exceptions.dart';
 import '../../domain/entities/medication_schedule.dart';
 import '../../domain/repositories/medication_repository.dart';
-import '../datasources/local/medication_local_data_source.dart';
+import '../datasources/remote/medication_remote_data_source.dart';
 
 @LazySingleton(as: MedicationRepository)
 class MedicationRepositoryImpl implements MedicationRepository {
-  final MedicationLocalDataSource _localDataSource;
+  final MedicationRemoteDataSource _remoteDataSource;
 
-  const MedicationRepositoryImpl(this._localDataSource);
-
-  @override
-  Future<Either<Failure, MedicationSchedule>> getTodaySchedule() async {
-    try {
-      return Right(_localDataSource.readTodaySchedule());
-    } on CacheException catch (e) {
-      return Left(CacheFailure(e.message));
-    } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
-    }
-  }
+  const MedicationRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, MedicationSchedule>> markDoseTaken(
-    String doseId,
+  Future<Either<Failure, MedicationSchedule>> getTodaySchedule() =>
+      _guard(() => _remoteDataSource.readTodaySchedule());
+
+  @override
+  Future<Either<Failure, MedicationSchedule>> markDoseTaken(String doseId) =>
+      _guard(() => _remoteDataSource.markDoseTaken(doseId));
+
+  @override
+  Future<Either<Failure, MedicationSchedule>> requestRefill() =>
+      _guard(() => _remoteDataSource.requestRefill());
+
+  /// Runs a Firestore call and translates its throwables into typed failures
+  /// at the data → domain boundary.
+  Future<Either<Failure, MedicationSchedule>> _guard(
+    Future<MedicationSchedule> Function() action,
   ) async {
     try {
-      return Right(_localDataSource.markDoseTaken(doseId));
-    } on CacheException catch (e) {
-      return Left(CacheFailure(e.message));
-    } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, MedicationSchedule>> requestRefill() async {
-    try {
-      return Right(_localDataSource.requestRefill());
+      return Right(await action());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     } on CacheException catch (e) {
       return Left(CacheFailure(e.message));
     } catch (e) {

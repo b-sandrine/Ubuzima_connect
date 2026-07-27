@@ -4,10 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ubuzima_connect/core/errors/failure.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/entities/health_record.dart';
+import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/complete_next_step.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/get_health_record.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/bloc/health_record_bloc.dart';
 
 class _MockGetHealthRecord extends Mock implements GetHealthRecord {}
+
+class _MockCompleteNextStep extends Mock implements CompleteNextStep {}
 
 const _record = HealthRecord(
   sector: 'CHW · Kigali Sector',
@@ -37,6 +40,7 @@ const _record = HealthRecord(
   ),
   nextSteps: [
     NextStep(
+      id: 'step-anc-visit',
       kind: NextStepKind.visit,
       title: 'ANC Follow-up Visit',
       detail: 'Due: 04 Jun 2025',
@@ -47,10 +51,15 @@ const _record = HealthRecord(
 
 void main() {
   late _MockGetHealthRecord getHealthRecord;
+  late _MockCompleteNextStep completeNextStep;
 
-  setUp(() => getHealthRecord = _MockGetHealthRecord());
+  setUp(() {
+    getHealthRecord = _MockGetHealthRecord();
+    completeNextStep = _MockCompleteNextStep();
+  });
 
-  HealthRecordBloc build() => HealthRecordBloc(getHealthRecord);
+  HealthRecordBloc build() =>
+      HealthRecordBloc(getHealthRecord, completeNextStep);
 
   blocTest<HealthRecordBloc, HealthRecordState>(
     'started loads the record and reaches ready',
@@ -96,5 +105,33 @@ void main() {
         selectedTab: 2,
       ),
     ],
+  );
+
+  final afterRecord = HealthRecord(
+    sector: _record.sector,
+    dateLabel: _record.dateLabel,
+    patient: _record.patient,
+    demographics: _record.demographics,
+    assessment: _record.assessment,
+    conditions: _record.conditions,
+    nextSteps: const [],
+  );
+
+  blocTest<HealthRecordBloc, HealthRecordState>(
+    'completing a step replaces the record with the returned one',
+    setUp: () => when(
+      () => completeNextStep('step-anc-visit'),
+    ).thenAnswer((_) async => Right(afterRecord)),
+    build: build,
+    seed: () => const HealthRecordState(
+      status: HealthRecordStatus.ready,
+      record: _record,
+    ),
+    act: (bloc) =>
+        bloc.add(const HealthRecordEvent.stepCompleted('step-anc-visit')),
+    verify: (bloc) {
+      expect(bloc.state.record?.nextSteps, isEmpty);
+      verify(() => completeNextStep('step-anc-visit')).called(1);
+    },
   );
 }

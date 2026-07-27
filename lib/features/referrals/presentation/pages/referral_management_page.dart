@@ -183,6 +183,8 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
             ),
             onDecline: () =>
                 bloc.add(ReferralBoardEvent.declined(referral.reference)),
+            onWithdraw: () =>
+                bloc.add(ReferralBoardEvent.withdrawn(referral.reference)),
           ),
           const SizedBox(height: 14),
         ],

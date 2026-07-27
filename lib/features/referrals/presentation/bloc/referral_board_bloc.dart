@@ -8,6 +8,7 @@ import '../../domain/entities/referral.dart';
 import '../../domain/entities/referral_board.dart';
 import '../../domain/usecases/accept_referral.dart';
 import '../../domain/usecases/decline_referral.dart';
+import '../../domain/usecases/delete_referral.dart';
 import '../../domain/usecases/get_referral_board.dart';
 
 part 'referral_board_bloc.freezed.dart';
@@ -22,16 +23,19 @@ class ReferralBoardBloc extends Bloc<ReferralBoardEvent, ReferralBoardState> {
   final GetReferralBoard _getReferralBoard;
   final AcceptReferral _acceptReferral;
   final DeclineReferral _declineReferral;
+  final DeleteReferral _deleteReferral;
 
   ReferralBoardBloc(
     this._getReferralBoard,
     this._acceptReferral,
     this._declineReferral,
+    this._deleteReferral,
   ) : super(const ReferralBoardState()) {
     on<ReferralBoardStarted>(_onStarted);
     on<ReferralTabChanged>(_onTabChanged);
     on<ReferralAccepted>(_onAccepted);
     on<ReferralDeclined>(_onDeclined);
+    on<ReferralWithdrawn>(_onWithdrawn);
   }
 
   Future<void> _onStarted(
@@ -82,6 +86,15 @@ class ReferralBoardBloc extends Bloc<ReferralBoardEvent, ReferralBoardState> {
   ) async {
     emit(state.copyWith(actioningReference: event.reference));
     final result = await _declineReferral(event.reference);
+    _applyResult(result, emit);
+  }
+
+  Future<void> _onWithdrawn(
+    ReferralWithdrawn event,
+    Emitter<ReferralBoardState> emit,
+  ) async {
+    emit(state.copyWith(actioningReference: event.reference));
+    final result = await _deleteReferral(event.reference);
     _applyResult(result, emit);
   }
 

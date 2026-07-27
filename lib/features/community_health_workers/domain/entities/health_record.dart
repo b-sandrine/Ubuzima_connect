@@ -112,12 +112,14 @@ class ConditionsSummary extends Equatable {
 
 /// A single item in the Next Steps list.
 class NextStep extends Equatable {
+  final String id;
   final NextStepKind kind;
   final String title;
   final String detail;
   final String badge; // "3d", "Pending"
 
   const NextStep({
+    required this.id,
     required this.kind,
     required this.title,
     required this.detail,
@@ -125,7 +127,7 @@ class NextStep extends Equatable {
   });
 
   @override
-  List<Object?> get props => [kind, title, detail, badge];
+  List<Object?> get props => [id, kind, title, detail, badge];
 }
 
 /// Everything the CHW health record screen renders, loaded as one unit.
