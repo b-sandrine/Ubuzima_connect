@@ -5,12 +5,15 @@ import 'package:mocktail/mocktail.dart';
 import 'package:ubuzima_connect/core/di/injection.dart';
 import 'package:ubuzima_connect/core/errors/failure.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/entities/health_record.dart';
+import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/complete_next_step.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/get_health_record.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/bloc/health_record_bloc.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/pages/chw_health_record_page.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/widgets/next_steps_section.dart';
 
 class _MockGetHealthRecord extends Mock implements GetHealthRecord {}
+
+class _MockCompleteNextStep extends Mock implements CompleteNextStep {}
 
 const _record = HealthRecord(
   sector: 'CHW · Kigali Sector',
@@ -46,12 +49,14 @@ const _record = HealthRecord(
   ),
   nextSteps: [
     NextStep(
+      id: 'step-anc-visit',
       kind: NextStepKind.visit,
       title: 'ANC Follow-up Visit',
       detail: 'Due: 04 Jun 2025 · Gasabo Health Center',
       badge: '3d',
     ),
     NextStep(
+      id: 'step-gyn-referral',
       kind: NextStepKind.referral,
       title: 'Referral to Gynecologist',
       detail: 'CHUK Hospital · Pending approval',
@@ -62,14 +67,16 @@ const _record = HealthRecord(
 
 void main() {
   late _MockGetHealthRecord getHealthRecord;
+  late _MockCompleteNextStep completeNextStep;
 
   setUp(() {
     getHealthRecord = _MockGetHealthRecord();
+    completeNextStep = _MockCompleteNextStep();
     when(
       () => getHealthRecord(),
     ).thenAnswer((_) async => const Right<Failure, HealthRecord>(_record));
     getIt.registerFactory<HealthRecordBloc>(
-      () => HealthRecordBloc(getHealthRecord),
+      () => HealthRecordBloc(getHealthRecord, completeNextStep),
     );
   });
 

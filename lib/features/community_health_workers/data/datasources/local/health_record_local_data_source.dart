@@ -56,18 +56,21 @@ class HealthRecordLocalDataSourceImpl implements HealthRecordLocalDataSource {
       ),
       nextSteps: [
         NextStep(
+          id: 'step-anc-visit',
           kind: NextStepKind.visit,
           title: 'ANC Follow-up Visit',
           detail: 'Due: 04 Jun 2025 · Gasabo Health Center',
           badge: '3d',
         ),
         NextStep(
+          id: 'step-bp-check',
           kind: NextStepKind.check,
           title: 'Blood Pressure Check',
           detail: 'Monitor swelling · Weekly check',
           badge: '7d',
         ),
         NextStep(
+          id: 'step-gyn-referral',
           kind: NextStepKind.referral,
           title: 'Referral to Gynecologist',
           detail: 'CHUK Hospital · Pending approval',

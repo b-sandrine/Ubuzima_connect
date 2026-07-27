@@ -34,10 +34,14 @@ import '../../features/authentication/presentation/bloc/role_selection_bloc.dart
     as _i41;
 import '../../features/community_health_workers/data/datasources/local/health_record_local_data_source.dart'
     as _i554;
+import '../../features/community_health_workers/data/datasources/remote/health_record_remote_data_source.dart'
+    as _i552;
 import '../../features/community_health_workers/data/repositories/health_record_repository_impl.dart'
     as _i74;
 import '../../features/community_health_workers/domain/repositories/health_record_repository.dart'
     as _i245;
+import '../../features/community_health_workers/domain/usecases/complete_next_step.dart'
+    as _i665;
 import '../../features/community_health_workers/domain/usecases/get_health_record.dart'
     as _i509;
 import '../../features/community_health_workers/presentation/bloc/health_record_bloc.dart'
@@ -175,11 +179,6 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i282.AppRouter>(
     () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
   );
-  gh.lazySingleton<_i245.HealthRecordRepository>(
-    () => _i74.HealthRecordRepositoryImpl(
-      gh<_i554.HealthRecordLocalDataSource>(),
-    ),
-  );
   gh.lazySingleton<_i451.RoleSelectionRepository>(
     () => _i1028.RoleSelectionRepositoryImpl(
       gh<_i838.RoleSelectionLocalDataSource>(),
@@ -192,6 +191,12 @@ Future<_i174.GetIt> init(
     () => _i1015.ReferralRemoteDataSourceImpl(
       gh<_i974.FirebaseFirestore>(),
       gh<_i33.ReferralLocalDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i552.HealthRecordRemoteDataSource>(
+    () => _i552.HealthRecordRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i554.HealthRecordLocalDataSource>(),
     ),
   );
   gh.lazySingleton<_i694.MedicationRemoteDataSource>(
@@ -216,6 +221,11 @@ Future<_i174.GetIt> init(
     () =>
         _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
   );
+  gh.lazySingleton<_i245.HealthRecordRepository>(
+    () => _i74.HealthRecordRepositoryImpl(
+      gh<_i552.HealthRecordRemoteDataSource>(),
+    ),
+  );
   gh.factory<_i999.GetSelectedRole>(
     () => _i999.GetSelectedRole(gh<_i451.RoleSelectionRepository>()),
   );
@@ -236,6 +246,9 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i572.GetReferralBoard>(
     () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
+  );
+  gh.factory<_i665.CompleteNextStep>(
+    () => _i665.CompleteNextStep(gh<_i245.HealthRecordRepository>()),
   );
   gh.factory<_i509.GetHealthRecord>(
     () => _i509.GetHealthRecord(gh<_i245.HealthRecordRepository>()),
@@ -270,7 +283,10 @@ Future<_i174.GetIt> init(
     () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
   );
   gh.factory<_i1071.HealthRecordBloc>(
-    () => _i1071.HealthRecordBloc(gh<_i509.GetHealthRecord>()),
+    () => _i1071.HealthRecordBloc(
+      gh<_i509.GetHealthRecord>(),
+      gh<_i665.CompleteNextStep>(),
+    ),
   );
   gh.factory<_i92.MedicationBloc>(
     () => _i92.MedicationBloc(
