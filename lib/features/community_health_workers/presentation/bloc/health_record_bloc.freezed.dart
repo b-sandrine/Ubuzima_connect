@@ -55,12 +55,13 @@ extension HealthRecordEventPatterns on HealthRecordEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HealthRecordStarted value)?  started,TResult Function( HealthRecordTabChanged value)?  tabChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HealthRecordStarted value)?  started,TResult Function( HealthRecordTabChanged value)?  tabChanged,TResult Function( HealthRecordStepCompleted value)?  stepCompleted,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started(_that);case HealthRecordTabChanged() when tabChanged != null:
-return tabChanged(_that);case _:
+return tabChanged(_that);case HealthRecordStepCompleted() when stepCompleted != null:
+return stepCompleted(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return tabChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HealthRecordStarted value)  started,required TResult Function( HealthRecordTabChanged value)  tabChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HealthRecordStarted value)  started,required TResult Function( HealthRecordTabChanged value)  tabChanged,required TResult Function( HealthRecordStepCompleted value)  stepCompleted,}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted():
 return started(_that);case HealthRecordTabChanged():
-return tabChanged(_that);}
+return tabChanged(_that);case HealthRecordStepCompleted():
+return stepCompleted(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -97,12 +99,13 @@ return tabChanged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HealthRecordStarted value)?  started,TResult? Function( HealthRecordTabChanged value)?  tabChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HealthRecordStarted value)?  started,TResult? Function( HealthRecordTabChanged value)?  tabChanged,TResult? Function( HealthRecordStepCompleted value)?  stepCompleted,}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started(_that);case HealthRecordTabChanged() when tabChanged != null:
-return tabChanged(_that);case _:
+return tabChanged(_that);case HealthRecordStepCompleted() when stepCompleted != null:
+return stepCompleted(_that);case _:
   return null;
 
 }
@@ -119,11 +122,12 @@ return tabChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int index)?  tabChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int index)?  tabChanged,TResult Function( String stepId)?  stepCompleted,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started();case HealthRecordTabChanged() when tabChanged != null:
-return tabChanged(_that.index);case _:
+return tabChanged(_that.index);case HealthRecordStepCompleted() when stepCompleted != null:
+return stepCompleted(_that.stepId);case _:
   return orElse();
 
 }
@@ -141,11 +145,12 @@ return tabChanged(_that.index);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int index)  tabChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int index)  tabChanged,required TResult Function( String stepId)  stepCompleted,}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted():
 return started();case HealthRecordTabChanged():
-return tabChanged(_that.index);}
+return tabChanged(_that.index);case HealthRecordStepCompleted():
+return stepCompleted(_that.stepId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -159,11 +164,12 @@ return tabChanged(_that.index);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int index)?  tabChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int index)?  tabChanged,TResult? Function( String stepId)?  stepCompleted,}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started();case HealthRecordTabChanged() when tabChanged != null:
-return tabChanged(_that.index);case _:
+return tabChanged(_that.index);case HealthRecordStepCompleted() when stepCompleted != null:
+return stepCompleted(_that.stepId);case _:
   return null;
 
 }
@@ -263,6 +269,72 @@ class _$HealthRecordTabChangedCopyWithImpl<$Res>
   return _then(HealthRecordTabChanged(
 null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class HealthRecordStepCompleted implements HealthRecordEvent {
+  const HealthRecordStepCompleted(this.stepId);
+  
+
+ final  String stepId;
+
+/// Create a copy of HealthRecordEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HealthRecordStepCompletedCopyWith<HealthRecordStepCompleted> get copyWith => _$HealthRecordStepCompletedCopyWithImpl<HealthRecordStepCompleted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordStepCompleted&&(identical(other.stepId, stepId) || other.stepId == stepId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,stepId);
+
+@override
+String toString() {
+  return 'HealthRecordEvent.stepCompleted(stepId: $stepId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HealthRecordStepCompletedCopyWith<$Res> implements $HealthRecordEventCopyWith<$Res> {
+  factory $HealthRecordStepCompletedCopyWith(HealthRecordStepCompleted value, $Res Function(HealthRecordStepCompleted) _then) = _$HealthRecordStepCompletedCopyWithImpl;
+@useResult
+$Res call({
+ String stepId
+});
+
+
+
+
+}
+/// @nodoc
+class _$HealthRecordStepCompletedCopyWithImpl<$Res>
+    implements $HealthRecordStepCompletedCopyWith<$Res> {
+  _$HealthRecordStepCompletedCopyWithImpl(this._self, this._then);
+
+  final HealthRecordStepCompleted _self;
+  final $Res Function(HealthRecordStepCompleted) _then;
+
+/// Create a copy of HealthRecordEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? stepId = null,}) {
+  return _then(HealthRecordStepCompleted(
+null == stepId ? _self.stepId : stepId // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

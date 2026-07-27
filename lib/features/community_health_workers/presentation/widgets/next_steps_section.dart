@@ -10,8 +10,13 @@ import 'section_header.dart';
 /// a tile with a kind icon, a title/detail, and a due-or-status badge.
 class NextStepsSection extends StatelessWidget {
   final List<NextStep> steps;
+  final ValueChanged<String> onComplete;
 
-  const NextStepsSection({super.key, required this.steps});
+  const NextStepsSection({
+    super.key,
+    required this.steps,
+    required this.onComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +32,7 @@ class NextStepsSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         for (var i = 0; i < steps.length; i++) ...[
-          _StepTile(step: steps[i]),
+          _StepTile(step: steps[i], onComplete: () => onComplete(steps[i].id)),
           if (i != steps.length - 1) const SizedBox(height: 10),
         ],
       ],
@@ -62,58 +67,73 @@ class _PendingBadge extends StatelessWidget {
 
 class _StepTile extends StatelessWidget {
   final NextStep step;
+  final VoidCallback onComplete;
 
-  const _StepTile({required this.step});
+  const _StepTile({required this.step, required this.onComplete});
 
   @override
   Widget build(BuildContext context) {
     final style = HealthRecordStyle.nextStep(step.kind);
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onComplete,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: style.color.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(style.icon, size: 19, color: style.color),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  step.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: style.color.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  step.detail,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
+                child: Icon(style.icon, size: 19, color: style.color),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      step.title,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      step.detail,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              _Badge(label: step.badge, color: style.color),
+              const SizedBox(width: 8),
+              // Tapping the tile (or this check) completes the step.
+              Icon(
+                LucideIcons.circleCheck,
+                size: 20,
+                color: AppColors.primary.withValues(alpha: 0.6),
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          _Badge(label: step.badge, color: style.color),
-        ],
+        ),
       ),
     );
   }
