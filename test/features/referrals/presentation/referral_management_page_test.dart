@@ -7,6 +7,7 @@ import 'package:ubuzima_connect/features/referrals/domain/entities/referral.dart
 import 'package:ubuzima_connect/features/referrals/domain/entities/referral_board.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/accept_referral.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/decline_referral.dart';
+import 'package:ubuzima_connect/features/referrals/domain/usecases/delete_referral.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/get_referral_board.dart';
 import 'package:ubuzima_connect/features/referrals/presentation/bloc/referral_board_bloc.dart';
 import 'package:ubuzima_connect/features/referrals/presentation/pages/referral_management_page.dart';
@@ -16,6 +17,8 @@ class _MockGetBoard extends Mock implements GetReferralBoard {}
 class _MockAccept extends Mock implements AcceptReferral {}
 
 class _MockDecline extends Mock implements DeclineReferral {}
+
+class _MockDelete extends Mock implements DeleteReferral {}
 
 const _patient = ReferralPatient(
   name: 'Marie Uwase',
@@ -46,11 +49,13 @@ void main() {
   late _MockGetBoard getBoard;
   late _MockAccept accept;
   late _MockDecline decline;
+  late _MockDelete delete;
 
   setUp(() {
     getBoard = _MockGetBoard();
     accept = _MockAccept();
     decline = _MockDecline();
+    delete = _MockDelete();
 
     when(() => getBoard()).thenAnswer(
       (_) async =>
@@ -58,7 +63,7 @@ void main() {
     );
 
     getIt.registerFactory<ReferralBoardBloc>(
-      () => ReferralBoardBloc(getBoard, accept, decline),
+      () => ReferralBoardBloc(getBoard, accept, decline, delete),
     );
   });
 

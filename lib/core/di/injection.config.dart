@@ -70,6 +70,8 @@ import '../../features/prescriptions/presentation/bloc/medication_bloc.dart'
     as _i92;
 import '../../features/referrals/data/datasources/local/referral_local_data_source.dart'
     as _i33;
+import '../../features/referrals/data/datasources/remote/referral_remote_data_source.dart'
+    as _i1015;
 import '../../features/referrals/data/repositories/referral_repository_impl.dart'
     as _i1054;
 import '../../features/referrals/domain/repositories/referral_repository.dart'
@@ -78,6 +80,7 @@ import '../../features/referrals/domain/usecases/accept_referral.dart' as _i407;
 import '../../features/referrals/domain/usecases/create_referral.dart' as _i888;
 import '../../features/referrals/domain/usecases/decline_referral.dart'
     as _i315;
+import '../../features/referrals/domain/usecases/delete_referral.dart' as _i173;
 import '../../features/referrals/domain/usecases/get_referral_board.dart'
     as _i572;
 import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
@@ -186,8 +189,11 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
   );
-  gh.lazySingleton<_i710.ReferralRepository>(
-    () => _i1054.ReferralRepositoryImpl(gh<_i33.ReferralLocalDataSource>()),
+  gh.lazySingleton<_i1015.ReferralRemoteDataSource>(
+    () => _i1015.ReferralRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i33.ReferralLocalDataSource>(),
+    ),
   );
   gh.lazySingleton<_i694.MedicationRemoteDataSource>(
     () => _i694.MedicationRemoteDataSourceImpl(
@@ -197,6 +203,9 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
+  );
+  gh.lazySingleton<_i710.ReferralRepository>(
+    () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
   );
   gh.factory<_i209.GetPatientTimeline>(
     () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
@@ -223,6 +232,9 @@ Future<_i174.GetIt> init(
   gh.factory<_i315.DeclineReferral>(
     () => _i315.DeclineReferral(gh<_i710.ReferralRepository>()),
   );
+  gh.factory<_i173.DeleteReferral>(
+    () => _i173.DeleteReferral(gh<_i710.ReferralRepository>()),
+  );
   gh.factory<_i572.GetReferralBoard>(
     () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
   );
@@ -234,6 +246,7 @@ Future<_i174.GetIt> init(
       gh<_i572.GetReferralBoard>(),
       gh<_i407.AcceptReferral>(),
       gh<_i315.DeclineReferral>(),
+      gh<_i173.DeleteReferral>(),
     ),
   );
   gh.factory<_i566.GetTodaySchedule>(
