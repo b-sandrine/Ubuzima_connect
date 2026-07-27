@@ -15,4 +15,8 @@ sealed class ReferralBoardEvent with _$ReferralBoardEvent {
 
   const factory ReferralBoardEvent.declined(String reference) =
       ReferralDeclined;
+
+  /// Withdraw (delete) an outgoing referral.
+  const factory ReferralBoardEvent.withdrawn(String reference) =
+      ReferralWithdrawn;
 }

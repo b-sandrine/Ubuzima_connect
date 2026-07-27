@@ -55,14 +55,15 @@ extension ReferralBoardEventPatterns on ReferralBoardEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ReferralBoardStarted value)?  started,TResult Function( ReferralTabChanged value)?  tabChanged,TResult Function( ReferralAccepted value)?  accepted,TResult Function( ReferralDeclined value)?  declined,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ReferralBoardStarted value)?  started,TResult Function( ReferralTabChanged value)?  tabChanged,TResult Function( ReferralAccepted value)?  accepted,TResult Function( ReferralDeclined value)?  declined,TResult Function( ReferralWithdrawn value)?  withdrawn,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ReferralBoardStarted() when started != null:
 return started(_that);case ReferralTabChanged() when tabChanged != null:
 return tabChanged(_that);case ReferralAccepted() when accepted != null:
 return accepted(_that);case ReferralDeclined() when declined != null:
-return declined(_that);case _:
+return declined(_that);case ReferralWithdrawn() when withdrawn != null:
+return withdrawn(_that);case _:
   return orElse();
 
 }
@@ -80,14 +81,15 @@ return declined(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ReferralBoardStarted value)  started,required TResult Function( ReferralTabChanged value)  tabChanged,required TResult Function( ReferralAccepted value)  accepted,required TResult Function( ReferralDeclined value)  declined,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ReferralBoardStarted value)  started,required TResult Function( ReferralTabChanged value)  tabChanged,required TResult Function( ReferralAccepted value)  accepted,required TResult Function( ReferralDeclined value)  declined,required TResult Function( ReferralWithdrawn value)  withdrawn,}){
 final _that = this;
 switch (_that) {
 case ReferralBoardStarted():
 return started(_that);case ReferralTabChanged():
 return tabChanged(_that);case ReferralAccepted():
 return accepted(_that);case ReferralDeclined():
-return declined(_that);}
+return declined(_that);case ReferralWithdrawn():
+return withdrawn(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -101,14 +103,15 @@ return declined(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ReferralBoardStarted value)?  started,TResult? Function( ReferralTabChanged value)?  tabChanged,TResult? Function( ReferralAccepted value)?  accepted,TResult? Function( ReferralDeclined value)?  declined,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ReferralBoardStarted value)?  started,TResult? Function( ReferralTabChanged value)?  tabChanged,TResult? Function( ReferralAccepted value)?  accepted,TResult? Function( ReferralDeclined value)?  declined,TResult? Function( ReferralWithdrawn value)?  withdrawn,}){
 final _that = this;
 switch (_that) {
 case ReferralBoardStarted() when started != null:
 return started(_that);case ReferralTabChanged() when tabChanged != null:
 return tabChanged(_that);case ReferralAccepted() when accepted != null:
 return accepted(_that);case ReferralDeclined() when declined != null:
-return declined(_that);case _:
+return declined(_that);case ReferralWithdrawn() when withdrawn != null:
+return withdrawn(_that);case _:
   return null;
 
 }
@@ -125,13 +128,14 @@ return declined(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int index)?  tabChanged,TResult Function( String reference,  String? routedSpecialty)?  accepted,TResult Function( String reference)?  declined,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int index)?  tabChanged,TResult Function( String reference,  String? routedSpecialty)?  accepted,TResult Function( String reference)?  declined,TResult Function( String reference)?  withdrawn,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ReferralBoardStarted() when started != null:
 return started();case ReferralTabChanged() when tabChanged != null:
 return tabChanged(_that.index);case ReferralAccepted() when accepted != null:
 return accepted(_that.reference,_that.routedSpecialty);case ReferralDeclined() when declined != null:
-return declined(_that.reference);case _:
+return declined(_that.reference);case ReferralWithdrawn() when withdrawn != null:
+return withdrawn(_that.reference);case _:
   return orElse();
 
 }
@@ -149,13 +153,14 @@ return declined(_that.reference);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int index)  tabChanged,required TResult Function( String reference,  String? routedSpecialty)  accepted,required TResult Function( String reference)  declined,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int index)  tabChanged,required TResult Function( String reference,  String? routedSpecialty)  accepted,required TResult Function( String reference)  declined,required TResult Function( String reference)  withdrawn,}) {final _that = this;
 switch (_that) {
 case ReferralBoardStarted():
 return started();case ReferralTabChanged():
 return tabChanged(_that.index);case ReferralAccepted():
 return accepted(_that.reference,_that.routedSpecialty);case ReferralDeclined():
-return declined(_that.reference);}
+return declined(_that.reference);case ReferralWithdrawn():
+return withdrawn(_that.reference);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -169,13 +174,14 @@ return declined(_that.reference);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int index)?  tabChanged,TResult? Function( String reference,  String? routedSpecialty)?  accepted,TResult? Function( String reference)?  declined,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int index)?  tabChanged,TResult? Function( String reference,  String? routedSpecialty)?  accepted,TResult? Function( String reference)?  declined,TResult? Function( String reference)?  withdrawn,}) {final _that = this;
 switch (_that) {
 case ReferralBoardStarted() when started != null:
 return started();case ReferralTabChanged() when tabChanged != null:
 return tabChanged(_that.index);case ReferralAccepted() when accepted != null:
 return accepted(_that.reference,_that.routedSpecialty);case ReferralDeclined() when declined != null:
-return declined(_that.reference);case _:
+return declined(_that.reference);case ReferralWithdrawn() when withdrawn != null:
+return withdrawn(_that.reference);case _:
   return null;
 
 }
@@ -407,6 +413,72 @@ class _$ReferralDeclinedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? reference = null,}) {
   return _then(ReferralDeclined(
+null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ReferralWithdrawn implements ReferralBoardEvent {
+  const ReferralWithdrawn(this.reference);
+  
+
+ final  String reference;
+
+/// Create a copy of ReferralBoardEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReferralWithdrawnCopyWith<ReferralWithdrawn> get copyWith => _$ReferralWithdrawnCopyWithImpl<ReferralWithdrawn>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReferralWithdrawn&&(identical(other.reference, reference) || other.reference == reference));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,reference);
+
+@override
+String toString() {
+  return 'ReferralBoardEvent.withdrawn(reference: $reference)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ReferralWithdrawnCopyWith<$Res> implements $ReferralBoardEventCopyWith<$Res> {
+  factory $ReferralWithdrawnCopyWith(ReferralWithdrawn value, $Res Function(ReferralWithdrawn) _then) = _$ReferralWithdrawnCopyWithImpl;
+@useResult
+$Res call({
+ String reference
+});
+
+
+
+
+}
+/// @nodoc
+class _$ReferralWithdrawnCopyWithImpl<$Res>
+    implements $ReferralWithdrawnCopyWith<$Res> {
+  _$ReferralWithdrawnCopyWithImpl(this._self, this._then);
+
+  final ReferralWithdrawn _self;
+  final $Res Function(ReferralWithdrawn) _then;
+
+/// Create a copy of ReferralBoardEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? reference = null,}) {
+  return _then(ReferralWithdrawn(
 null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
 as String,
   ));
