@@ -52,7 +52,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeMessage => 'Welcome to Ubuzima Connect';
 
   @override
+  String get welcomeSubtitle =>
+      'Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.';
+
+  @override
   String get continueLabel => 'Continue';
+
+  @override
+  String get loginWelcomeBack => 'Welcome back';
+
+  @override
+  String get loginSubtitle =>
+      'Sign in with your email or Google account to continue.';
+
+  @override
+  String get loginEmailLabel => 'Email address';
+
+  @override
+  String get loginEmailHint => 'you@example.com';
+
+  @override
+  String get loginPasswordLabel => 'Password';
+
+  @override
+  String get loginPasswordHint => 'Enter your password';
+
+  @override
+  String get loginOrContinueWith => 'Or continue with';
+
+  @override
+  String get loginWithGoogle => 'Continue with Google';
+
+  @override
+  String get loginNoAccount => 'Don\'t have an account? ';
 
   @override
   String get roleSelectionTitle => 'Community Healthcare';

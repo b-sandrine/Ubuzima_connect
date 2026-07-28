@@ -17,7 +17,17 @@
   "login": "Login",
   "home": "Home",
   "welcomeMessage": "Welcome to Ubuzima Connect",
+  "welcomeSubtitle": "Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.",
   "continueLabel": "Continue",
+  "loginWelcomeBack": "Welcome back",
+  "loginSubtitle": "Sign in with your email or Google account to continue.",
+  "loginEmailLabel": "Email address",
+  "loginEmailHint": "you@example.com",
+  "loginPasswordLabel": "Password",
+  "loginPasswordHint": "Enter your password",
+  "loginOrContinueWith": "Or continue with",
+  "loginWithGoogle": "Continue with Google",
+  "loginNoAccount": "Don't have an account? ",
   "roleSelectionTitle": "Community Healthcare",
   "@roleSelectionTitle": {
     "description": "Heading on the role selection screen (AUTH-05)."
