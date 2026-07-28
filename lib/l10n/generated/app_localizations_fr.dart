@@ -52,7 +52,39 @@ class AppLocalizationsFr extends AppLocalizations {
   String get welcomeMessage => 'Bienvenue sur Ubuzima Connect';
 
   @override
+  String get welcomeSubtitle =>
+      'Des outils de santé intelligents pour le Rwanda — connectez-vous avec votre agent de santé, médecin ou gérez votre propre santé.';
+
+  @override
   String get continueLabel => 'Continuer';
+
+  @override
+  String get loginWelcomeBack => 'Bon retour';
+
+  @override
+  String get loginSubtitle =>
+      'Connectez-vous avec votre e-mail ou votre compte Google.';
+
+  @override
+  String get loginEmailLabel => 'Adresse e-mail';
+
+  @override
+  String get loginEmailHint => 'you@example.com';
+
+  @override
+  String get loginPasswordLabel => 'Mot de passe';
+
+  @override
+  String get loginPasswordHint => 'Entrez votre mot de passe';
+
+  @override
+  String get loginOrContinueWith => 'Ou continuer avec';
+
+  @override
+  String get loginWithGoogle => 'Continuer avec Google';
+
+  @override
+  String get loginNoAccount => 'Pas de compte ? ';
 
   @override
   String get roleSelectionTitle => 'Santé communautaire';

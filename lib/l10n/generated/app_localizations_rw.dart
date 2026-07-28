@@ -52,7 +52,39 @@ class AppLocalizationsRw extends AppLocalizations {
   String get welcomeMessage => 'Murakaza neza kuri Ubuzima Connect';
 
   @override
+  String get welcomeSubtitle =>
+      'Ibikoresho by\'ubuzima byiza mu Rwanda — huza na mujyanama w\'ubuzima, muganga, cyangwa ucunga ubuzima bwawe.';
+
+  @override
   String get continueLabel => 'Komeza';
+
+  @override
+  String get loginWelcomeBack => 'Murakaza neza';
+
+  @override
+  String get loginSubtitle =>
+      'Injira ukoresheje imeri cyangwa konti ya Google.';
+
+  @override
+  String get loginEmailLabel => 'Aderesi ya imeri';
+
+  @override
+  String get loginEmailHint => 'you@example.com';
+
+  @override
+  String get loginPasswordLabel => 'Ijambo ry\'ibanga';
+
+  @override
+  String get loginPasswordHint => 'Andika ijambo ry\'ibanga';
+
+  @override
+  String get loginOrContinueWith => 'Cyangwa komeza na';
+
+  @override
+  String get loginWithGoogle => 'Komeza na Google';
+
+  @override
+  String get loginNoAccount => 'Nta konti ufite? ';
 
   @override
   String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';

@@ -12,7 +12,6 @@ import 'app_routes.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
 import 'pages/placeholder_page.dart';
-import 'pages/splash_page.dart';
 import 'route_guards.dart';
 
 /// Single `GoRouter` instance for the whole app. Each feature contributes
@@ -27,22 +26,11 @@ class AppRouter {
   AppRouter(this._authSessionProvider);
 
   late final GoRouter router = GoRouter(
-    // Boots into the demo hub while the auth/session flow is still stubbed,
-    // so the delivered screens are reachable in the running app. Switch back
-    // to AppRoutes.splash once the real onboarding flow lands.
-    initialLocation: AppRoutes.showcase,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     redirect: (context, state) =>
         RouteGuards.redirect(_authSessionProvider, state),
     routes: [
-      GoRoute(
-        path: AppRoutes.splash,
-        builder: (context, state) => const SplashPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (context, state) => const PlaceholderPage(title: 'Login'),
-      ),
       GoRoute(
         path: AppRoutes.register,
         builder: (context, state) =>
@@ -59,9 +47,6 @@ class AppRouter {
       ...MedicalRecordsRoutes.routes,
       ...DoctorsRoutes.routes,
       ...ShowcaseRoutes.routes,
-      // Further feature route contributions are appended here, e.g.:
-      //   ...PatientsRoutes.routes,
-      //   ...AppointmentsRoutes.routes,
     ],
     errorBuilder: (context, state) => const NotFoundPage(),
   );

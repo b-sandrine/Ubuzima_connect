@@ -4,39 +4,33 @@ import 'app_routes.dart';
 import 'auth_session.dart';
 
 /// Redirect logic applied to every navigation: unauthenticated users are
-/// bounced to `/login`; authenticated users landing on `/` or `/login` are
-/// sent to `/home`. Role-based redirects (e.g. a Patient hitting a
-/// CHW-only path) plug in here once feature route metadata exists to
-/// describe which roles a route allows.
+/// bounced to the welcome screen; authenticated users landing on onboarding
+/// routes are sent to `/home`. Role-based redirects plug in here once
+/// feature route metadata describes which roles a route allows.
 abstract final class RouteGuards {
   static String? redirect(
     AuthSessionProvider authSessionProvider,
     GoRouterState state,
   ) {
     final status = authSessionProvider.currentStatus;
-    final atLogin = state.matchedLocation == AppRoutes.login;
-    final atRegister = state.matchedLocation == AppRoutes.register;
-    final atSplash = state.matchedLocation == AppRoutes.splash;
-    final atRoleSelection = state.matchedLocation == AppRoutes.roleSelection;
-    // Standalone feature screens delivered ahead of the auth/session flow are
-    // reachable via the demo hub without a real session.
-    final atDemoScreen = AppRoutes.demoReachable.contains(
-      state.matchedLocation,
-    );
+    final location = state.matchedLocation;
+    final atLogin = location == AppRoutes.login;
+    final atRegister = location == AppRoutes.register;
+    final atSplash = location == AppRoutes.splash;
+    final atRoleSelection = location == AppRoutes.roleSelection;
+    final atDemoScreen = AppRoutes.demoReachable.contains(location);
 
-    // Role selection (AUTH-05) is the entry point of onboarding, so it has
-    // to be reachable without a session — as do both auth screens it hands
-    // off to, and the demo-reachable feature screens.
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
         !atRegister &&
+        !atSplash &&
         !atRoleSelection &&
         !atDemoScreen) {
-      return AppRoutes.roleSelection;
+      return AppRoutes.splash;
     }
 
     if (status == AuthSessionStatus.authenticated &&
-        (atLogin || atRegister || atSplash)) {
+        (atLogin || atRegister || atSplash || atRoleSelection)) {
       return AppRoutes.home;
     }
 
