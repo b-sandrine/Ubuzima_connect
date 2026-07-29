@@ -20,13 +20,27 @@ void main() {
 
   setUp(() => auth = _MockAuthSession());
 
-  test('unauthenticated users are bounced to role selection', () {
+  test('unauthenticated users are bounced to welcome', () {
     when(() => auth.currentStatus)
         .thenReturn(AuthSessionStatus.unauthenticated);
 
     expect(
       RouteGuards.redirect(auth, _stateAt(AppRoutes.home)),
-      AppRoutes.roleSelection,
+      AppRoutes.splash,
+    );
+  });
+
+  test('welcome and role selection are reachable without a session', () {
+    when(() => auth.currentStatus)
+        .thenReturn(AuthSessionStatus.unauthenticated);
+
+    expect(
+      RouteGuards.redirect(auth, _stateAt(AppRoutes.splash)),
+      isNull,
+    );
+    expect(
+      RouteGuards.redirect(auth, _stateAt(AppRoutes.roleSelection)),
+      isNull,
     );
   });
 
