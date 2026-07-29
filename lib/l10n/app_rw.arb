@@ -33,5 +33,13 @@
   "trustMadeForRwanda": "Byakorewe u Rwanda",
   "roleBadgeChw": "AJK",
   "roleBadgePatient": "Umurwayi",
-  "roleBadgeDoctor": "MD"
+  "roleBadgeDoctor": "MD",
+  "settingsTitle": "Igenamiterere",
+  "languageSettingsTitle": "Ururimi",
+  "chooseLanguageHeading": "Hitamo Ururimi Rwawe",
+  "chooseLanguageSubtitle": "Porogaramu izahita ihinduka. Ushobora guhindura ibi igihe cyose.",
+  "useDeviceLanguage": "Koresha Ururimi rwa Telefoni",
+  "useDeviceLanguageSubtitle": "Kurikiza ururimi rwa telefoni yawe mu buryo bwikora",
+  "languageUpdatedMessage": "Ururimi rwahinduwe",
+  "selectedLabel": "Byahiswemo"
 }

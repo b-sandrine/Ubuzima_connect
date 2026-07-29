@@ -112,4 +112,30 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get roleBadgeDoctor => 'MD';
+
+  @override
+  String get settingsTitle => 'Igenamiterere';
+
+  @override
+  String get languageSettingsTitle => 'Ururimi';
+
+  @override
+  String get chooseLanguageHeading => 'Hitamo Ururimi Rwawe';
+
+  @override
+  String get chooseLanguageSubtitle =>
+      'Porogaramu izahita ihinduka. Ushobora guhindura ibi igihe cyose.';
+
+  @override
+  String get useDeviceLanguage => 'Koresha Ururimi rwa Telefoni';
+
+  @override
+  String get useDeviceLanguageSubtitle =>
+      'Kurikiza ururimi rwa telefoni yawe mu buryo bwikora';
+
+  @override
+  String get languageUpdatedMessage => 'Ururimi rwahinduwe';
+
+  @override
+  String get selectedLabel => 'Byahiswemo';
 }
