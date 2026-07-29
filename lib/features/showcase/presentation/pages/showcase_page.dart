@@ -49,6 +49,14 @@ class ShowcasePage extends StatelessWidget {
       route: AppRoutes.doctorDashboard,
     ),
     _ShowcaseEntry(
+      task: 'DOCTOR',
+      title: 'Patient Search',
+      subtitle: 'Doctor · search, filters & recent patient records',
+      icon: Icons.person_search_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.patientSearch,
+    ),
+    _ShowcaseEntry(
       task: 'DOC-06',
       title: 'Referral Management',
       subtitle: 'Doctor · queues, accept/decline & new referral',

@@ -30,16 +30,18 @@ class DashboardStatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: stat.color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(AppRadius.md + 2),
+          if (stat.icon != null) ...[
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: stat.color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppRadius.md + 2),
+              ),
+              child: Icon(stat.icon, size: 19, color: stat.color),
             ),
-            child: Icon(stat.icon, size: 19, color: stat.color),
-          ),
-          const SizedBox(height: 10),
+            const SizedBox(height: 10),
+          ],
           Text(
             '${stat.value}',
             style: const TextStyle(
