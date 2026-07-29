@@ -25,6 +25,9 @@ abstract final class AppRoutes {
   /// DOC-04 — the doctor's patient medical timeline.
   static const String patientTimeline = '/timeline';
 
+  /// The doctor's home dashboard.
+  static const String doctorDashboard = '/doctor/dashboard';
+
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
 
@@ -39,5 +42,6 @@ abstract final class AppRoutes {
     chwReferral,
     chwHealthRecord,
     patientTimeline,
+    doctorDashboard,
   };
 }
