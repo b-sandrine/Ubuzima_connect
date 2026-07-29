@@ -104,10 +104,7 @@ class ReferralBoardBloc extends Bloc<ReferralBoardEvent, ReferralBoardState> {
   ) {
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          actioningReference: null,
-          errorMessage: failure.message,
-        ),
+        state.copyWith(actioningReference: null, errorMessage: failure.message),
       ),
       (board) => emit(
         state.copyWith(
