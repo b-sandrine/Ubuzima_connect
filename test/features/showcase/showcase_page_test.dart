@@ -33,7 +33,7 @@ void main() {
     await pump(tester);
 
     expect(find.text('Screen Showcase'), findsOneWidget);
-    expect(find.text('14 screens'), findsOneWidget);
+    expect(find.text('15 screens'), findsOneWidget);
     expect(find.text('Role Selection'), findsOneWidget);
     expect(find.text('Current Medications'), findsOneWidget);
     expect(find.text('Patient Timeline'), findsOneWidget);
@@ -44,6 +44,7 @@ void main() {
     expect(find.text('Refer to Hospital'), findsOneWidget);
     expect(find.text('Health Record'), findsOneWidget);
     expect(find.text('Patient Dashboard'), findsOneWidget);
+    expect(find.text('Medical Records'), findsOneWidget);
   });
 
   testWidgets('tapping a card opens that screen', (tester) async {

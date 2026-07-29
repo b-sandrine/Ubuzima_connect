@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
@@ -224,9 +226,20 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
       ),
       bottomNavigationBar: PatientBottomNavigationBar(
         currentIndex: _navIndex,
-        onTap: (index) => setState(() => _navIndex = index),
+        onTap: _onNavTap,
       ),
     );
+  }
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        context.go(AppRoutes.patientRecords);
+      default:
+        setState(() => _navIndex = index);
+    }
   }
 
   void _printAction(String action) => debugPrint('Tapped: $action');
