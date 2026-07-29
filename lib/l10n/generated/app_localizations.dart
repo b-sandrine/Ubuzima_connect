@@ -513,6 +513,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MD'**
   String get roleBadgeDoctor;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Top bar context label and section header on SETTINGS-01 (the language screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSettingsTitle;
+
+  /// No description provided for @chooseLanguageHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Language'**
+  String get chooseLanguageHeading;
+
+  /// No description provided for @chooseLanguageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The app switches right away. You can change this anytime.'**
+  String get chooseLanguageSubtitle;
+
+  /// No description provided for @useDeviceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Device Language'**
+  String get useDeviceLanguage;
+
+  /// No description provided for @useDeviceLanguageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this phone\'s language automatically'**
+  String get useDeviceLanguageSubtitle;
+
+  /// No description provided for @languageUpdatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language updated'**
+  String get languageUpdatedMessage;
+
+  /// No description provided for @selectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get selectedLabel;
 }
 
 class _AppLocalizationsDelegate
