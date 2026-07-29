@@ -6,6 +6,7 @@ import '../../features/authentication/presentation/pages/home_page.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
+import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
 import '../../features/showcase/showcase_routes.dart';
@@ -44,6 +45,7 @@ class AppRouter {
       ...CommunityHealthWorkersRoutes.routes,
       ...MedicalRecordsRoutes.routes,
       ...DoctorsRoutes.routes,
+      ...PatientsRoutes.routes,
       ...ShowcaseRoutes.routes,
     ],
     errorBuilder: (context, state) => const NotFoundPage(),
