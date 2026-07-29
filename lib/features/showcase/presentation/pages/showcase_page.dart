@@ -41,6 +41,14 @@ class ShowcasePage extends StatelessWidget {
       route: AppRoutes.patientTimeline,
     ),
     _ShowcaseEntry(
+      task: 'DOCTOR',
+      title: 'Doctor Dashboard',
+      subtitle: 'Doctor · home overview, alerts, queue & referrals',
+      icon: Icons.dashboard_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.doctorDashboard,
+    ),
+    _ShowcaseEntry(
       task: 'DOC-06',
       title: 'Referral Management',
       subtitle: 'Doctor · queues, accept/decline & new referral',
@@ -213,10 +221,7 @@ class _ShowcaseCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(
-                Icons.chevron_right,
-                color: AppColors.textTertiary,
-              ),
+              const Icon(Icons.chevron_right, color: AppColors.textTertiary),
             ],
           ),
         ),
