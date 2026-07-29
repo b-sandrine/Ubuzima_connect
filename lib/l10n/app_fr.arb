@@ -68,5 +68,13 @@
   "trustMadeForRwanda": "Conçu pour le Rwanda",
   "roleBadgeChw": "ASC",
   "roleBadgePatient": "Patient",
-  "roleBadgeDoctor": "MD"
+  "roleBadgeDoctor": "MD",
+  "settingsTitle": "Paramètres",
+  "languageSettingsTitle": "Langue",
+  "chooseLanguageHeading": "Choisissez votre langue",
+  "chooseLanguageSubtitle": "L'application change immédiatement. Vous pouvez modifier ce choix à tout moment.",
+  "useDeviceLanguage": "Utiliser la langue de l'appareil",
+  "useDeviceLanguageSubtitle": "Suivre automatiquement la langue de ce téléphone",
+  "languageUpdatedMessage": "Langue mise à jour",
+  "selectedLabel": "Sélectionné"
 }

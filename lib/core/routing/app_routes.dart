@@ -27,12 +27,17 @@ abstract final class AppRoutes {
   /// DOC-04 — the doctor's patient medical timeline.
   static const String patientTimeline = '/timeline';
 
+  /// PAT-02b — the patient's own medical timeline.
+  static const String patientMedicalTimeline = '/patient/timeline';
+
   /// The doctor's home dashboard.
   static const String doctorDashboard = '/doctor/dashboard';
 
   /// The doctor's patient search / records screen.
   static const String patientSearch = '/doctor/patients';
 
+  /// SETTINGS-01 — the language switcher.
+  static const String languageSettings = '/settings/language';
   /// The doctor's patient details screen.
   static const String patientDetail = '/doctor/patients/detail';
 
@@ -54,8 +59,10 @@ abstract final class AppRoutes {
     chwReferral,
     chwHealthRecord,
     patientTimeline,
+    patientMedicalTimeline,
     doctorDashboard,
     patientSearch,
+    languageSettings,
     patientDetail,
     patientDashboard,
     patientRecords,

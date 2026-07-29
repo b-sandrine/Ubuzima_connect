@@ -92,5 +92,16 @@
     "description": "Short badge shown beside the Community Health Worker role title."
   },
   "roleBadgePatient": "Patient",
-  "roleBadgeDoctor": "MD"
+  "roleBadgeDoctor": "MD",
+  "settingsTitle": "Settings",
+  "languageSettingsTitle": "Language",
+  "@languageSettingsTitle": {
+    "description": "Top bar context label and section header on SETTINGS-01 (the language screen)."
+  },
+  "chooseLanguageHeading": "Choose Your Language",
+  "chooseLanguageSubtitle": "The app switches right away. You can change this anytime.",
+  "useDeviceLanguage": "Use Device Language",
+  "useDeviceLanguageSubtitle": "Follow this phone's language automatically",
+  "languageUpdatedMessage": "Language updated",
+  "selectedLabel": "Selected"
 }
