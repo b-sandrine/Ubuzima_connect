@@ -3,8 +3,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/validators/email_validator.dart';
+import '../../../../core/validators/phone_validator.dart';
 import '../../domain/usecases/sign_in_with_email.dart';
 import '../../domain/usecases/sign_in_with_google.dart';
+import '../utils/phone_auth_email.dart';
 
 part 'login_bloc.freezed.dart';
 part 'login_event.dart';
@@ -17,11 +19,37 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc(this._signInWithEmail, this._signInWithGoogle)
     : super(const LoginState()) {
+    on<LoginMethodChanged>(_onLoginMethodChanged);
+    on<PhoneChanged>(_onPhoneChanged);
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<PasswordVisibilityToggled>(_onPasswordVisibilityToggled);
+    on<RememberMeToggled>(_onRememberMeToggled);
     on<Submitted>(_onSubmitted);
     on<GoogleSignInRequested>(_onGoogleSignInRequested);
+  }
+
+  void _onLoginMethodChanged(
+    LoginMethodChanged event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        loginMethod: event.method,
+        status: LoginStatus.editing,
+        errorMessage: null,
+      ),
+    );
+  }
+
+  void _onPhoneChanged(PhoneChanged event, Emitter<LoginState> emit) {
+    emit(
+      state.copyWith(
+        phone: event.value,
+        status: LoginStatus.editing,
+        errorMessage: null,
+      ),
+    );
   }
 
   void _onEmailChanged(EmailChanged event, Emitter<LoginState> emit) {
@@ -51,18 +79,29 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(obscurePassword: !state.obscurePassword));
   }
 
+  void _onRememberMeToggled(
+    RememberMeToggled event,
+    Emitter<LoginState> emit,
+  ) {
+    emit(state.copyWith(rememberMe: event.value));
+  }
+
   Future<void> _onSubmitted(
     Submitted event,
     Emitter<LoginState> emit,
   ) async {
     if (!state.canSubmit) return;
 
-    final emailError = EmailValidator.validate(state.email);
-    if (emailError != null) {
+    final (error, email) = switch (state.loginMethod) {
+      LoginMethod.email => _validateEmail(state.email),
+      LoginMethod.phone => _validatePhone(state.phone),
+    };
+
+    if (error != null || email == null) {
       emit(
         state.copyWith(
           status: LoginStatus.failure,
-          errorMessage: emailError,
+          errorMessage: error ?? 'Authentication failed.',
         ),
       );
       return;
@@ -81,7 +120,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(status: LoginStatus.submitting, errorMessage: null));
 
     final result = await _signInWithEmail(
-      email: state.email,
+      email: email,
       password: state.password,
     );
 
@@ -113,5 +152,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ),
       (_) => emit(state.copyWith(status: LoginStatus.success)),
     );
+  }
+
+  (String? error, String? email) _validateEmail(String value) {
+    final emailError = EmailValidator.validate(value);
+    if (emailError != null) {
+      return (emailError, null);
+    }
+    return (null, value.trim());
+  }
+
+  (String? error, String? email) _validatePhone(String value) {
+    final phoneError = PhoneValidator.validate(value);
+    if (phoneError != null) {
+      return (phoneError, null);
+    }
+
+    final syntheticEmail = PhoneAuthEmail.fromPhone(value);
+    if (syntheticEmail == null) {
+      return ('Enter a valid Rwandan phone number', null);
+    }
+    return (null, syntheticEmail);
   }
 }

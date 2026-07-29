@@ -32,11 +32,6 @@ class AppRouter {
         RouteGuards.redirect(_authSessionProvider, state),
     routes: [
       GoRoute(
-        path: AppRoutes.register,
-        builder: (context, state) =>
-            const PlaceholderPage(title: 'Create Account'),
-      ),
-      GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const PlaceholderPage(title: 'Home'),
       ),

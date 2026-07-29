@@ -7,7 +7,9 @@ abstract final class AppRoutes {
   static const String roleSelection = '/role-selection';
   static const String login = '/login';
   static const String register = '/register';
+  static const String resetPassword = '/reset-password';
   static const String home = '/home';
+  static const String chwDashboard = '/chw/dashboard';
 
   /// PAT-03 — the patient's current-medications screen.
   static const String patientMedications = '/medications';
@@ -42,6 +44,7 @@ abstract final class AppRoutes {
     patientMedications,
     referralManagement,
     newReferral,
+    chwDashboard,
     chwReferral,
     chwHealthRecord,
     patientTimeline,

@@ -62,6 +62,9 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginWelcomeBack => 'Murakaza neza';
 
   @override
+  String get loginWelcomeBackChw => 'Murakaza neza';
+
+  @override
   String get loginSubtitle =>
       'Injira ukoresheje imeri cyangwa konti ya Google.';
 
@@ -81,10 +84,53 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginOrContinueWith => 'Cyangwa komeza na';
 
   @override
+  String get loginOrContinueWithLower => 'cyangwa komeza na';
+
+  @override
   String get loginWithGoogle => 'Komeza na Google';
 
   @override
   String get loginNoAccount => 'Nta konti ufite? ';
+
+  @override
+  String get loginChwSubtitle => 'Injira ukomeze akazi kawe k\'ubuzima';
+
+  @override
+  String get loginOfflineAccessTitle => 'Kwinjira nta murandasi birashoboka';
+
+  @override
+  String get loginOfflineAccessMessage =>
+      'Abajyanama b\'ubuzima bashobora kubona amakuru y\'aburwayi bari mu buryo bw\'ububiko nta murandasi. Amakuru ahuzwa iyo wongeye guhuza na interineti.';
+
+  @override
+  String get loginPhoneTab => 'Telefoni';
+
+  @override
+  String get loginEmailTab => 'Imeri';
+
+  @override
+  String get loginPhoneLabel => 'Numero ya telefoni';
+
+  @override
+  String get loginPhoneHint => '07X XXX XXXX';
+
+  @override
+  String get loginForgotPassword => 'Wibagiwe ijambo ry\'ibanga?';
+
+  @override
+  String get loginRememberMe => 'Unyibuke kuri iki gikoresho';
+
+  @override
+  String get loginBiometric => 'Ibimenyetso by\'umubiri';
+
+  @override
+  String get loginQrCode => 'Injira na QR';
+
+  @override
+  String get loginFeatureComingSoon => 'Bizaza vuba';
+
+  @override
+  String get loginContinueOffline => 'Komeza nta murandasi (Uburyo bwa AJK)';
 
   @override
   String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';
