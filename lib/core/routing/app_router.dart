@@ -3,10 +3,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../features/authentication/authentication_routes.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
-import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
+import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
+import '../../features/settings/settings_routes.dart';
 import '../../features/showcase/showcase_routes.dart';
 import 'app_routes.dart';
 import 'auth_session.dart';
@@ -57,10 +58,10 @@ class AppRouter {
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
       ...MedicalRecordsRoutes.routes,
-      ...DoctorsRoutes.routes,
+      ...PatientsRoutes.routes,
+      ...SettingsRoutes.routes,
       ...ShowcaseRoutes.routes,
       // Further feature route contributions are appended here, e.g.:
-      //   ...PatientsRoutes.routes,
       //   ...AppointmentsRoutes.routes,
     ],
     errorBuilder: (context, state) => const NotFoundPage(),

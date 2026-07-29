@@ -112,4 +112,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get roleBadgeDoctor => 'MD';
+
+  @override
+  String get settingsTitle => 'Paramètres';
+
+  @override
+  String get languageSettingsTitle => 'Langue';
+
+  @override
+  String get chooseLanguageHeading => 'Choisissez votre langue';
+
+  @override
+  String get chooseLanguageSubtitle =>
+      'L\'application change immédiatement. Vous pouvez modifier ce choix à tout moment.';
+
+  @override
+  String get useDeviceLanguage => 'Utiliser la langue de l\'appareil';
+
+  @override
+  String get useDeviceLanguageSubtitle =>
+      'Suivre automatiquement la langue de ce téléphone';
+
+  @override
+  String get languageUpdatedMessage => 'Langue mise à jour';
+
+  @override
+  String get selectedLabel => 'Sélectionné';
 }
