@@ -25,4 +25,7 @@ abstract interface class AuthRepository {
   Future<Either<Failure, Unit>> sendPasswordReset({required String email});
 
   Future<Either<Failure, Unit>> signOut();
+
+  /// Server role for [uid] (`patient` / `chw` / `doctor`), if present.
+  Future<Either<Failure, String?>> fetchUserRole(String uid);
 }

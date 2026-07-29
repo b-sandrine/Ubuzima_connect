@@ -36,14 +36,11 @@ abstract final class AppRoutes {
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
 
-  /// Routes openable from the demo hub without a real session. These are the
-  /// standalone feature screens delivered ahead of the auth/session flow, so
-  /// the guard lets them through for demoing.
+  /// Routes openable without a Firebase session.
+  /// Clinical Firestore screens require auth; only the showcase hub and the
+  /// CHW offline dashboard stay reachable for demos / offline continue.
   static const Set<String> demoReachable = {
     showcase,
-    patientMedications,
-    referralManagement,
-    newReferral,
     chwDashboard,
     chwReferral,
     chwHealthRecord,

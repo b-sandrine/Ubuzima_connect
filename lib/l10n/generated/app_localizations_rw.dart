@@ -133,6 +133,38 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginContinueOffline => 'Komeza nta murandasi (Uburyo bwa AJK)';
 
   @override
+  String get loginPatientSubtitle => 'Injira ucunge ubuzima n\'imiti yawe';
+
+  @override
+  String get loginDoctorSubtitle =>
+      'Injira usuzume abarwayi, kohereza n\'amateka';
+
+  @override
+  String get registerTitle => 'Fungura konti yawe';
+
+  @override
+  String get registerSubtitle =>
+      'Injira muri Ubuzima Connect utangire gucunga ubuzima bwawe.';
+
+  @override
+  String get registerNameLabel => 'Amazina yuzuye';
+
+  @override
+  String get registerNameHint => 'Andika amazina yawe yuzuye';
+
+  @override
+  String get registerPasswordHint => 'Byibuze inyuguti 6';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Emeza ijambo ry\'ibanga';
+
+  @override
+  String get registerConfirmPasswordHint => 'Ongera wandike ijambo ry\'ibanga';
+
+  @override
+  String get registerHaveAccount => 'Usanzwe ufite konti? ';
+
+  @override
   String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';
 
   @override

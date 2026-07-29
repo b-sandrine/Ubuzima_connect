@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';
 import 'auth_session.dart';
+import 'role_home.dart';
 
 /// Redirect logic applied to every navigation: unauthenticated users are
 /// bounced to the welcome screen; authenticated users landing on onboarding
@@ -50,7 +51,18 @@ abstract final class RouteGuards {
 
     if (status == AuthSessionStatus.authenticated &&
         (atLogin || atRegister || atReset || atSplash || atRoleSelection)) {
+      // Stay on role selection until a concrete role is known — avoids the
+      // `/home` spinner loop when role is still resolving.
+      if (role == UserRole.unknown && atRoleSelection) {
+        return null;
+      }
       return _defaultAuthorizedRouteFor(role);
+    }
+
+    if (status == AuthSessionStatus.authenticated &&
+        location == AppRoutes.home &&
+        role == UserRole.unknown) {
+      return null; // HomePage waits for role, then navigates.
     }
 
     if (status == AuthSessionStatus.authenticated &&
@@ -78,9 +90,6 @@ abstract final class RouteGuards {
   }
 
   static String _defaultAuthorizedRouteFor(UserRole role) {
-    return switch (role) {
-      UserRole.communityHealthWorker => AppRoutes.chwDashboard,
-      _ => AppRoutes.home,
-    };
+    return RoleHome.forRole(role);
   }
 }

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
+import '../../../authentication/domain/usecases/sign_out.dart';
 import '../../domain/entities/health_record.dart';
 
 /// CHW-01 — the community health worker's main dashboard. Shows today's
@@ -20,8 +22,21 @@ class ChwDashboardPage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 0,
-        onTap: (i) {
-          if (i == 1) context.go(AppRoutes.chwHealthRecord);
+        onTap: (i) async {
+          if (i == 1) {
+            context.go(AppRoutes.chwHealthRecord);
+            return;
+          }
+          if (i == 4) {
+            final result = await getIt<SignOut>()();
+            if (!context.mounted) return;
+            result.fold(
+              (failure) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(failure.message)),
+              ),
+              (_) => context.go(AppRoutes.splash),
+            );
+          }
         },
         items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),

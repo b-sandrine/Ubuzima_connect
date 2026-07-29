@@ -43,6 +43,16 @@
   "loginQrCode": "QR Login",
   "loginFeatureComingSoon": "Coming soon",
   "loginContinueOffline": "Continue Offline (CHW Mode)",
+  "loginPatientSubtitle": "Sign in to manage your health and medications",
+  "loginDoctorSubtitle": "Sign in to review patients, referrals and timelines",
+  "registerTitle": "Create your account",
+  "registerSubtitle": "Join Ubuzima Connect and start managing your health.",
+  "registerNameLabel": "Full name",
+  "registerNameHint": "Enter your full name",
+  "registerPasswordHint": "At least 6 characters",
+  "registerConfirmPasswordLabel": "Confirm password",
+  "registerConfirmPasswordHint": "Re-enter your password",
+  "registerHaveAccount": "Already have an account? ",
   "roleSelectionTitle": "Community Healthcare",
   "@roleSelectionTitle": {
     "description": "Heading on the role selection screen (AUTH-05)."
