@@ -1,24 +1,26 @@
 # authentication
 
-Sign-up, login, session management, and role assignment (CHW / Doctor / Patient) via Firebase Authentication. Owns the AuthSessionProvider implementation consumed by core/routing for auth guards.
+Sign-up, login, session management, and role assignment (CHW / Doctor / Patient)
+via Firebase Authentication + Firestore `users/{uid}` profiles.
+
+Owns the `AuthSessionProvider` implementation consumed by `core/routing` for
+auth guards. Session role is loaded from Firestore after sign-in and cached
+locally for offline / onboarding.
 
 Structure follows strict Clean Architecture:
 
 ```
 data/
-  datasources/local/    # sqflite queries
-  datasources/remote/   # Firestore / Firebase Storage calls
-  models/                 # Freezed + json_serializable, mapped to a domain Entity
-  repositories/           # Implements the domain repository interface
+  datasources/local/    # role selection prefs
+  datasources/remote/   # Firebase Auth + Firestore users
+  models/
+  repositories/
 domain/
-  entities/               # Freezed, immutable, no serialization concerns
-  repositories/           # Abstract interface — the contract Data must fulfill
-  usecases/               # One class per business operation
+  entities/
+  repositories/
+  usecases/
 presentation/
-  bloc/                   # One Bloc per screen/interaction, not one giant feature Bloc
-  pages/                  # Screen-level widgets, wired into core/routing
-  widgets/                # Feature-local widgets not reused elsewhere
+  bloc/
+  pages/
+  widgets/
 ```
-
-No screens, Blocs, entities, or repository implementations exist yet —
-this is foundation-stage scaffolding only.
