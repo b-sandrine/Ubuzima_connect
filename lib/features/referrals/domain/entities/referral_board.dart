@@ -39,9 +39,9 @@ class ReferralBoard extends Equatable {
   List<Referral> forDirection(ReferralDirection direction) =>
       referrals.where((r) => r.direction == direction).toList();
 
-  int pendingCount(ReferralDirection direction) => forDirection(direction)
-      .where((r) => r.status == ReferralStatus.pending)
-      .length;
+  int pendingCount(ReferralDirection direction) => forDirection(
+    direction,
+  ).where((r) => r.status == ReferralStatus.pending).length;
 
   int urgentCount(ReferralDirection direction) => forDirection(direction)
       .where(

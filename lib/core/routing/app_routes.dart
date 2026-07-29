@@ -33,6 +33,15 @@ abstract final class AppRoutes {
   /// The doctor's patient search / records screen.
   static const String patientSearch = '/doctor/patients';
 
+  /// The doctor's patient details screen.
+  static const String patientDetail = '/doctor/patients/detail';
+
+  /// The patient's home dashboard.
+  static const String patientDashboard = '/patient/dashboard';
+
+  /// The patient's medical records screen.
+  static const String patientRecords = '/patient/records';
+
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
 
@@ -47,5 +56,9 @@ abstract final class AppRoutes {
     patientTimeline,
     doctorDashboard,
     patientSearch,
+    patientDetail,
+    patientDashboard,
+    patientRecords,
+    patientMedications,
   };
 }

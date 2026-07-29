@@ -138,7 +138,8 @@ class ReferralLocalDataSourceImpl implements ReferralLocalDataSource {
           receivedLabel: 'Sent last week',
           referringPhysician: 'You',
           referringFacility: 'This facility',
-          reason: 'Poorly controlled T2DM despite dual therapy. Insulin '
+          reason:
+              'Poorly controlled T2DM despite dual therapy. Insulin '
               'initiation review.',
           clinicalSummary: 'HbA1c 9.1% · FBG 11.8 · On metformin + sitagliptin',
           requestedTimeline: 'Routine',
@@ -154,7 +155,8 @@ class ReferralLocalDataSourceImpl implements ReferralLocalDataSource {
           receivedLabel: 'Review due in 3 days',
           referringPhysician: 'Dr. Nkurunziza Emmanuel',
           referringFacility: 'CHC Kigali',
-          reason: 'Post-echo follow-up. Confirm HF management plan and titrate '
+          reason:
+              'Post-echo follow-up. Confirm HF management plan and titrate '
               'ACE inhibitor.',
           clinicalSummary: 'EF 48% · BP 148/90 · On enalapril 5mg',
           requestedTimeline: 'Follow-up in 3 days',

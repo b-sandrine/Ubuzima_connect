@@ -34,6 +34,16 @@ Color _urgencyColor(ReferralUrgency urgency) => switch (urgency) {
   ReferralUrgency.routine => AppColors.secondary,
 };
 
+/// The colour a card's border is tinted with: the urgency colour while
+/// pending, or the resolution colour once accepted/declined — matching the
+/// colour each card is already making most prominent (the urgency pill, or
+/// the resolved strip).
+Color _cardBorderColor(Referral referral) => switch (referral.status) {
+  ReferralStatus.pending => _urgencyColor(referral.urgency),
+  ReferralStatus.accepted => AppColors.primary,
+  ReferralStatus.declined => AppColors.danger,
+};
+
 /// One referral in the DOC-06 queue: identity, the clinical narrative, the
 /// requested timeline, optional specialty routing, and the Accept / Decline
 /// actions. Once actioned it settles into a status strip instead of buttons.
@@ -72,7 +82,9 @@ class ReferralCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(
+          color: _cardBorderColor(referral).withValues(alpha: 0.2),
+        ),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A0F172A),
@@ -229,11 +241,7 @@ class _Section extends StatelessWidget {
   final String label;
   final String body;
 
-  const _Section({
-    required this.icon,
-    required this.label,
-    required this.body,
-  });
+  const _Section({required this.icon, required this.label, required this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -283,11 +291,7 @@ class _TimelineRow extends StatelessWidget {
         : AppColors.warning;
     return Row(
       children: [
-        const Icon(
-          LucideIcons.clock,
-          size: 15,
-          color: AppColors.textSecondary,
-        ),
+        const Icon(LucideIcons.clock, size: 15, color: AppColors.textSecondary),
         const SizedBox(width: 6),
         const Text(
           'Requested Timeline',
@@ -389,9 +393,7 @@ class _Actions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: _DeclineButton(onTap: isBusy ? null : onDecline),
-        ),
+        Expanded(child: _DeclineButton(onTap: isBusy ? null : onDecline)),
         const SizedBox(width: 12),
         Expanded(
           child: _AcceptButton(onTap: isBusy ? null : onAccept, isBusy: isBusy),
@@ -555,8 +557,11 @@ class _ResolvedStrip extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(accepted ? LucideIcons.circleCheck : LucideIcons.circleX,
-              size: 18, color: color),
+          Icon(
+            accepted ? LucideIcons.circleCheck : LucideIcons.circleX,
+            size: 18,
+            color: color,
+          ),
           const SizedBox(width: 8),
           Text(
             accepted ? 'Accepted' : 'Declined',
