@@ -202,6 +202,12 @@ abstract class AppLocalizations {
   /// **'Welcome back'**
   String get loginWelcomeBack;
 
+  /// No description provided for @loginWelcomeBackChw.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get loginWelcomeBackChw;
+
   /// No description provided for @loginSubtitle.
   ///
   /// In en, this message translates to:
@@ -238,6 +244,12 @@ abstract class AppLocalizations {
   /// **'Or continue with'**
   String get loginOrContinueWith;
 
+  /// No description provided for @loginOrContinueWithLower.
+  ///
+  /// In en, this message translates to:
+  /// **'or continue with'**
+  String get loginOrContinueWithLower;
+
   /// No description provided for @loginWithGoogle.
   ///
   /// In en, this message translates to:
@@ -249,6 +261,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account? '**
   String get loginNoAccount;
+
+  /// No description provided for @loginChwSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue your health work'**
+  String get loginChwSubtitle;
+
+  /// No description provided for @loginOfflineAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Access Available'**
+  String get loginOfflineAccessTitle;
+
+  /// No description provided for @loginOfflineAccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'CHWs can access cached patient records without internet. Data syncs when reconnected.'**
+  String get loginOfflineAccessMessage;
+
+  /// No description provided for @loginPhoneTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get loginPhoneTab;
+
+  /// No description provided for @loginEmailTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get loginEmailTab;
+
+  /// No description provided for @loginPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get loginPhoneLabel;
+
+  /// No description provided for @loginPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'07X XXX XXXX'**
+  String get loginPhoneHint;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginRememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me on this device'**
+  String get loginRememberMe;
+
+  /// No description provided for @loginBiometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric'**
+  String get loginBiometric;
+
+  /// No description provided for @loginQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Login'**
+  String get loginQrCode;
+
+  /// No description provided for @loginFeatureComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get loginFeatureComingSoon;
+
+  /// No description provided for @loginContinueOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Offline (CHW Mode)'**
+  String get loginContinueOffline;
 
   /// Heading on the role selection screen (AUTH-05).
   ///

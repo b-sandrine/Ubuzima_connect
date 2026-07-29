@@ -51,6 +51,42 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, AuthUser>> registerWithEmail({
+    required String email,
+    required String password,
+    required String displayName,
+    required String role,
+  }) async {
+    try {
+      final user = await _remoteDataSource.registerWithEmail(
+        email: email,
+        password: password,
+        displayName: displayName,
+        role: role,
+      );
+      return Right(user.toEntity());
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> sendPasswordReset({
+    required String email,
+  }) async {
+    try {
+      await _remoteDataSource.sendPasswordReset(email: email);
+      return const Right(unit);
+    } on AuthException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, Unit>> signOut() async {
     try {
       await _remoteDataSource.signOut();

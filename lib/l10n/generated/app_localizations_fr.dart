@@ -62,6 +62,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginWelcomeBack => 'Bon retour';
 
   @override
+  String get loginWelcomeBackChw => 'Bon retour';
+
+  @override
   String get loginSubtitle =>
       'Connectez-vous avec votre e-mail ou votre compte Google.';
 
@@ -81,10 +84,54 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginOrContinueWith => 'Ou continuer avec';
 
   @override
+  String get loginOrContinueWithLower => 'ou continuer avec';
+
+  @override
   String get loginWithGoogle => 'Continuer avec Google';
 
   @override
   String get loginNoAccount => 'Pas de compte ? ';
+
+  @override
+  String get loginChwSubtitle =>
+      'Connectez-vous pour poursuivre votre travail de santé';
+
+  @override
+  String get loginOfflineAccessTitle => 'Accès hors ligne disponible';
+
+  @override
+  String get loginOfflineAccessMessage =>
+      'Les ASC peuvent accéder aux dossiers patients en cache sans internet. Les données se synchronisent à la reconnexion.';
+
+  @override
+  String get loginPhoneTab => 'Téléphone';
+
+  @override
+  String get loginEmailTab => 'E-mail';
+
+  @override
+  String get loginPhoneLabel => 'Numéro de téléphone';
+
+  @override
+  String get loginPhoneHint => '07X XXX XXXX';
+
+  @override
+  String get loginForgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get loginRememberMe => 'Se souvenir de moi sur cet appareil';
+
+  @override
+  String get loginBiometric => 'Biométrie';
+
+  @override
+  String get loginQrCode => 'Connexion QR';
+
+  @override
+  String get loginFeatureComingSoon => 'Bientôt disponible';
+
+  @override
+  String get loginContinueOffline => 'Continuer hors ligne (mode ASC)';
 
   @override
   String get roleSelectionTitle => 'Santé communautaire';

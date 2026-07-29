@@ -62,6 +62,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginWelcomeBack => 'Welcome back';
 
   @override
+  String get loginWelcomeBackChw => 'Welcome Back';
+
+  @override
   String get loginSubtitle =>
       'Sign in with your email or Google account to continue.';
 
@@ -81,10 +84,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginOrContinueWith => 'Or continue with';
 
   @override
+  String get loginOrContinueWithLower => 'or continue with';
+
+  @override
   String get loginWithGoogle => 'Continue with Google';
 
   @override
   String get loginNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get loginChwSubtitle => 'Sign in to continue your health work';
+
+  @override
+  String get loginOfflineAccessTitle => 'Offline Access Available';
+
+  @override
+  String get loginOfflineAccessMessage =>
+      'CHWs can access cached patient records without internet. Data syncs when reconnected.';
+
+  @override
+  String get loginPhoneTab => 'Phone';
+
+  @override
+  String get loginEmailTab => 'Email';
+
+  @override
+  String get loginPhoneLabel => 'Phone Number';
+
+  @override
+  String get loginPhoneHint => '07X XXX XXXX';
+
+  @override
+  String get loginForgotPassword => 'Forgot password?';
+
+  @override
+  String get loginRememberMe => 'Remember me on this device';
+
+  @override
+  String get loginBiometric => 'Biometric';
+
+  @override
+  String get loginQrCode => 'QR Login';
+
+  @override
+  String get loginFeatureComingSoon => 'Coming soon';
+
+  @override
+  String get loginContinueOffline => 'Continue Offline (CHW Mode)';
 
   @override
   String get roleSelectionTitle => 'Community Healthcare';

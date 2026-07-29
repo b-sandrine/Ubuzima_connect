@@ -37,14 +37,22 @@ import '../../features/authentication/domain/repositories/role_selection_reposit
     as _i451;
 import '../../features/authentication/domain/usecases/get_selected_role.dart'
     as _i999;
+import '../../features/authentication/domain/usecases/register_with_email.dart'
+    as _i42;
 import '../../features/authentication/domain/usecases/save_selected_role.dart'
     as _i945;
+import '../../features/authentication/domain/usecases/send_password_reset.dart'
+    as _i231;
 import '../../features/authentication/domain/usecases/sign_in_with_email.dart'
     as _i909;
 import '../../features/authentication/domain/usecases/sign_in_with_google.dart'
     as _i185;
 import '../../features/authentication/presentation/bloc/login_bloc.dart'
     as _i178;
+import '../../features/authentication/presentation/bloc/register_bloc.dart'
+    as _i996;
+import '../../features/authentication/presentation/bloc/reset_password_bloc.dart'
+    as _i231;
 import '../../features/authentication/presentation/bloc/role_selection_bloc.dart'
     as _i41;
 import '../../features/community_health_workers/data/datasources/local/health_record_local_data_source.dart'
@@ -173,12 +181,6 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
-  gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
-    () => _i504.FirebaseAuthRemoteDataSourceImpl(
-      gh<_i59.FirebaseAuth>(),
-      gh<_i116.GoogleSignIn>(),
-    ),
-  );
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
         _i838.RoleSelectionLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
@@ -233,27 +235,17 @@ Future<_i174.GetIt> init(
       gh<_i231.TimelineLocalDataSource>(),
     ),
   );
-  gh.lazySingleton<_i742.AuthRepository>(
-    () => _i317.AuthRepositoryImpl(gh<_i504.FirebaseAuthRemoteDataSource>()),
-  );
-  gh.lazySingleton<_i565.AuthSessionProvider>(
-    () => _i246.FirebaseAuthSessionProvider(
-      gh<_i742.AuthRepository>(),
-      gh<_i451.RoleSelectionRepository>(),
+  gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
+    () => _i504.FirebaseAuthRemoteDataSourceImpl(
+      gh<_i59.FirebaseAuth>(),
+      gh<_i116.GoogleSignIn>(),
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i838.RoleSelectionLocalDataSource>(),
     ),
-  );
-  gh.factory<_i909.SignInWithEmail>(
-    () => _i909.SignInWithEmail(gh<_i742.AuthRepository>()),
-  );
-  gh.factory<_i185.SignInWithGoogle>(
-    () => _i185.SignInWithGoogle(gh<_i742.AuthRepository>()),
   );
   gh.lazySingleton<_i552.MedicationRepository>(
     () =>
         _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
-  );
-  gh.lazySingleton<_i282.AppRouter>(
-    () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
   );
   gh.lazySingleton<_i245.HealthRecordRepository>(
     () => _i74.HealthRecordRepositoryImpl(
@@ -316,10 +308,13 @@ Future<_i174.GetIt> init(
   gh.factory<_i209.GetPatientTimeline>(
     () => _i209.GetPatientTimeline(gh<_i984.TimelineRepository>()),
   );
-  gh.factory<_i178.LoginBloc>(
-    () => _i178.LoginBloc(
-      gh<_i909.SignInWithEmail>(),
-      gh<_i185.SignInWithGoogle>(),
+  gh.lazySingleton<_i742.AuthRepository>(
+    () => _i317.AuthRepositoryImpl(gh<_i504.FirebaseAuthRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i565.AuthSessionProvider>(
+    () => _i246.FirebaseAuthSessionProvider(
+      gh<_i742.AuthRepository>(),
+      gh<_i451.RoleSelectionRepository>(),
     ),
   );
   gh.factory<_i1071.HealthRecordBloc>(
@@ -335,11 +330,41 @@ Future<_i174.GetIt> init(
       gh<_i843.RequestRefill>(),
     ),
   );
+  gh.factory<_i42.RegisterWithEmail>(
+    () => _i42.RegisterWithEmail(gh<_i742.AuthRepository>()),
+  );
+  gh.factory<_i231.SendPasswordReset>(
+    () => _i231.SendPasswordReset(gh<_i742.AuthRepository>()),
+  );
+  gh.factory<_i909.SignInWithEmail>(
+    () => _i909.SignInWithEmail(gh<_i742.AuthRepository>()),
+  );
+  gh.factory<_i185.SignInWithGoogle>(
+    () => _i185.SignInWithGoogle(gh<_i742.AuthRepository>()),
+  );
+  gh.factory<_i231.ResetPasswordBloc>(
+    () => _i231.ResetPasswordBloc(gh<_i231.SendPasswordReset>()),
+  );
   gh.factory<_i668.ReferralFormBloc>(
     () => _i668.ReferralFormBloc(gh<_i888.CreateReferral>()),
   );
   gh.factory<_i855.TimelineBloc>(
     () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
+  );
+  gh.lazySingleton<_i282.AppRouter>(
+    () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
+  );
+  gh.factory<_i996.RegisterBloc>(
+    () => _i996.RegisterBloc(
+      gh<_i42.RegisterWithEmail>(),
+      gh<_i451.RoleSelectionRepository>(),
+    ),
+  );
+  gh.factory<_i178.LoginBloc>(
+    () => _i178.LoginBloc(
+      gh<_i909.SignInWithEmail>(),
+      gh<_i185.SignInWithGoogle>(),
+    ),
   );
   return getIt;
 }
