@@ -134,6 +134,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginContinueOffline => 'Continuer hors ligne (mode ASC)';
 
   @override
+  String get loginPatientSubtitle =>
+      'Connectez-vous pour gérer votre santé et vos médicaments';
+
+  @override
+  String get loginDoctorSubtitle =>
+      'Connectez-vous pour examiner patients, orientations et historiques';
+
+  @override
+  String get registerTitle => 'Créer votre compte';
+
+  @override
+  String get registerSubtitle =>
+      'Rejoignez Ubuzima Connect et commencez à gérer votre santé.';
+
+  @override
+  String get registerNameLabel => 'Nom complet';
+
+  @override
+  String get registerNameHint => 'Entrez votre nom complet';
+
+  @override
+  String get registerPasswordHint => 'Au moins 6 caractères';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirmer le mot de passe';
+
+  @override
+  String get registerConfirmPasswordHint =>
+      'Saisissez à nouveau votre mot de passe';
+
+  @override
+  String get registerHaveAccount => 'Vous avez déjà un compte ? ';
+
+  @override
   String get roleSelectionTitle => 'Santé communautaire';
 
   @override

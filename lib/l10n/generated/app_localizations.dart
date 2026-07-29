@@ -340,6 +340,66 @@ abstract class AppLocalizations {
   /// **'Continue Offline (CHW Mode)'**
   String get loginContinueOffline;
 
+  /// No description provided for @loginPatientSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to manage your health and medications'**
+  String get loginPatientSubtitle;
+
+  /// No description provided for @loginDoctorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to review patients, referrals and timelines'**
+  String get loginDoctorSubtitle;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Ubuzima Connect and start managing your health.'**
+  String get registerSubtitle;
+
+  /// No description provided for @registerNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get registerNameLabel;
+
+  /// No description provided for @registerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get registerNameHint;
+
+  /// No description provided for @registerPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get registerPasswordHint;
+
+  /// No description provided for @registerConfirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get registerConfirmPasswordLabel;
+
+  /// No description provided for @registerConfirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-enter your password'**
+  String get registerConfirmPasswordHint;
+
+  /// No description provided for @registerHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get registerHaveAccount;
+
   /// Heading on the role selection screen (AUTH-05).
   ///
   /// In en, this message translates to:

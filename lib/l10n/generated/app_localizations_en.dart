@@ -133,6 +133,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginContinueOffline => 'Continue Offline (CHW Mode)';
 
   @override
+  String get loginPatientSubtitle =>
+      'Sign in to manage your health and medications';
+
+  @override
+  String get loginDoctorSubtitle =>
+      'Sign in to review patients, referrals and timelines';
+
+  @override
+  String get registerTitle => 'Create your account';
+
+  @override
+  String get registerSubtitle =>
+      'Join Ubuzima Connect and start managing your health.';
+
+  @override
+  String get registerNameLabel => 'Full name';
+
+  @override
+  String get registerNameHint => 'Enter your full name';
+
+  @override
+  String get registerPasswordHint => 'At least 6 characters';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get registerConfirmPasswordHint => 'Re-enter your password';
+
+  @override
+  String get registerHaveAccount => 'Already have an account? ';
+
+  @override
   String get roleSelectionTitle => 'Community Healthcare';
 
   @override

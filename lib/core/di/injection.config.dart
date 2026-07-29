@@ -47,6 +47,7 @@ import '../../features/authentication/domain/usecases/sign_in_with_email.dart'
     as _i909;
 import '../../features/authentication/domain/usecases/sign_in_with_google.dart'
     as _i185;
+import '../../features/authentication/domain/usecases/sign_out.dart' as _i559;
 import '../../features/authentication/presentation/bloc/login_bloc.dart'
     as _i178;
 import '../../features/authentication/presentation/bloc/register_bloc.dart'
@@ -124,6 +125,7 @@ import '../logging/app_logger.dart' as _i354;
 import '../network/network_info.dart' as _i932;
 import '../permissions/permission_service.dart' as _i271;
 import '../routing/app_router.dart' as _i282;
+import '../routing/auth_router_refresh.dart' as _i593;
 import '../routing/auth_session.dart' as _i565;
 import '../security/secure_storage_service.dart' as _i812;
 import '../services/connectivity_service.dart' as _i47;
@@ -311,12 +313,6 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i742.AuthRepository>(
     () => _i317.AuthRepositoryImpl(gh<_i504.FirebaseAuthRemoteDataSource>()),
   );
-  gh.lazySingleton<_i565.AuthSessionProvider>(
-    () => _i246.FirebaseAuthSessionProvider(
-      gh<_i742.AuthRepository>(),
-      gh<_i451.RoleSelectionRepository>(),
-    ),
-  );
   gh.factory<_i1071.HealthRecordBloc>(
     () => _i1071.HealthRecordBloc(
       gh<_i509.GetHealthRecord>(),
@@ -342,6 +338,7 @@ Future<_i174.GetIt> init(
   gh.factory<_i185.SignInWithGoogle>(
     () => _i185.SignInWithGoogle(gh<_i742.AuthRepository>()),
   );
+  gh.factory<_i559.SignOut>(() => _i559.SignOut(gh<_i742.AuthRepository>()));
   gh.factory<_i231.ResetPasswordBloc>(
     () => _i231.ResetPasswordBloc(gh<_i231.SendPasswordReset>()),
   );
@@ -351,19 +348,32 @@ Future<_i174.GetIt> init(
   gh.factory<_i855.TimelineBloc>(
     () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
   );
-  gh.lazySingleton<_i282.AppRouter>(
-    () => _i282.AppRouter(gh<_i565.AuthSessionProvider>()),
-  );
   gh.factory<_i996.RegisterBloc>(
     () => _i996.RegisterBloc(
       gh<_i42.RegisterWithEmail>(),
       gh<_i451.RoleSelectionRepository>(),
     ),
   );
+  gh.lazySingleton<_i565.AuthSessionProvider>(
+    () => _i246.FirebaseAuthSessionProvider(
+      gh<_i742.AuthRepository>(),
+      gh<_i451.RoleSelectionRepository>(),
+      gh<_i838.RoleSelectionLocalDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i593.AuthRouterRefresh>(
+    () => _i593.AuthRouterRefresh(gh<_i565.AuthSessionProvider>()),
+  );
   gh.factory<_i178.LoginBloc>(
     () => _i178.LoginBloc(
       gh<_i909.SignInWithEmail>(),
       gh<_i185.SignInWithGoogle>(),
+    ),
+  );
+  gh.lazySingleton<_i282.AppRouter>(
+    () => _i282.AppRouter(
+      gh<_i565.AuthSessionProvider>(),
+      gh<_i593.AuthRouterRefresh>(),
     ),
   );
   return getIt;

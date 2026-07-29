@@ -30,6 +30,9 @@ abstract interface class FirebaseAuthRemoteDataSource {
   Future<void> sendPasswordReset({required String email});
 
   Future<void> signOut();
+
+  /// Reads `users/{uid}.role` from Firestore. Returns null when missing.
+  Future<String?> fetchUserRole(String uid);
 }
 
 @LazySingleton(as: FirebaseAuthRemoteDataSource)
@@ -78,8 +81,8 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
       if (user == null) {
         throw const AuthException('Sign in failed. Please try again.');
       }
-      await _ensureUserProfile(user);
-      return AuthUserModel.fromFirebase(user);
+      final role = await _ensureUserProfile(user);
+      return AuthUserModel.fromFirebase(user, role: role);
     } on AuthException {
       rethrow;
     } on FirebaseAuthException catch (e) {
@@ -110,8 +113,8 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
       if (user == null) {
         throw const AuthException('Google sign-in failed. Please try again.');
       }
-      await _ensureUserProfile(user);
-      return AuthUserModel.fromFirebase(user);
+      final role = await _ensureUserProfile(user);
+      return AuthUserModel.fromFirebase(user, role: role);
     } on AuthException {
       rethrow;
     } on FirebaseAuthException catch (e) {
@@ -138,14 +141,17 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
         throw const AuthException('Registration failed. Please try again.');
       }
       await user.updateDisplayName(displayName.trim());
-      await _ensureUserProfile(
+      final resolvedRole = await _ensureUserProfile(
         user,
         overrideDisplayName: displayName.trim(),
         overrideEmail: email.trim(),
         preferredRole: role,
       );
       await user.reload();
-      return AuthUserModel.fromFirebase(_firebaseAuth.currentUser ?? user);
+      return AuthUserModel.fromFirebase(
+        _firebaseAuth.currentUser ?? user,
+        role: resolvedRole,
+      );
     } on FirebaseAuthException catch (e) {
       throw AuthException(_messageFor(e));
     }
@@ -168,6 +174,21 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
     ]);
   }
 
+  @override
+  Future<String?> fetchUserRole(String uid) async {
+    try {
+      final snapshot =
+          await _firestore.collection(FirestorePaths.users).doc(uid).get();
+      final role = snapshot.data()?['role'] as String?;
+      if (role != null && role.isNotEmpty && role != 'unknown') {
+        await _roleSelectionLocalDataSource.cacheSelectedRole(role);
+      }
+      return role;
+    } on FirebaseException {
+      return null;
+    }
+  }
+
   String _messageFor(FirebaseAuthException e) {
     return switch (e.code) {
       'user-not-found' ||
@@ -183,7 +204,8 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
     };
   }
 
-  Future<void> _ensureUserProfile(
+  /// Ensures `users/{uid}` exists and returns the resolved role storage value.
+  Future<String> _ensureUserProfile(
     User user, {
     String? overrideDisplayName,
     String? overrideEmail,
@@ -204,9 +226,13 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
           'displayName': overrideDisplayName ?? user.displayName ?? '',
           'email': overrideEmail ?? user.email ?? '',
           'role': fallbackRole,
+          'ownerId': user.uid,
           'createdAt': FieldValue.serverTimestamp(),
         });
-        return;
+        if (fallbackRole != 'unknown') {
+          await _roleSelectionLocalDataSource.cacheSelectedRole(fallbackRole);
+        }
+        return fallbackRole;
       }
 
       final updates = <String, Object?>{};
@@ -222,13 +248,24 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
           (data?['email'] as String?)?.isEmpty != false) {
         updates['email'] = resolvedEmail;
       }
-      if (existingRole == null || existingRole.isEmpty) {
+
+      var resolvedRole = existingRole ?? '';
+      if (existingRole == null ||
+          existingRole.isEmpty ||
+          existingRole == 'unknown') {
         updates['role'] = fallbackRole;
+        resolvedRole = fallbackRole;
       }
 
       if (updates.isNotEmpty) {
         await docRef.update(updates);
       }
+
+      if (resolvedRole.isNotEmpty && resolvedRole != 'unknown') {
+        await _roleSelectionLocalDataSource.cacheSelectedRole(resolvedRole);
+      }
+
+      return resolvedRole.isEmpty ? fallbackRole : resolvedRole;
     } on FirebaseException catch (_) {
       await _firebaseAuth.signOut();
       throw const AuthException(
