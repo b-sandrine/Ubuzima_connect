@@ -1,0 +1,382 @@
+import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
+import '../../../../shared/widgets/error/error_view.dart';
+import '../../../../shared/widgets/loading/loading_indicator.dart';
+import '../../../../shared/widgets/pills/status_pill.dart';
+import '../../domain/models/ai_insight.dart';
+import '../../domain/models/dashboard_stat.dart';
+import '../../domain/models/doctor.dart';
+import '../../domain/models/emergency_alert.dart';
+import '../../domain/models/queue_patient.dart';
+import '../../domain/models/referral.dart';
+import '../../domain/models/schedule_item.dart';
+import '../../domain/repositories/doctor_dashboard_repository.dart';
+import '../../data/repositories/mock_doctor_dashboard_repository.dart';
+import '../widgets/ai_insight_card.dart';
+import '../widgets/dashboard_header.dart';
+import '../widgets/dashboard_stat_card.dart';
+import '../widgets/doctor_bottom_navigation_bar.dart';
+import '../widgets/emergency_alert_card.dart';
+import '../widgets/queue_card.dart';
+import '../widgets/quick_action_card.dart';
+import '../widgets/referral_card.dart';
+import '../widgets/schedule_card.dart';
+
+/// The doctor's home dashboard: on-duty status, emergency alerts, today's
+/// numbers, quick actions, schedule, live queue, referral status, and an
+/// AI-generated clinical insight.
+///
+/// Data comes from a [DoctorDashboardRepository] — [MockDoctorDashboardRepository]
+/// by default — so swapping in a Firestore-backed implementation later only
+/// touches the constructor call, not this screen.
+class DoctorDashboardScreen extends StatefulWidget {
+  final DoctorDashboardRepository repository;
+
+  const DoctorDashboardScreen({
+    super.key,
+    this.repository = const MockDoctorDashboardRepository(),
+  });
+
+  @override
+  State<DoctorDashboardScreen> createState() => _DoctorDashboardScreenState();
+}
+
+class _DashboardData {
+  final Doctor doctor;
+  final List<EmergencyAlert> alerts;
+  final List<DashboardStat> stats;
+  final List<ScheduleItem> schedule;
+  final List<QueuePatient> queue;
+  final List<Referral> referrals;
+  final AiInsight insight;
+
+  const _DashboardData({
+    required this.doctor,
+    required this.alerts,
+    required this.stats,
+    required this.schedule,
+    required this.queue,
+    required this.referrals,
+    required this.insight,
+  });
+}
+
+class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
+  late Future<_DashboardData> _future;
+  int _navIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _load();
+  }
+
+  Future<_DashboardData> _load() async {
+    final results = await Future.wait([
+      widget.repository.getCurrentDoctor(),
+      widget.repository.getEmergencyAlerts(),
+      widget.repository.getDashboardStats(),
+      widget.repository.getTodaySchedule(),
+      widget.repository.getPatientQueue(),
+      widget.repository.getReferrals(),
+      widget.repository.getAiInsight(),
+    ]);
+
+    return _DashboardData(
+      doctor: results[0] as Doctor,
+      alerts: results[1] as List<EmergencyAlert>,
+      stats: results[2] as List<DashboardStat>,
+      schedule: results[3] as List<ScheduleItem>,
+      queue: results[4] as List<QueuePatient>,
+      referrals: results[5] as List<Referral>,
+      insight: results[6] as AiInsight,
+    );
+  }
+
+  Future<void> _refresh() async {
+    final next = _load();
+    setState(() => _future = next);
+    await next;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: AppGradientBackground(
+        child: SafeArea(
+          child: FutureBuilder<_DashboardData>(
+            future: _future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const LoadingIndicator(message: 'Loading dashboard…');
+              }
+              if (snapshot.hasError) {
+                return ErrorView(
+                  message: 'Could not load the dashboard. Please try again.',
+                  onRetry: _refresh,
+                );
+              }
+
+              final data = snapshot.requireData;
+              return RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.sm,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                  ),
+                  children: [
+                    DashboardHeader(
+                      doctor: data.doctor,
+                      onNotificationsTap: () =>
+                          debugPrint('Opening notifications'),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    _EmergencyAlertsPanel(alerts: data.alerts),
+                    const SizedBox(height: AppSpacing.lg),
+                    _StatsRow(stats: data.stats),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _SectionTitle('Quick Access'),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    _QuickAccessRow(onAction: _printAction),
+                    const SizedBox(height: AppSpacing.lg),
+                    _SectionHeader(
+                      title: "Today's Schedule",
+                      actionLabel: 'See all',
+                      onAction: () =>
+                          _printAction('Today’s Schedule · See all'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    for (final item in data.schedule) ...[
+                      ScheduleCard(
+                        item: item,
+                        onTap: () =>
+                            _printAction('Schedule · ${item.patientName}'),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                    const SizedBox(height: AppSpacing.sm),
+                    _SectionHeader(
+                      title: 'Patient Queue',
+                      actionLabel: 'Manage',
+                      onAction: () => _printAction('Patient Queue · Manage'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    for (final patient in data.queue) ...[
+                      QueueCard(
+                        patient: patient,
+                        onTap: () => _printAction('Queue · ${patient.name}'),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                    const SizedBox(height: AppSpacing.sm),
+                    _SectionHeader(
+                      title: 'Referral Status',
+                      actionLabel: 'View All',
+                      onAction: () =>
+                          _printAction('Referral Status · View All'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    for (final referral in data.referrals) ...[
+                      ReferralCard(
+                        referral: referral,
+                        onTap: () =>
+                            _printAction('Referral · ${referral.patientName}'),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                    const SizedBox(height: AppSpacing.sm),
+                    AiInsightCard(
+                      insight: data.insight,
+                      onViewInsights: () => _printAction('View AI Insights'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+      bottomNavigationBar: DoctorBottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: (index) => setState(() => _navIndex = index),
+      ),
+    );
+  }
+
+  void _printAction(String action) => debugPrint('Tapped: $action');
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+
+  const _SectionTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _SectionHeader({
+    required this.title,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _SectionTitle(title),
+        InkWell(
+          onTap: onAction,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Text(
+              actionLabel,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmergencyAlertsPanel extends StatelessWidget {
+  final List<EmergencyAlert> alerts;
+
+  const _EmergencyAlertsPanel({required this.alerts});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.danger.withValues(alpha: 0.08),
+            AppColors.warning.withValues(alpha: 0.06),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(AppRadius.lg + 4),
+        border: Border.all(color: AppColors.danger.withValues(alpha: 0.15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                LucideIcons.triangleAlert,
+                size: 20,
+                color: AppColors.danger,
+              ),
+              const SizedBox(width: 8),
+              const Expanded(child: _SectionTitle('Emergency Alerts')),
+              StatusPill(
+                label: '${alerts.length} Active',
+                color: AppColors.danger,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm + 2),
+          for (final alert in alerts) ...[
+            EmergencyAlertCard(
+              alert: alert,
+              onView: () =>
+                  debugPrint('Tapped: View alert · ${alert.patientName}'),
+            ),
+            if (alert != alerts.last) const SizedBox(height: AppSpacing.sm),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StatsRow extends StatelessWidget {
+  final List<DashboardStat> stats;
+
+  const _StatsRow({required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final stat in stats) ...[
+          Expanded(child: DashboardStatCard(stat: stat)),
+          if (stat != stats.last) const SizedBox(width: AppSpacing.sm),
+        ],
+      ],
+    );
+  }
+}
+
+class _QuickAccessRow extends StatelessWidget {
+  final ValueChanged<String> onAction;
+
+  const _QuickAccessRow({required this.onAction});
+
+  @override
+  Widget build(BuildContext context) {
+    final actions = [
+      (icon: LucideIcons.search, label: 'Search', color: AppColors.primary),
+      (
+        icon: LucideIcons.brain,
+        label: 'AI Assist',
+        color: const Color(0xFF7C3AED),
+      ),
+      (icon: LucideIcons.share2, label: 'Referral', color: AppColors.warning),
+      (
+        icon: LucideIcons.flaskConical,
+        label: 'Lab',
+        color: AppColors.secondary,
+      ),
+    ];
+
+    return Row(
+      children: [
+        for (final action in actions) ...[
+          Expanded(
+            child: QuickActionCard(
+              icon: action.icon,
+              label: action.label,
+              color: action.color,
+              onTap: () => onAction('Quick Access · ${action.label}'),
+            ),
+          ),
+          if (action != actions.last) const SizedBox(width: AppSpacing.sm),
+        ],
+      ],
+    );
+  }
+}
