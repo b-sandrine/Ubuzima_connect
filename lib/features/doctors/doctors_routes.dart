@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/routing/app_routes.dart';
 import 'presentation/pages/doctor_dashboard_screen.dart';
+import 'presentation/pages/patient_detail_screen.dart';
 import 'presentation/pages/patient_search_screen.dart';
 
 /// Route definitions owned by the doctors feature, appended into the single
@@ -15,6 +16,10 @@ abstract final class DoctorsRoutes {
     GoRoute(
       path: AppRoutes.patientSearch,
       builder: (context, state) => const PatientSearchScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.patientDetail,
+      builder: (context, state) => const PatientDetailScreen(),
     ),
   ];
 }

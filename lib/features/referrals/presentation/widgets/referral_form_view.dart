@@ -55,9 +55,9 @@ class ReferralFormView extends StatelessWidget {
           onCreated?.call(state.createdReference!);
         } else if (state.status == ReferralFormStatus.failure &&
             state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage!)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
         }
       },
       builder: (context, state) {
@@ -103,8 +103,7 @@ class ReferralFormView extends StatelessWidget {
             const SizedBox(height: 16),
             _UrgencyField(
               selected: draft.urgency,
-              onSelected: (u) =>
-                  bloc.add(ReferralFormEvent.urgencyChanged(u)),
+              onSelected: (u) => bloc.add(ReferralFormEvent.urgencyChanged(u)),
             ),
             const SizedBox(height: 16),
             _Field(
@@ -203,7 +202,10 @@ class _Field extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.6),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.6,
+              ),
             ),
           ),
         ),

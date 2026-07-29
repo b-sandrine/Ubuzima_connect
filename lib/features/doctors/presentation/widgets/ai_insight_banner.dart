@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_spacing.dart';
-import '../../domain/models/ai_insight.dart';
 
-/// The compact lavender "AI:" banner used on list screens (Patient Search)
-/// — a one-line nudge rather than the dashboard's full gradient card.
+/// The compact lavender "AI:" banner used on list/detail screens (Patient
+/// Search, Patient Details) — a one-line nudge rather than the dashboard's
+/// full gradient card.
 class AiInsightBanner extends StatelessWidget {
-  final AiInsight insight;
+  final String message;
+  final String prefixLabel;
+  final bool showChevron;
   final VoidCallback? onTap;
 
-  const AiInsightBanner({super.key, required this.insight, this.onTap});
+  const AiInsightBanner({
+    super.key,
+    required this.message,
+    this.prefixLabel = 'AI: ',
+    this.showChevron = true,
+    this.onTap,
+  });
 
   static const _purple = Color(0xFF7C3AED);
   static const _tint = Color(0xFFEDE9FE);
@@ -50,17 +58,19 @@ class AiInsightBanner extends StatelessWidget {
                       color: Color(0xFF4C1D95),
                     ),
                     children: [
-                      const TextSpan(
-                        text: 'AI: ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
+                      TextSpan(
+                        text: prefixLabel,
+                        style: const TextStyle(fontWeight: FontWeight.w800),
                       ),
-                      TextSpan(text: insight.message),
+                      TextSpan(text: message),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              const Icon(LucideIcons.chevronRight, size: 18, color: _purple),
+              if (showChevron) ...[
+                const SizedBox(width: 8),
+                const Icon(LucideIcons.chevronRight, size: 18, color: _purple),
+              ],
             ],
           ),
         ),
