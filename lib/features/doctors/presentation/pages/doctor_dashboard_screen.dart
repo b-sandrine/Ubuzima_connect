@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
@@ -181,7 +183,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                       title: 'Referral Status',
                       actionLabel: 'View All',
                       onAction: () =>
-                          _printAction('Referral Status · View All'),
+                          context.push(AppRoutes.referralManagement),
                     ),
                     const SizedBox(height: AppSpacing.sm + 2),
                     for (final referral in data.referrals) ...[
@@ -206,9 +208,20 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
       ),
       bottomNavigationBar: DoctorBottomNavigationBar(
         currentIndex: _navIndex,
-        onTap: (index) => setState(() => _navIndex = index),
+        onTap: _onNavTap,
       ),
     );
+  }
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        context.go(AppRoutes.patientSearch);
+      default:
+        setState(() => _navIndex = index);
+    }
   }
 
   void _printAction(String action) => debugPrint('Tapped: $action');
@@ -349,17 +362,29 @@ class _QuickAccessRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      (icon: LucideIcons.search, label: 'Search', color: AppColors.primary),
+      (
+        icon: LucideIcons.search,
+        label: 'Search',
+        color: AppColors.primary,
+        route: AppRoutes.patientSearch,
+      ),
       (
         icon: LucideIcons.brain,
         label: 'AI Assist',
         color: const Color(0xFF7C3AED),
+        route: null,
       ),
-      (icon: LucideIcons.share2, label: 'Referral', color: AppColors.warning),
+      (
+        icon: LucideIcons.share2,
+        label: 'Referral',
+        color: AppColors.warning,
+        route: AppRoutes.referralManagement,
+      ),
       (
         icon: LucideIcons.flaskConical,
         label: 'Lab',
         color: AppColors.secondary,
+        route: null,
       ),
     ];
 
@@ -371,7 +396,14 @@ class _QuickAccessRow extends StatelessWidget {
               icon: action.icon,
               label: action.label,
               color: action.color,
-              onTap: () => onAction('Quick Access · ${action.label}'),
+              onTap: () {
+                final route = action.route;
+                if (route != null) {
+                  context.push(route);
+                } else {
+                  onAction('Quick Access · ${action.label}');
+                }
+              },
             ),
           ),
           if (action != actions.last) const SizedBox(width: AppSpacing.sm),
