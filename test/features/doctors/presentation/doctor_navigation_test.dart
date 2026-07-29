@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:ubuzima_connect/core/routing/app_routes.dart';
 import 'package:ubuzima_connect/features/doctors/presentation/pages/doctor_dashboard_screen.dart';
+import 'package:ubuzima_connect/features/doctors/presentation/pages/patient_detail_screen.dart';
 import 'package:ubuzima_connect/features/doctors/presentation/pages/patient_search_screen.dart';
 
 void main() {
@@ -19,9 +21,17 @@ void main() {
           builder: (_, _) => const PatientSearchScreen(),
         ),
         GoRoute(
+          path: AppRoutes.patientDetail,
+          builder: (_, _) => const PatientDetailScreen(),
+        ),
+        GoRoute(
           path: AppRoutes.referralManagement,
           builder: (_, _) =>
               const Scaffold(body: Text('referral-management-screen')),
+        ),
+        GoRoute(
+          path: AppRoutes.newReferral,
+          builder: (_, _) => const Scaffold(body: Text('new-referral-screen')),
         ),
         GoRoute(
           path: AppRoutes.patientTimeline,
@@ -92,9 +102,7 @@ void main() {
     expect(find.text('referral-management-screen'), findsOneWidget);
   });
 
-  testWidgets('tapping a patient card opens the patient timeline', (
-    tester,
-  ) async {
+  testWidgets('tapping a patient card opens Patient Details', (tester) async {
     final router = await pump(tester);
     router.go(AppRoutes.patientSearch);
     await tester.pumpAndSettle();
@@ -102,6 +110,58 @@ void main() {
     await tester.tap(find.text('Marie Uwase'));
     await tester.pumpAndSettle();
 
+    expect(find.text('RISK INDICATORS'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('AI Clinical Summary'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('AI Clinical Summary'), findsOneWidget);
+  });
+
+  testWidgets('the back button on Patient Details returns to Patient Search', (
+    tester,
+  ) async {
+    final router = await pump(tester);
+    router.go(AppRoutes.patientSearch);
+    await tester.pumpAndSettle();
+    router.push(AppRoutes.patientDetail);
+    await tester.pumpAndSettle();
+    expect(find.text('RISK INDICATORS'), findsOneWidget);
+
+    final backButton = find.byWidgetPredicate(
+      (widget) => widget is Icon && widget.icon == LucideIcons.arrowLeft,
+    );
+    await tester.tap(backButton);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Patient Search'), findsOneWidget);
+  });
+
+  testWidgets('History on Patient Details opens the patient timeline', (
+    tester,
+  ) async {
+    final router = await pump(tester);
+    router.go(AppRoutes.patientDetail);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+
     expect(find.text('patient-timeline-screen'), findsOneWidget);
+  });
+
+  testWidgets('Refer on Patient Details opens the new referral form', (
+    tester,
+  ) async {
+    final router = await pump(tester);
+    router.go(AppRoutes.patientDetail);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Refer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('new-referral-screen'), findsOneWidget);
   });
 }

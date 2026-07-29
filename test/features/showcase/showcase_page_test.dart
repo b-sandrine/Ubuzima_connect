@@ -33,12 +33,13 @@ void main() {
     await pump(tester);
 
     expect(find.text('Screen Showcase'), findsOneWidget);
-    expect(find.text('8 screens'), findsOneWidget);
+    expect(find.text('9 screens'), findsOneWidget);
     expect(find.text('Role Selection'), findsOneWidget);
     expect(find.text('Current Medications'), findsOneWidget);
     expect(find.text('Patient Timeline'), findsOneWidget);
     expect(find.text('Doctor Dashboard'), findsOneWidget);
     expect(find.text('Patient Search'), findsOneWidget);
+    expect(find.text('Patient Details'), findsOneWidget);
     expect(find.text('Referral Management'), findsOneWidget);
     expect(find.text('Refer to Hospital'), findsOneWidget);
   });
