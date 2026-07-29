@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/models/emergency_alert.dart';
+import '../../domain/models/patient_record.dart';
 import '../../domain/models/queue_patient.dart';
 import '../../domain/models/referral.dart';
 import '../../domain/models/schedule_item.dart';
@@ -51,6 +52,26 @@ abstract final class DashboardStyle {
     return switch (status) {
       ReferralStatus.pending => 'Pending',
       ReferralStatus.approved => 'Approved',
+    };
+  }
+
+  static Color patientRecordStatusColor(PatientRecordStatus status) {
+    return switch (status) {
+      PatientRecordStatus.critical => AppColors.danger,
+      PatientRecordStatus.urgent => AppColors.warning,
+      PatientRecordStatus.stable => AppColors.success,
+      PatientRecordStatus.scheduled => AppColors.secondary,
+      PatientRecordStatus.routine => AppColors.textTertiary,
+    };
+  }
+
+  static String patientRecordStatusLabel(PatientRecordStatus status) {
+    return switch (status) {
+      PatientRecordStatus.critical => 'Critical',
+      PatientRecordStatus.urgent => 'Urgent',
+      PatientRecordStatus.stable => 'Stable',
+      PatientRecordStatus.scheduled => 'Scheduled',
+      PatientRecordStatus.routine => 'Routine',
     };
   }
 
