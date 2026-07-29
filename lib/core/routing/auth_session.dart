@@ -1,5 +1,3 @@
-import 'package:injectable/injectable.dart';
-
 enum AuthSessionStatus { unknown, authenticated, unauthenticated }
 
 enum UserRole { patient, communityHealthWorker, doctor, unknown }
@@ -17,12 +15,9 @@ abstract interface class AuthSessionProvider {
   Stream<AuthSessionStatus> get statusStream;
 }
 
-/// Foundation-stage placeholder so routing/DI compile and run before the
-/// `authentication` feature exists. Remove the `@LazySingleton` annotation
-/// here the moment `features/authentication` registers its own
-/// [AuthSessionProvider] implementation — GetIt only allows one binding per
-/// interface.
-@LazySingleton(as: AuthSessionProvider)
+/// Kept for unit tests that don't want a Firebase-backed session. The live
+/// binding lives in `features/authentication` as
+/// `FirebaseAuthSessionProvider`.
 class NoOpAuthSessionProvider implements AuthSessionProvider {
   @override
   AuthSessionStatus get currentStatus => AuthSessionStatus.unauthenticated;
