@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../domain/models/allergy.dart';
 import '../../domain/models/emergency_alert.dart';
 import '../../domain/models/patient_record.dart';
 import '../../domain/models/queue_patient.dart';
 import '../../domain/models/referral.dart';
 import '../../domain/models/schedule_item.dart';
+import '../../domain/models/vital_sign.dart';
 
 /// Colour and label lookups shared by the dashboard's status pills, so every
 /// card maps the same enum to the same colour instead of each widget
@@ -72,6 +74,38 @@ abstract final class DashboardStyle {
       PatientRecordStatus.stable => 'Stable',
       PatientRecordStatus.scheduled => 'Scheduled',
       PatientRecordStatus.routine => 'Routine',
+    };
+  }
+
+  static Color vitalStatusColor(VitalStatus status) {
+    return switch (status) {
+      VitalStatus.high => AppColors.danger,
+      VitalStatus.elevated => AppColors.warning,
+      VitalStatus.normal => AppColors.success,
+    };
+  }
+
+  static String vitalStatusLabel(VitalStatus status) {
+    return switch (status) {
+      VitalStatus.high => 'High',
+      VitalStatus.elevated => 'Elevated',
+      VitalStatus.normal => 'Normal',
+    };
+  }
+
+  static Color allergySeverityColor(AllergySeverity severity) {
+    return switch (severity) {
+      AllergySeverity.severe => AppColors.danger,
+      AllergySeverity.moderate => AppColors.warning,
+      AllergySeverity.mild => const Color(0xFFFB923C), // orange-400
+    };
+  }
+
+  static String allergySeverityLabel(AllergySeverity severity) {
+    return switch (severity) {
+      AllergySeverity.severe => 'Severe',
+      AllergySeverity.moderate => 'Moderate',
+      AllergySeverity.mild => 'Mild',
     };
   }
 
