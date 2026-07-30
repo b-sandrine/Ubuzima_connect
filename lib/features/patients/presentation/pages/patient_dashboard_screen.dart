@@ -239,6 +239,8 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
         context.go(AppRoutes.patientRecords);
       case 3:
         context.go(AppRoutes.patientNotifications);
+      case 4:
+        context.go(AppRoutes.patientSettings);
       default:
         setState(() => _navIndex = index);
     }
@@ -324,15 +326,24 @@ class _VitalsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: AppSpacing.sm,
-      crossAxisSpacing: AppSpacing.sm,
-      childAspectRatio: 1.5,
+    // Two `Row`s of `Expanded` cards rather than a `GridView`, so each
+    // row's height comes from its own content instead of a fixed number —
+    // immune to overflow regardless of the user's Text Size setting.
+    return Column(
       children: [
-        for (final vital in vitals) VitalReadingCard(reading: vital),
+        for (var i = 0; i < vitals.length; i += 2) ...[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: VitalReadingCard(reading: vitals[i])),
+              if (i + 1 < vitals.length) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: VitalReadingCard(reading: vitals[i + 1])),
+              ],
+            ],
+          ),
+          if (i + 2 < vitals.length) const SizedBox(height: AppSpacing.sm),
+        ],
       ],
     );
   }
