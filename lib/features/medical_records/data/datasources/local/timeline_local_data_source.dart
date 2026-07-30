@@ -99,12 +99,8 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           detail: 'BP 162/98 · Stage 2 HTN · First diagnosis',
         ),
       ],
-      aiSummary:
-          'Progressive multi-system deterioration over 7 years: '
-          'HTN (2018) → T2DM (2022) → CKD (2024) → Crisis (2025). Pattern '
-          'suggests inadequate long-term glycemic and BP control. Recommend '
-          'structured chronic disease management programme with monthly '
-          'monitoring.',
+      // Filled by ClinicalAiService on first remote read.
+      aiSummary: '',
     );
   }
 }
