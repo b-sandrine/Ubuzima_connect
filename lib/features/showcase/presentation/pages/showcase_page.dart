@@ -129,6 +129,22 @@ class ShowcasePage extends StatelessWidget {
       route: AppRoutes.patientRecords,
     ),
     _ShowcaseEntry(
+      task: 'DOCTOR',
+      title: 'Doctor Alerts',
+      subtitle: 'Doctor · priority, appointment, referral & AI notifications',
+      icon: Icons.notifications_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.doctorNotifications,
+    ),
+    _ShowcaseEntry(
+      task: 'PATIENT',
+      title: 'Patient Alerts',
+      subtitle: 'Patient · medication, appointment & AI notifications',
+      icon: Icons.notifications_outlined,
+      color: AppColors.rolePatient,
+      route: AppRoutes.patientNotifications,
+    ),
+    _ShowcaseEntry(
       task: 'DOC-06',
       title: 'Referral Management',
       subtitle: 'Doctor · queues, accept/decline & new referral',

@@ -337,6 +337,8 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
         context.go(AppRoutes.doctorDashboard);
       case 1:
         context.go(AppRoutes.patientSearch);
+      case 3:
+        context.go(AppRoutes.doctorNotifications);
       default:
         setState(() => _navIndex = index);
     }

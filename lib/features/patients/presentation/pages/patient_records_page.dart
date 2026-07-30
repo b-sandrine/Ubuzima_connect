@@ -110,6 +110,8 @@ class _PatientRecordsPageState extends State<PatientRecordsPage> {
         context.go(AppRoutes.patientDashboard);
       case 1:
         break;
+      case 3:
+        context.go(AppRoutes.patientNotifications);
       default:
         setState(() => _navIndex = index);
     }
