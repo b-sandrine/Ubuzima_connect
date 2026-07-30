@@ -53,6 +53,12 @@ abstract final class AppRoutes {
   /// The patient's notifications / alerts feed.
   static const String patientNotifications = '/patient/notifications';
 
+  /// The doctor's main settings screen.
+  static const String doctorSettings = '/doctor/settings';
+
+  /// The patient's main settings screen.
+  static const String patientSettings = '/patient/settings';
+
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
 
@@ -75,5 +81,7 @@ abstract final class AppRoutes {
     patientMedications,
     doctorNotifications,
     patientNotifications,
+    doctorSettings,
+    patientSettings,
   };
 }

@@ -35,7 +35,52 @@ abstract final class AppTheme {
     return _base(colorScheme, AppColors.darkBackground);
   }
 
-  static ThemeData _base(ColorScheme colorScheme, Color scaffoldBackground) {
+  /// High-contrast counterpart to [light] — same seed colors, pushed to
+  /// Material 3's maximum `contrastLevel` so text/surface pairs meet a
+  /// higher contrast ratio, plus a visible card border since elevation
+  /// alone reads poorly for low-vision users.
+  static ThemeData get highContrastLight {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
+      error: AppColors.danger,
+      surface: AppColors.lightSurface,
+      contrastLevel: 1.0,
+    );
+
+    return _base(
+      colorScheme,
+      AppColors.lightBackground,
+      highContrast: true,
+    );
+  }
+
+  /// High-contrast counterpart to [dark].
+  static ThemeData get highContrastDark {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primaryLight,
+      brightness: Brightness.dark,
+      primary: AppColors.primaryLight,
+      secondary: AppColors.secondary,
+      error: AppColors.danger,
+      surface: AppColors.darkSurface,
+      contrastLevel: 1.0,
+    );
+
+    return _base(
+      colorScheme,
+      AppColors.darkBackground,
+      highContrast: true,
+    );
+  }
+
+  static ThemeData _base(
+    ColorScheme colorScheme,
+    Color scaffoldBackground, {
+    bool highContrast = false,
+  }) {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
@@ -55,9 +100,12 @@ abstract final class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: colorScheme.surface,
-        elevation: 1,
+        elevation: highContrast ? 0 : 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
+          side: highContrast
+              ? BorderSide(color: colorScheme.outline, width: 1.5)
+              : BorderSide.none,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
