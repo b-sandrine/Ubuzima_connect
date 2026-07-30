@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ubuzima_connect/core/routing/app_routes.dart';
 import 'package:ubuzima_connect/core/routing/auth_session.dart';
+import 'package:ubuzima_connect/core/routing/role_home.dart';
 import 'package:ubuzima_connect/core/routing/route_guards.dart';
 
 class _MockAuthSession extends Mock implements AuthSessionProvider {}
@@ -18,7 +19,12 @@ GoRouterState _stateAt(String location) {
 void main() {
   late _MockAuthSession auth;
 
-  setUp(() => auth = _MockAuthSession());
+  setUp(() {
+    auth = _MockAuthSession();
+    // The guard reads the role on every redirect; default it here so tests
+    // that don't care about the role still stub it. Individual tests override.
+    when(() => auth.currentRole).thenReturn(UserRole.unknown);
+  });
 
   test('unauthenticated users are bounced to welcome', () {
     when(() => auth.currentStatus)
@@ -57,12 +63,13 @@ void main() {
     }
   });
 
-  test('authenticated users on login are sent home', () {
+  test('authenticated users on login are sent to their role home', () {
     when(() => auth.currentStatus).thenReturn(AuthSessionStatus.authenticated);
+    when(() => auth.currentRole).thenReturn(UserRole.doctor);
 
     expect(
       RouteGuards.redirect(auth, _stateAt(AppRoutes.login)),
-      AppRoutes.home,
+      RoleHome.forRole(UserRole.doctor),
     );
   });
 }
