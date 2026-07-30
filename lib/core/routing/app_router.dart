@@ -6,6 +6,7 @@ import '../../features/authentication/presentation/pages/home_page.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
+import '../../features/patient_intake/patient_intake_routes.dart';
 import '../../features/notifications/notifications_routes.dart';
 import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
@@ -45,6 +46,7 @@ class AppRouter {
       ...PrescriptionsRoutes.routes,
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
+      ...PatientIntakeRoutes.routes,
       ...MedicalRecordsRoutes.routes,
       ...PatientsRoutes.routes,
       ...NotificationsRoutes.routes,

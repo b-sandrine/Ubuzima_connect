@@ -254,7 +254,7 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
                       ],
                     const SizedBox(height: AppSpacing.sm),
                     RegisterPatientButton(
-                      onTap: () => _printAction('Register New Patient'),
+                      onTap: () => context.push(AppRoutes.newPatientIntake),
                     ),
                   ],
                 ),
