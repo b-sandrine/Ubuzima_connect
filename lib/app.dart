@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/accessibility/accessibility_cubit.dart';
 import 'core/accessibility/accessibility_settings.dart';
+import 'core/connectivity/connectivity_cubit.dart';
 import 'core/constants/app_constants.dart';
 import 'core/di/injection.dart';
 import 'core/localization/app_localization_delegates.dart';
@@ -11,6 +12,7 @@ import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'l10n/generated/app_localizations.dart';
+import 'shared/widgets/banners/offline_banner.dart';
 
 class UbuzimaConnectApp extends StatelessWidget {
   const UbuzimaConnectApp({super.key});
@@ -20,13 +22,14 @@ class UbuzimaConnectApp extends StatelessWidget {
     final router = getIt<AppRouter>().router;
 
     // These cubits sit above MaterialApp so Settings' language, dark mode,
-    // and accessibility toggles rebuild the whole tree, not just the
-    // screen that hosts them.
+    // accessibility toggles, and OFFLINE-01's banner all rebuild the whole
+    // tree, not just whichever screen happens to host them.
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: getIt<LocaleCubit>()),
         BlocProvider.value(value: getIt<ThemeCubit>()),
         BlocProvider.value(value: getIt<AccessibilityCubit>()),
+        BlocProvider.value(value: getIt<ConnectivityCubit>()),
       ],
       child: BlocBuilder<LocaleCubit, Locale?>(
         builder: (context, locale) {
@@ -48,6 +51,10 @@ class UbuzimaConnectApp extends StatelessWidget {
                     routerConfig: router,
                     localizationsDelegates: appLocalizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
+                    // Applies the accessibility text-scale AND wraps every
+                    // routed screen with OFFLINE-01's banner — both need
+                    // this single builder slot, so they're combined here
+                    // rather than each feature adding its own.
                     builder: (context, child) {
                       final mediaQuery = MediaQuery.of(context);
                       return MediaQuery(
@@ -56,7 +63,12 @@ class UbuzimaConnectApp extends StatelessWidget {
                             accessibility.textScale,
                           ),
                         ),
-                        child: child!,
+                        child: Column(
+                          children: [
+                            const OfflineBanner(),
+                            Expanded(child: child ?? const SizedBox.shrink()),
+                          ],
+                        ),
                       );
                     },
                   );

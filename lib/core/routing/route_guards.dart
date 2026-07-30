@@ -9,9 +9,7 @@ import 'role_home.dart';
 /// routes are sent to `/home`. Role-based redirects plug in here once
 /// feature route metadata describes which roles a route allows.
 abstract final class RouteGuards {
-  static const Set<String> _patientRoutes = {
-    AppRoutes.patientMedications,
-  };
+  static const Set<String> _patientRoutes = {AppRoutes.patientMedications};
 
   static const Set<String> _doctorRoutes = {
     AppRoutes.referralManagement,
@@ -45,6 +43,7 @@ abstract final class RouteGuards {
         !atReset &&
         !atSplash &&
         !atRoleSelection &&
+        !atOnboarding &&
         !atDemoScreen) {
       return AppRoutes.splash;
     }

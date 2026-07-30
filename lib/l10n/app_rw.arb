@@ -76,5 +76,15 @@
   "useDeviceLanguage": "Koresha Ururimi rwa Telefoni",
   "useDeviceLanguageSubtitle": "Kurikiza ururimi rwa telefoni yawe mu buryo bwikora",
   "languageUpdatedMessage": "Ururimi rwahinduwe",
-  "selectedLabel": "Byahiswemo"
+  "selectedLabel": "Byahiswemo",
+  "backOnlineMessage": "Ugarutse kuri interineti",
+  "onboardingSkip": "Simbuka",
+  "onboardingNext": "Komeza",
+  "onboardingGetStarted": "Tangira",
+  "onboardingSlide1Title": "Ubuvuzi Bugukurikira",
+  "onboardingSlide1Body": "Reka gusubiramo amateka y'ubuzima bwawe. Amakuru yawe agenda hamwe nawe hagati y'umujyanama w'ubuzima n'ibitaro.",
+  "onboardingSlide2Title": "Uhereye mu Mudugudu Ukagera ku Bitaro Ako Kanya",
+  "onboardingSlide2Body": "Abajyanama b'ubuzima banditse gusura rimwe \u2014 abaganga barabibona ako kanya umurwayi yoherejwe.",
+  "onboardingSlide3Title": "Ikora Nubwo Nta Interineti",
+  "onboardingSlide3Body": "Komeza gukora ahantu nta interineti ihari. Byose bizahita bijyana igihe uzagaruka kuri interineti."
 }

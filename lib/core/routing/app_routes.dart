@@ -45,6 +45,7 @@ abstract final class AppRoutes {
   static const String consultation = '/doctor/consultation';
   /// SETTINGS-01 — the language switcher.
   static const String languageSettings = '/settings/language';
+
   /// The doctor's patient details screen.
   static const String patientDetail = '/doctor/patients/detail';
 
@@ -65,6 +66,14 @@ abstract final class AppRoutes {
 
   /// The patient's main settings screen.
   static const String patientSettings = '/patient/settings';
+
+  /// TUTORIAL-01 — the onboarding tutorial, shown once before role
+  /// selection. See `route_guards.dart` for where that redirect is wired.
+  static const String onboarding = '/onboarding';
+
+  /// OFFLINE-01's demo destination. The real banner is global (app.dart);
+  /// this just gives the showcase card something to push to.
+  static const String offlineIndicatorInfo = '/offline-indicator-info';
 
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
@@ -92,5 +101,7 @@ abstract final class AppRoutes {
     patientNotifications,
     doctorSettings,
     patientSettings,
+    onboarding,
+    offlineIndicatorInfo,
   };
 }

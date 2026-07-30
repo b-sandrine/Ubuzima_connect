@@ -251,4 +251,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get selectedLabel => 'Sélectionné';
+
+  @override
+  String get backOnlineMessage => 'Vous êtes de nouveau en ligne';
+
+  @override
+  String get onboardingSkip => 'Passer';
+
+  @override
+  String get onboardingNext => 'Suivant';
+
+  @override
+  String get onboardingGetStarted => 'Commencer';
+
+  @override
+  String get onboardingSlide1Title => 'Des soins qui vous suivent';
+
+  @override
+  String get onboardingSlide1Body =>
+      'Ne répétez plus vos antécédents médicaux. Votre dossier vous accompagne entre votre agent de santé communautaire et l\'hôpital.';
+
+  @override
+  String get onboardingSlide2Title => 'Du village à l\'hôpital, instantanément';
+
+  @override
+  String get onboardingSlide2Body =>
+      'Les agents de santé communautaires enregistrent une visite une seule fois — les médecins la voient dès que le patient est référé.';
+
+  @override
+  String get onboardingSlide3Title => 'Fonctionne sans signal';
+
+  @override
+  String get onboardingSlide3Body =>
+      'Continuez à travailler dans les zones sans internet. Tout se synchronise automatiquement dès que vous êtes de nouveau en ligne.';
 }

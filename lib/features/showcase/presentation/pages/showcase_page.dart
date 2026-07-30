@@ -169,6 +169,22 @@ class ShowcasePage extends StatelessWidget {
 >>>>>>> 7160e82a73a43d4127d4e76ecb2d6d0b5dd7aee7
     ),
     _ShowcaseEntry(
+      task: 'OFFLINE-01',
+      title: 'Offline Indicator',
+      subtitle: 'Shared · global banner reacting to real connectivity',
+      icon: Icons.wifi_off,
+      color: AppColors.warning,
+      route: AppRoutes.offlineIndicatorInfo,
+    ),
+    _ShowcaseEntry(
+      task: 'TUTORIAL-01',
+      title: 'Onboarding Tutorial',
+      subtitle: 'Shared · 3-slide intro shown before role selection',
+      icon: Icons.slideshow,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.onboarding,
+    ),
+    _ShowcaseEntry(
       task: 'DOC-06',
       title: 'Referral Management',
       subtitle: 'Doctor · queues, accept/decline & new referral',

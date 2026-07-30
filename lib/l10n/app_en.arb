@@ -103,5 +103,15 @@
   "useDeviceLanguage": "Use Device Language",
   "useDeviceLanguageSubtitle": "Follow this phone's language automatically",
   "languageUpdatedMessage": "Language updated",
-  "selectedLabel": "Selected"
+  "selectedLabel": "Selected",
+  "backOnlineMessage": "You're back online",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingGetStarted": "Get Started",
+  "onboardingSlide1Title": "Care That Follows You",
+  "onboardingSlide1Body": "Stop repeating your medical history. Your record travels with you between your community health worker and the hospital.",
+  "onboardingSlide2Title": "From Village to Hospital, Instantly",
+  "onboardingSlide2Body": "Community health workers log a visit once \u2014 doctors see it the moment a patient is referred.",
+  "onboardingSlide3Title": "Works Without Signal",
+  "onboardingSlide3Body": "Keep working in areas with no internet. Everything syncs automatically the moment you're back online."
 }
