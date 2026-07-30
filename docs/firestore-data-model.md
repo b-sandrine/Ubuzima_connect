@@ -72,6 +72,7 @@ erDiagram
 
 | Path | Purpose | Screen |
 |------|---------|--------|
+| `users/{uid}` | Auth profile: email, displayName, role (`patient`/`chw`/`doctor`) | AUTH |
 | `prescriptions/{patientId}` | Dose summary, adherence, refill reminder | PAT-03 |
 | `prescriptions/{patientId}/doses/{doseId}` | One scheduled dose | PAT-03 |
 | `referrals/{reference}` | A referral, tagged with `patientId` | DOC-06 |
@@ -99,12 +100,14 @@ See `firestore.rules`. The model is **deny-by-default**:
 
 - Every read and write requires an authenticated user (`request.auth != null`),
   so an unauthenticated client cannot touch any document.
+- `users/{userId}` is readable/writable **only** by that same authenticated UID.
+  Register and first login create this document with `role`.
 - Creating a referral is validated to carry its required fields
   (`patientId`, `specialty`, `status`, `direction`), preventing malformed
   documents.
 - An `ownsResource()` helper is in place to scope reads to a document's owner
-  via an `ownerId` field; the top-level records fall back to shared access
-  until the authentication/role model attaches owners.
+  via an `ownerId` field; shared demo records omit `ownerId` so any signed-in
+  user can read them.
 - A trailing `match /{document=**} { allow read, write: if false; }` denies
   everything not explicitly allowed.
 

@@ -2,44 +2,94 @@ import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';
 import 'auth_session.dart';
+import 'role_home.dart';
 
 /// Redirect logic applied to every navigation: unauthenticated users are
-/// bounced to `/login`; authenticated users landing on `/` or `/login` are
-/// sent to `/home`. Role-based redirects (e.g. a Patient hitting a
-/// CHW-only path) plug in here once feature route metadata exists to
-/// describe which roles a route allows.
+/// bounced to the welcome screen; authenticated users landing on onboarding
+/// routes are sent to `/home`. Role-based redirects plug in here once
+/// feature route metadata describes which roles a route allows.
 abstract final class RouteGuards {
+  static const Set<String> _patientRoutes = {
+    AppRoutes.patientMedications,
+  };
+
+  static const Set<String> _doctorRoutes = {
+    AppRoutes.referralManagement,
+    AppRoutes.newReferral,
+    AppRoutes.patientTimeline,
+  };
+
+  static const Set<String> _chwRoutes = {
+    AppRoutes.chwDashboard,
+    AppRoutes.chwReferral,
+    AppRoutes.chwHealthRecord,
+  };
+
   static String? redirect(
     AuthSessionProvider authSessionProvider,
     GoRouterState state,
   ) {
     final status = authSessionProvider.currentStatus;
-    final atLogin = state.matchedLocation == AppRoutes.login;
-    final atRegister = state.matchedLocation == AppRoutes.register;
-    final atSplash = state.matchedLocation == AppRoutes.splash;
-    final atRoleSelection = state.matchedLocation == AppRoutes.roleSelection;
-    // Standalone feature screens delivered ahead of the auth/session flow are
-    // reachable via the demo hub without a real session.
-    final atDemoScreen = AppRoutes.demoReachable.contains(
-      state.matchedLocation,
-    );
+    final role = authSessionProvider.currentRole;
+    final location = state.matchedLocation;
+    final atLogin = location == AppRoutes.login;
+    final atRegister = location == AppRoutes.register;
+    final atReset = location == AppRoutes.resetPassword;
+    final atSplash = location == AppRoutes.splash;
+    final atRoleSelection = location == AppRoutes.roleSelection;
+    final atDemoScreen = AppRoutes.demoReachable.contains(location);
 
-    // Role selection (AUTH-05) is the entry point of onboarding, so it has
-    // to be reachable without a session — as do both auth screens it hands
-    // off to, and the demo-reachable feature screens.
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
         !atRegister &&
+        !atReset &&
+        !atSplash &&
         !atRoleSelection &&
         !atDemoScreen) {
-      return AppRoutes.roleSelection;
+      return AppRoutes.splash;
     }
 
     if (status == AuthSessionStatus.authenticated &&
-        (atLogin || atRegister || atSplash)) {
-      return AppRoutes.home;
+        (atLogin || atRegister || atReset || atSplash || atRoleSelection)) {
+      // Stay on role selection until a concrete role is known — avoids the
+      // `/home` spinner loop when role is still resolving.
+      if (role == UserRole.unknown && atRoleSelection) {
+        return null;
+      }
+      return _defaultAuthorizedRouteFor(role);
+    }
+
+    if (status == AuthSessionStatus.authenticated &&
+        location == AppRoutes.home &&
+        role == UserRole.unknown) {
+      return null; // HomePage waits for role, then navigates.
+    }
+
+    if (status == AuthSessionStatus.authenticated &&
+        !_isAuthorized(role: role, location: location)) {
+      return _defaultAuthorizedRouteFor(role);
     }
 
     return null;
+  }
+
+  static bool _isAuthorized({
+    required UserRole role,
+    required String location,
+  }) {
+    if (_patientRoutes.contains(location)) {
+      return role == UserRole.patient;
+    }
+    if (_doctorRoutes.contains(location)) {
+      return role == UserRole.doctor;
+    }
+    if (_chwRoutes.contains(location)) {
+      return role == UserRole.communityHealthWorker;
+    }
+    return true;
+  }
+
+  static String _defaultAuthorizedRouteFor(UserRole role) {
+    return RoleHome.forRole(role);
   }
 }

@@ -14,6 +14,5 @@ class AcceptReferral {
   Future<Either<Failure, ReferralBoard>> call(
     String reference, {
     String? routedSpecialty,
-  }) =>
-      _repository.acceptReferral(reference, routedSpecialty: routedSpecialty);
+  }) => _repository.acceptReferral(reference, routedSpecialty: routedSpecialty);
 }

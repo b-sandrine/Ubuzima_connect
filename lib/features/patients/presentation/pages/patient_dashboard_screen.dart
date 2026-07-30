@@ -1,0 +1,374 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/routing/app_routes.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
+import '../../../../shared/widgets/error/error_view.dart';
+import '../../../../shared/widgets/loading/loading_indicator.dart';
+import '../../data/repositories/mock_patient_dashboard_repository.dart';
+import '../../domain/models/ai_health_insight.dart';
+import '../../domain/models/bp_trend_point.dart';
+import '../../domain/models/care_item.dart';
+import '../../domain/models/health_score.dart';
+import '../../domain/models/medication_reminder.dart';
+import '../../domain/models/patient_profile.dart';
+import '../../domain/models/quick_link.dart';
+import '../../domain/models/vital_reading.dart';
+import '../../domain/repositories/patient_dashboard_repository.dart';
+import '../widgets/ai_health_insight_card.dart';
+import '../widgets/bp_trend_card.dart';
+import '../widgets/care_item_card.dart';
+import '../widgets/health_score_card.dart';
+import '../widgets/medication_reminder_card.dart';
+import '../widgets/patient_bottom_navigation_bar.dart';
+import '../widgets/patient_dashboard_header.dart';
+import '../widgets/quick_link_card.dart';
+import '../widgets/vital_reading_card.dart';
+
+/// The patient's home dashboard: health score, today's vitals, medication
+/// reminders, upcoming care, an AI-generated health insight, quick actions,
+/// and a 7-day blood-pressure trend.
+///
+/// Data comes from a [PatientDashboardRepository] —
+/// [MockPatientDashboardRepository] by default — so swapping in a
+/// Firestore-backed implementation later only touches the constructor call,
+/// not this screen.
+class PatientDashboardScreen extends StatefulWidget {
+  final PatientDashboardRepository repository;
+
+  const PatientDashboardScreen({
+    super.key,
+    this.repository = const MockPatientDashboardRepository(),
+  });
+
+  @override
+  State<PatientDashboardScreen> createState() =>
+      _PatientDashboardScreenState();
+}
+
+class _DashboardData {
+  final PatientProfile patient;
+  final HealthScore healthScore;
+  final List<VitalReading> vitals;
+  final List<MedicationReminder> medications;
+  final List<CareItem> careItems;
+  final AiHealthInsight insight;
+  final List<QuickLink> quickLinks;
+  final List<BpTrendPoint> bpTrend;
+
+  const _DashboardData({
+    required this.patient,
+    required this.healthScore,
+    required this.vitals,
+    required this.medications,
+    required this.careItems,
+    required this.insight,
+    required this.quickLinks,
+    required this.bpTrend,
+  });
+}
+
+class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
+  late Future<_DashboardData> _future;
+  int _navIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _load();
+  }
+
+  Future<_DashboardData> _load() async {
+    final results = await Future.wait([
+      widget.repository.getCurrentPatient(),
+      widget.repository.getHealthScore(),
+      widget.repository.getTodayVitals(),
+      widget.repository.getMedicationReminders(),
+      widget.repository.getUpcomingCare(),
+      widget.repository.getAiHealthInsight(),
+      widget.repository.getQuickLinks(),
+      widget.repository.getBpTrend(),
+    ]);
+
+    return _DashboardData(
+      patient: results[0] as PatientProfile,
+      healthScore: results[1] as HealthScore,
+      vitals: results[2] as List<VitalReading>,
+      medications: results[3] as List<MedicationReminder>,
+      careItems: results[4] as List<CareItem>,
+      insight: results[5] as AiHealthInsight,
+      quickLinks: results[6] as List<QuickLink>,
+      bpTrend: results[7] as List<BpTrendPoint>,
+    );
+  }
+
+  Future<void> _refresh() async {
+    final next = _load();
+    setState(() => _future = next);
+    await next;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: AppGradientBackground(
+        child: SafeArea(
+          child: FutureBuilder<_DashboardData>(
+            future: _future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const LoadingIndicator(message: 'Loading dashboard…');
+              }
+              if (snapshot.hasError) {
+                return ErrorView(
+                  message: 'Could not load the dashboard. Please try again.',
+                  onRetry: _refresh,
+                );
+              }
+
+              final data = snapshot.requireData;
+              return RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.sm,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                  ),
+                  children: [
+                    PatientDashboardHeader(
+                      patient: data.patient,
+                      onNotificationsTap: () =>
+                          _printAction('Notifications'),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    HealthScoreCard(score: data.healthScore),
+                    const SizedBox(height: AppSpacing.lg),
+                    _SectionHeader(
+                      title: "Today's Vitals",
+                      actionLabel: 'View All',
+                      onAction: () => _printAction("Today's Vitals · View All"),
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    _VitalsGrid(vitals: data.vitals),
+                    const SizedBox(height: AppSpacing.lg),
+                    _SectionHeader(
+                      title: 'Medication Reminders',
+                      actionLabel: 'All Meds',
+                      onAction: () =>
+                          _printAction('Medication Reminders · All Meds'),
+                      uppercase: true,
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    for (final medication in data.medications) ...[
+                      MedicationReminderCard(
+                        reminder: medication,
+                        onMarkTaken: () =>
+                            _printAction('Mark Taken · ${medication.name}'),
+                        onSnooze: () =>
+                            _printAction('Snooze · ${medication.name}'),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                    const SizedBox(height: AppSpacing.sm),
+                    _SectionHeader(
+                      title: 'Upcoming Care',
+                      actionLabel: 'Care Plan',
+                      onAction: () => _printAction('Upcoming Care · Care Plan'),
+                      uppercase: true,
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    for (final item in data.careItems) ...[
+                      CareItemCard(
+                        item: item,
+                        onPrimaryAction: () =>
+                            _printAction('${item.primaryActionLabel} · ${item.title}'),
+                        onSecondaryAction: () => _printAction(
+                          '${item.secondaryActionLabel} · ${item.title}',
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                    ],
+                    const SizedBox(height: AppSpacing.sm),
+                    _SectionHeader(
+                      title: 'AI Health Insight',
+                      actionLabel: 'See All',
+                      onAction: () => _printAction('AI Health Insight · See All'),
+                      uppercase: true,
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    AiHealthInsightCard(
+                      insight: data.insight,
+                      onLearnMore: () => _printAction('AI Health Insight · Learn More'),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    const _SectionTitle('Quick Actions', uppercase: true),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    _QuickLinksRow(links: data.quickLinks, onTap: _printAction),
+                    const SizedBox(height: AppSpacing.lg),
+                    _SectionHeader(
+                      title: 'BP Trend · Last 7 Days',
+                      actionLabel: 'Details',
+                      onAction: () => _printAction('BP Trend · Details'),
+                    ),
+                    const SizedBox(height: AppSpacing.sm + 2),
+                    BpTrendCard(points: data.bpTrend),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+      bottomNavigationBar: PatientBottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: _onNavTap,
+      ),
+    );
+  }
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        context.go(AppRoutes.patientRecords);
+      case 3:
+        context.go(AppRoutes.patientNotifications);
+      case 4:
+        context.go(AppRoutes.patientSettings);
+      default:
+        setState(() => _navIndex = index);
+    }
+  }
+
+  void _printAction(String action) => debugPrint('Tapped: $action');
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  final bool uppercase;
+
+  const _SectionTitle(this.title, {this.uppercase = false});
+
+  @override
+  Widget build(BuildContext context) {
+    if (uppercase) {
+      return Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.6,
+          color: AppColors.textTertiary,
+        ),
+      );
+    }
+
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String actionLabel;
+  final VoidCallback onAction;
+  final bool uppercase;
+
+  const _SectionHeader({
+    required this.title,
+    required this.actionLabel,
+    required this.onAction,
+    this.uppercase = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _SectionTitle(title, uppercase: uppercase),
+        InkWell(
+          onTap: onAction,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            child: Text(
+              actionLabel,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _VitalsGrid extends StatelessWidget {
+  final List<VitalReading> vitals;
+
+  const _VitalsGrid({required this.vitals});
+
+  @override
+  Widget build(BuildContext context) {
+    // Two `Row`s of `Expanded` cards rather than a `GridView`, so each
+    // row's height comes from its own content instead of a fixed number —
+    // immune to overflow regardless of the user's Text Size setting.
+    return Column(
+      children: [
+        for (var i = 0; i < vitals.length; i += 2) ...[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: VitalReadingCard(reading: vitals[i])),
+              if (i + 1 < vitals.length) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(child: VitalReadingCard(reading: vitals[i + 1])),
+              ],
+            ],
+          ),
+          if (i + 2 < vitals.length) const SizedBox(height: AppSpacing.sm),
+        ],
+      ],
+    );
+  }
+}
+
+class _QuickLinksRow extends StatelessWidget {
+  final List<QuickLink> links;
+  final ValueChanged<String> onTap;
+
+  const _QuickLinksRow({required this.links, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (final link in links) ...[
+          Expanded(
+            child: QuickLinkCard(
+              link: link,
+              onTap: () => onTap('Quick Actions · ${link.label}'),
+            ),
+          ),
+          if (link != links.last) const SizedBox(width: AppSpacing.sm),
+        ],
+      ],
+    );
+  }
+}
