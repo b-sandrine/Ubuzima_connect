@@ -22,7 +22,4 @@ abstract final class PatientsRoutes {
           builder: (context, state) => const PatientMedicalTimelinePage(),
         ),
       ];
-
-    ),
-  ];
 }

@@ -6,7 +6,7 @@ import 'package:ubuzima_connect/features/showcase/presentation/pages/showcase_pa
 
 void main() {
   Future<GoRouter> pump(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(1170, 6200);
+    tester.view.physicalSize = const Size(1170, 7200);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
 
@@ -33,7 +33,7 @@ void main() {
     await pump(tester);
 
     expect(find.text('Screen Showcase'), findsOneWidget);
-    expect(find.text('15 screens'), findsOneWidget);
+    expect(find.text('17 screens'), findsOneWidget);
     expect(find.text('Role Selection'), findsOneWidget);
     expect(find.text('Current Medications'), findsOneWidget);
     expect(find.text('Patient Timeline'), findsOneWidget);

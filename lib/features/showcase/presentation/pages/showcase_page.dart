@@ -90,6 +90,22 @@ class ShowcasePage extends StatelessWidget {
     ),
     _ShowcaseEntry(
       task: 'DOCTOR',
+      title: 'Doctor Dashboard',
+      subtitle: 'Doctor · home overview, alerts, queue & referrals',
+      icon: Icons.dashboard_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.doctorDashboard,
+    ),
+    _ShowcaseEntry(
+      task: 'DOCTOR',
+      title: 'Patient Search',
+      subtitle: 'Doctor · search, filters & recent patient records',
+      icon: Icons.person_search_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.patientSearch,
+    ),
+    _ShowcaseEntry(
+      task: 'DOCTOR',
       title: 'Patient Details',
       subtitle: 'Doctor · risk scores, vitals, allergies & clinical notes',
       icon: Icons.medical_information_outlined,
