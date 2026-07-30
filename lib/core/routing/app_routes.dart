@@ -40,6 +40,9 @@ abstract final class AppRoutes {
   /// The doctor's patient search / records screen.
   static const String patientSearch = '/doctor/patients';
 
+  /// The doctor's active-visit Consultation screen (Vitals, Diagnosis,
+  /// Notes, Treatment).
+  static const String consultation = '/doctor/consultation';
   /// SETTINGS-01 — the language switcher.
   static const String languageSettings = '/settings/language';
   /// The doctor's patient details screen.
@@ -79,6 +82,7 @@ abstract final class AppRoutes {
     patientMedicalTimeline,
     doctorDashboard,
     patientSearch,
+    consultation,
     languageSettings,
     patientDetail,
     patientDashboard,
