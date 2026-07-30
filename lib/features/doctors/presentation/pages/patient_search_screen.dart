@@ -278,6 +278,8 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
         break;
       case 3:
         context.go(AppRoutes.doctorNotifications);
+      case 4:
+        context.go(AppRoutes.doctorSettings);
       default:
         setState(() => _navIndex = index);
     }

@@ -117,6 +117,7 @@ import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
     as _i460;
 import '../../features/referrals/presentation/bloc/referral_form_bloc.dart'
     as _i668;
+import '../accessibility/accessibility_cubit.dart' as _i1064;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
@@ -132,6 +133,7 @@ import '../services/connectivity_service.dart' as _i47;
 import '../services/firebase_messaging_service.dart' as _i910;
 import '../services/sync_service.dart' as _i979;
 import '../storage/local_storage_service.dart' as _i744;
+import '../theme/theme_cubit.dart' as _i611;
 import 'register_module.dart' as _i291;
 
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -225,8 +227,14 @@ Future<_i174.GetIt> init(
       gh<_i325.MedicationLocalDataSource>(),
     ),
   );
+  gh.lazySingleton<_i1064.AccessibilityCubit>(
+    () => _i1064.AccessibilityCubit(gh<_i744.LocalStorageService>()),
+  );
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
+  );
+  gh.lazySingleton<_i611.ThemeCubit>(
+    () => _i611.ThemeCubit(gh<_i744.LocalStorageService>()),
   );
   gh.lazySingleton<_i710.ReferralRepository>(
     () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
