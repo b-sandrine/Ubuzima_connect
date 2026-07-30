@@ -39,7 +39,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get somethingWentWrong => 'Une erreur est survenue';
 
   @override
-  String get offlineBannerMessage => 'Vous êtes hors ligne. Les modifications seront synchronisées dès que vous serez de nouveau en ligne.';
+  String get offlineBannerMessage =>
+      'Vous êtes hors ligne. Les modifications seront synchronisées dès que vous serez de nouveau en ligne.';
 
   @override
   String get login => 'Connexion';
@@ -51,7 +52,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get welcomeMessage => 'Bienvenue sur Ubuzima Connect';
 
   @override
-  String get welcomeSubtitle => 'Des outils de santé intelligents pour le Rwanda — connectez-vous avec votre agent de santé, médecin ou gérez votre propre santé.';
+  String get welcomeSubtitle =>
+      'Des outils de santé intelligents pour le Rwanda — connectez-vous avec votre agent de santé, médecin ou gérez votre propre santé.';
 
   @override
   String get continueLabel => 'Continuer';
@@ -63,7 +65,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginWelcomeBackChw => 'Bon retour';
 
   @override
-  String get loginSubtitle => 'Connectez-vous avec votre e-mail ou votre compte Google.';
+  String get loginSubtitle =>
+      'Connectez-vous avec votre e-mail ou votre compte Google.';
 
   @override
   String get loginEmailLabel => 'Adresse e-mail';
@@ -90,13 +93,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginNoAccount => 'Pas de compte ? ';
 
   @override
-  String get loginChwSubtitle => 'Connectez-vous pour poursuivre votre travail de santé';
+  String get loginChwSubtitle =>
+      'Connectez-vous pour poursuivre votre travail de santé';
 
   @override
   String get loginOfflineAccessTitle => 'Accès hors ligne disponible';
 
   @override
-  String get loginOfflineAccessMessage => 'Les ASC peuvent accéder aux dossiers patients en cache sans internet. Les données se synchronisent à la reconnexion.';
+  String get loginOfflineAccessMessage =>
+      'Les ASC peuvent accéder aux dossiers patients en cache sans internet. Les données se synchronisent à la reconnexion.';
 
   @override
   String get loginPhoneTab => 'Téléphone';
@@ -129,16 +134,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginContinueOffline => 'Continuer hors ligne (mode ASC)';
 
   @override
-  String get loginPatientSubtitle => 'Connectez-vous pour gérer votre santé et vos médicaments';
+  String get loginPatientSubtitle =>
+      'Connectez-vous pour gérer votre santé et vos médicaments';
 
   @override
-  String get loginDoctorSubtitle => 'Connectez-vous pour examiner patients, orientations et historiques';
+  String get loginDoctorSubtitle =>
+      'Connectez-vous pour examiner patients, orientations et historiques';
 
   @override
   String get registerTitle => 'Créer votre compte';
 
   @override
-  String get registerSubtitle => 'Rejoignez Ubuzima Connect et commencez à gérer votre santé.';
+  String get registerSubtitle =>
+      'Rejoignez Ubuzima Connect et commencez à gérer votre santé.';
 
   @override
   String get registerNameLabel => 'Nom complet';
@@ -153,7 +161,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get registerConfirmPasswordLabel => 'Confirmer le mot de passe';
 
   @override
-  String get registerConfirmPasswordHint => 'Saisissez à nouveau votre mot de passe';
+  String get registerConfirmPasswordHint =>
+      'Saisissez à nouveau votre mot de passe';
 
   @override
   String get registerHaveAccount => 'Vous avez déjà un compte ? ';
@@ -162,7 +171,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get roleSelectionTitle => 'Santé communautaire';
 
   @override
-  String get roleSelectionSubtitle => 'Des outils simples et fiables pour les agents de santé du Rwanda, au service de meilleurs soins.';
+  String get roleSelectionSubtitle =>
+      'Des outils simples et fiables pour les agents de santé du Rwanda, au service de meilleurs soins.';
 
   @override
   String get rolePatient => 'Patient';
@@ -174,7 +184,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get roleCommunityHealthWorker => 'Agent de santé communautaire';
 
   @override
-  String get roleCommunityHealthWorkerDescription => 'Patients, orientations et visites';
+  String get roleCommunityHealthWorkerDescription =>
+      'Patients, orientations et visites';
 
   @override
   String get roleDoctor => 'Médecin / Clinicien';
@@ -225,13 +236,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chooseLanguageHeading => 'Choisissez votre langue';
 
   @override
-  String get chooseLanguageSubtitle => 'L\'application change immédiatement. Vous pouvez modifier ce choix à tout moment.';
+  String get chooseLanguageSubtitle =>
+      'L\'application change immédiatement. Vous pouvez modifier ce choix à tout moment.';
 
   @override
   String get useDeviceLanguage => 'Utiliser la langue de l\'appareil';
 
   @override
-  String get useDeviceLanguageSubtitle => 'Suivre automatiquement la langue de ce téléphone';
+  String get useDeviceLanguageSubtitle =>
+      'Suivre automatiquement la langue de ce téléphone';
 
   @override
   String get languageUpdatedMessage => 'Langue mise à jour';
@@ -255,17 +268,20 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingSlide1Title => 'Des soins qui vous suivent';
 
   @override
-  String get onboardingSlide1Body => 'Ne répétez plus vos antécédents médicaux. Votre dossier vous accompagne entre votre agent de santé communautaire et l\'hôpital.';
+  String get onboardingSlide1Body =>
+      'Ne répétez plus vos antécédents médicaux. Votre dossier vous accompagne entre votre agent de santé communautaire et l\'hôpital.';
 
   @override
   String get onboardingSlide2Title => 'Du village à l\'hôpital, instantanément';
 
   @override
-  String get onboardingSlide2Body => 'Les agents de santé communautaires enregistrent une visite une seule fois — les médecins la voient dès que le patient est référé.';
+  String get onboardingSlide2Body =>
+      'Les agents de santé communautaires enregistrent une visite une seule fois — les médecins la voient dès que le patient est référé.';
 
   @override
   String get onboardingSlide3Title => 'Fonctionne sans signal';
 
   @override
-  String get onboardingSlide3Body => 'Continuez à travailler dans les zones sans internet. Tout se synchronise automatiquement dès que vous êtes de nouveau en ligne.';
+  String get onboardingSlide3Body =>
+      'Continuez à travailler dans les zones sans internet. Tout se synchronise automatiquement dès que vous êtes de nouveau en ligne.';
 }
