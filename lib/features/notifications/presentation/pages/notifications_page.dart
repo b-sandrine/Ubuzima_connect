@@ -74,6 +74,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         context.go(isDoctor ? AppRoutes.patientSearch : AppRoutes.patientRecords);
       case 3:
         break;
+      case 4:
+        context.go(isDoctor ? AppRoutes.doctorSettings : AppRoutes.patientSettings);
       default:
         setState(() => _navIndex = index);
     }
