@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/branding/ubuzima_wordmark.dart';
@@ -47,9 +49,12 @@ class _HealthRecordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
+      bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 1,
-        items: [
+        onTap: (index) {
+          if (index == 2) context.push(AppRoutes.newPatientIntake);
+        },
+        items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),
           BottomNavItem(icon: LucideIcons.users, label: 'Patients'),
           BottomNavItem(

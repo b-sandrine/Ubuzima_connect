@@ -58,6 +58,18 @@ import '../../features/medical_records/domain/usecases/get_patient_timeline.dart
     as _i209;
 import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
     as _i855;
+import '../../features/patient_intake/data/datasources/local/rwanda_locations_data_source.dart'
+    as _i138;
+import '../../features/patient_intake/data/datasources/remote/patient_intake_remote_data_source.dart'
+    as _i96;
+import '../../features/patient_intake/data/repositories/patient_intake_repository_impl.dart'
+    as _i66;
+import '../../features/patient_intake/domain/repositories/patient_intake_repository.dart'
+    as _i579;
+import '../../features/patient_intake/domain/usecases/submit_patient_intake.dart'
+    as _i277;
+import '../../features/patient_intake/presentation/bloc/patient_intake_bloc.dart'
+    as _i377;
 import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
     as _i325;
 import '../../features/prescriptions/data/datasources/remote/medication_remote_data_source.dart'
@@ -133,6 +145,9 @@ Future<_i174.GetIt> init(
     () => registerModule.secureStorage,
   );
   gh.lazySingleton<_i974.Logger>(() => registerModule.logger);
+  gh.lazySingleton<_i138.RwandaLocationsDataSource>(
+    () => _i138.RwandaLocationsDataSourceImpl(),
+  );
   gh.lazySingleton<_i812.SecureStorageService>(
     () => _i812.SecureStorageServiceImpl(gh<_i558.FlutterSecureStorage>()),
   );
@@ -160,6 +175,9 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
+  gh.lazySingleton<_i96.PatientIntakeRemoteDataSource>(
+    () => _i96.PatientIntakeRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+  );
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
         _i838.RoleSelectionLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
@@ -217,6 +235,11 @@ Future<_i174.GetIt> init(
       gh<_i231.TimelineLocalDataSource>(),
     ),
   );
+  gh.lazySingleton<_i579.PatientIntakeRepository>(
+    () => _i66.PatientIntakeRepositoryImpl(
+      gh<_i96.PatientIntakeRemoteDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i552.MedicationRepository>(
     () =>
         _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
@@ -252,6 +275,9 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i509.GetHealthRecord>(
     () => _i509.GetHealthRecord(gh<_i245.HealthRecordRepository>()),
+  );
+  gh.factory<_i277.SubmitPatientIntake>(
+    () => _i277.SubmitPatientIntake(gh<_i579.PatientIntakeRepository>()),
   );
   gh.factory<_i460.ReferralBoardBloc>(
     () => _i460.ReferralBoardBloc(
@@ -300,6 +326,9 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i855.TimelineBloc>(
     () => _i855.TimelineBloc(gh<_i209.GetPatientTimeline>()),
+  );
+  gh.factory<_i377.PatientIntakeBloc>(
+    () => _i377.PatientIntakeBloc(gh<_i277.SubmitPatientIntake>()),
   );
   return getIt;
 }

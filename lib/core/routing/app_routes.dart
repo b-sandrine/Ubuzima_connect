@@ -22,6 +22,10 @@ abstract final class AppRoutes {
   /// The community health worker's patient health record.
   static const String chwHealthRecord = '/chw/record';
 
+  /// The three-step New Patient Registration flow (Identity & Household,
+  /// Demographics & Contact, Confirm & Submit).
+  static const String newPatientIntake = '/patients/new';
+
   /// DOC-04 — the doctor's patient medical timeline.
   static const String patientTimeline = '/timeline';
 
@@ -44,6 +48,7 @@ abstract final class AppRoutes {
     newReferral,
     chwReferral,
     chwHealthRecord,
+    newPatientIntake,
     patientTimeline,
     doctorDashboard,
     patientSearch,
