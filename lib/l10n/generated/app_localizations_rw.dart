@@ -52,7 +52,117 @@ class AppLocalizationsRw extends AppLocalizations {
   String get welcomeMessage => 'Murakaza neza kuri Ubuzima Connect';
 
   @override
+  String get welcomeSubtitle =>
+      'Ibikoresho by\'ubuzima byiza mu Rwanda — huza na mujyanama w\'ubuzima, muganga, cyangwa ucunga ubuzima bwawe.';
+
+  @override
   String get continueLabel => 'Komeza';
+
+  @override
+  String get loginWelcomeBack => 'Murakaza neza';
+
+  @override
+  String get loginWelcomeBackChw => 'Murakaza neza';
+
+  @override
+  String get loginSubtitle =>
+      'Injira ukoresheje imeri cyangwa konti ya Google.';
+
+  @override
+  String get loginEmailLabel => 'Aderesi ya imeri';
+
+  @override
+  String get loginEmailHint => 'you@example.com';
+
+  @override
+  String get loginPasswordLabel => 'Ijambo ry\'ibanga';
+
+  @override
+  String get loginPasswordHint => 'Andika ijambo ry\'ibanga';
+
+  @override
+  String get loginOrContinueWith => 'Cyangwa komeza na';
+
+  @override
+  String get loginOrContinueWithLower => 'cyangwa komeza na';
+
+  @override
+  String get loginWithGoogle => 'Komeza na Google';
+
+  @override
+  String get loginNoAccount => 'Nta konti ufite? ';
+
+  @override
+  String get loginChwSubtitle => 'Injira ukomeze akazi kawe k\'ubuzima';
+
+  @override
+  String get loginOfflineAccessTitle => 'Kwinjira nta murandasi birashoboka';
+
+  @override
+  String get loginOfflineAccessMessage =>
+      'Abajyanama b\'ubuzima bashobora kubona amakuru y\'aburwayi bari mu buryo bw\'ububiko nta murandasi. Amakuru ahuzwa iyo wongeye guhuza na interineti.';
+
+  @override
+  String get loginPhoneTab => 'Telefoni';
+
+  @override
+  String get loginEmailTab => 'Imeri';
+
+  @override
+  String get loginPhoneLabel => 'Numero ya telefoni';
+
+  @override
+  String get loginPhoneHint => '07X XXX XXXX';
+
+  @override
+  String get loginForgotPassword => 'Wibagiwe ijambo ry\'ibanga?';
+
+  @override
+  String get loginRememberMe => 'Unyibuke kuri iki gikoresho';
+
+  @override
+  String get loginBiometric => 'Ibimenyetso by\'umubiri';
+
+  @override
+  String get loginQrCode => 'Injira na QR';
+
+  @override
+  String get loginFeatureComingSoon => 'Bizaza vuba';
+
+  @override
+  String get loginContinueOffline => 'Komeza nta murandasi (Uburyo bwa AJK)';
+
+  @override
+  String get loginPatientSubtitle => 'Injira ucunge ubuzima n\'imiti yawe';
+
+  @override
+  String get loginDoctorSubtitle =>
+      'Injira usuzume abarwayi, kohereza n\'amateka';
+
+  @override
+  String get registerTitle => 'Fungura konti yawe';
+
+  @override
+  String get registerSubtitle =>
+      'Injira muri Ubuzima Connect utangire gucunga ubuzima bwawe.';
+
+  @override
+  String get registerNameLabel => 'Amazina yuzuye';
+
+  @override
+  String get registerNameHint => 'Andika amazina yawe yuzuye';
+
+  @override
+  String get registerPasswordHint => 'Byibuze inyuguti 6';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Emeza ijambo ry\'ibanga';
+
+  @override
+  String get registerConfirmPasswordHint => 'Ongera wandike ijambo ry\'ibanga';
+
+  @override
+  String get registerHaveAccount => 'Usanzwe ufite konti? ';
 
   @override
   String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';
@@ -112,4 +222,30 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get roleBadgeDoctor => 'MD';
+
+  @override
+  String get settingsTitle => 'Igenamiterere';
+
+  @override
+  String get languageSettingsTitle => 'Ururimi';
+
+  @override
+  String get chooseLanguageHeading => 'Hitamo Ururimi Rwawe';
+
+  @override
+  String get chooseLanguageSubtitle =>
+      'Porogaramu izahita ihinduka. Ushobora guhindura ibi igihe cyose.';
+
+  @override
+  String get useDeviceLanguage => 'Koresha Ururimi rwa Telefoni';
+
+  @override
+  String get useDeviceLanguageSubtitle =>
+      'Kurikiza ururimi rwa telefoni yawe mu buryo bwikora';
+
+  @override
+  String get languageUpdatedMessage => 'Ururimi rwahinduwe';
+
+  @override
+  String get selectedLabel => 'Byahiswemo';
 }

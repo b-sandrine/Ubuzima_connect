@@ -7,7 +7,9 @@ abstract final class AppRoutes {
   static const String roleSelection = '/role-selection';
   static const String login = '/login';
   static const String register = '/register';
+  static const String resetPassword = '/reset-password';
   static const String home = '/home';
+  static const String chwDashboard = '/chw/dashboard';
 
   /// PAT-03 — the patient's current-medications screen.
   static const String patientMedications = '/medications';
@@ -29,6 +31,9 @@ abstract final class AppRoutes {
   /// DOC-04 — the doctor's patient medical timeline.
   static const String patientTimeline = '/timeline';
 
+  /// PAT-02b — the patient's own medical timeline.
+  static const String patientMedicalTimeline = '/patient/timeline';
+
   /// The doctor's home dashboard.
   static const String doctorDashboard = '/doctor/dashboard';
 
@@ -38,24 +43,54 @@ abstract final class AppRoutes {
   /// The doctor's active-visit Consultation screen (Vitals, Diagnosis,
   /// Notes, Treatment).
   static const String consultation = '/doctor/consultation';
+  /// SETTINGS-01 — the language switcher.
+  static const String languageSettings = '/settings/language';
+  /// The doctor's patient details screen.
+  static const String patientDetail = '/doctor/patients/detail';
+
+  /// The patient's home dashboard.
+  static const String patientDashboard = '/patient/dashboard';
+
+  /// The patient's medical records screen.
+  static const String patientRecords = '/patient/records';
+
+  /// The doctor's notifications / alerts feed.
+  static const String doctorNotifications = '/doctor/notifications';
+
+  /// The patient's notifications / alerts feed.
+  static const String patientNotifications = '/patient/notifications';
+
+  /// The doctor's main settings screen.
+  static const String doctorSettings = '/doctor/settings';
+
+  /// The patient's main settings screen.
+  static const String patientSettings = '/patient/settings';
 
   /// Demo hub listing every delivered screen (not a product screen).
   static const String showcase = '/showcase';
 
-  /// Routes openable from the demo hub without a real session. These are the
-  /// standalone feature screens delivered ahead of the auth/session flow, so
-  /// the guard lets them through for demoing.
+  /// Routes openable without a Firebase session.
+  /// Clinical Firestore screens require auth; only the showcase hub and the
+  /// CHW offline dashboard stay reachable for demos / offline continue.
   static const Set<String> demoReachable = {
     showcase,
-    patientMedications,
-    referralManagement,
-    newReferral,
+    chwDashboard,
     chwReferral,
     chwHealthRecord,
     newPatientIntake,
     patientTimeline,
+    patientMedicalTimeline,
     doctorDashboard,
     patientSearch,
     consultation,
+    languageSettings,
+    patientDetail,
+    patientDashboard,
+    patientRecords,
+    patientMedications,
+    doctorNotifications,
+    patientNotifications,
+    doctorSettings,
+    patientSettings,
   };
 }

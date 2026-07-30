@@ -184,11 +184,221 @@ abstract class AppLocalizations {
   /// **'Welcome to Ubuzima Connect'**
   String get welcomeMessage;
 
+  /// No description provided for @welcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.'**
+  String get welcomeSubtitle;
+
   /// No description provided for @continueLabel.
   ///
   /// In en, this message translates to:
   /// **'Continue'**
   String get continueLabel;
+
+  /// No description provided for @loginWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get loginWelcomeBack;
+
+  /// No description provided for @loginWelcomeBackChw.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get loginWelcomeBackChw;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your email or Google account to continue.'**
+  String get loginSubtitle;
+
+  /// No description provided for @loginEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get loginEmailLabel;
+
+  /// No description provided for @loginEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'you@example.com'**
+  String get loginEmailHint;
+
+  /// No description provided for @loginPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get loginPasswordLabel;
+
+  /// No description provided for @loginPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get loginPasswordHint;
+
+  /// No description provided for @loginOrContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Or continue with'**
+  String get loginOrContinueWith;
+
+  /// No description provided for @loginOrContinueWithLower.
+  ///
+  /// In en, this message translates to:
+  /// **'or continue with'**
+  String get loginOrContinueWithLower;
+
+  /// No description provided for @loginWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get loginWithGoogle;
+
+  /// No description provided for @loginNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? '**
+  String get loginNoAccount;
+
+  /// No description provided for @loginChwSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue your health work'**
+  String get loginChwSubtitle;
+
+  /// No description provided for @loginOfflineAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Access Available'**
+  String get loginOfflineAccessTitle;
+
+  /// No description provided for @loginOfflineAccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'CHWs can access cached patient records without internet. Data syncs when reconnected.'**
+  String get loginOfflineAccessMessage;
+
+  /// No description provided for @loginPhoneTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get loginPhoneTab;
+
+  /// No description provided for @loginEmailTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get loginEmailTab;
+
+  /// No description provided for @loginPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get loginPhoneLabel;
+
+  /// No description provided for @loginPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'07X XXX XXXX'**
+  String get loginPhoneHint;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginRememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me on this device'**
+  String get loginRememberMe;
+
+  /// No description provided for @loginBiometric.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric'**
+  String get loginBiometric;
+
+  /// No description provided for @loginQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Login'**
+  String get loginQrCode;
+
+  /// No description provided for @loginFeatureComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get loginFeatureComingSoon;
+
+  /// No description provided for @loginContinueOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Offline (CHW Mode)'**
+  String get loginContinueOffline;
+
+  /// No description provided for @loginPatientSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to manage your health and medications'**
+  String get loginPatientSubtitle;
+
+  /// No description provided for @loginDoctorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to review patients, referrals and timelines'**
+  String get loginDoctorSubtitle;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Ubuzima Connect and start managing your health.'**
+  String get registerSubtitle;
+
+  /// No description provided for @registerNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get registerNameLabel;
+
+  /// No description provided for @registerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your full name'**
+  String get registerNameHint;
+
+  /// No description provided for @registerPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get registerPasswordHint;
+
+  /// No description provided for @registerConfirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get registerConfirmPasswordLabel;
+
+  /// No description provided for @registerConfirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-enter your password'**
+  String get registerConfirmPasswordHint;
+
+  /// No description provided for @registerHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get registerHaveAccount;
 
   /// Heading on the role selection screen (AUTH-05).
   ///
@@ -303,6 +513,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'MD'**
   String get roleBadgeDoctor;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Top bar context label and section header on SETTINGS-01 (the language screen).
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSettingsTitle;
+
+  /// No description provided for @chooseLanguageHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Language'**
+  String get chooseLanguageHeading;
+
+  /// No description provided for @chooseLanguageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The app switches right away. You can change this anytime.'**
+  String get chooseLanguageSubtitle;
+
+  /// No description provided for @useDeviceLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Device Language'**
+  String get useDeviceLanguage;
+
+  /// No description provided for @useDeviceLanguageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow this phone\'s language automatically'**
+  String get useDeviceLanguageSubtitle;
+
+  /// No description provided for @languageUpdatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language updated'**
+  String get languageUpdatedMessage;
+
+  /// No description provided for @selectedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get selectedLabel;
 }
 
 class _AppLocalizationsDelegate
