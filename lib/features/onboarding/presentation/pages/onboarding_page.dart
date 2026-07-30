@@ -96,14 +96,29 @@ class _OnboardingViewState extends State<_OnboardingView> {
             builder: (context, state) {
               final isLast = state.pageIndex == slides.length - 1;
 
+              final canGoBack = Navigator.of(context).canPop();
+
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(12, 12, 20, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const LanguageSwitcher(),
+                        Row(
+                          children: [
+                            if (canGoBack)
+                              IconButton(
+                                onPressed: () =>
+                                    Navigator.of(context).maybePop(),
+                                icon: const Icon(
+                                  Icons.arrow_back,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            const LanguageSwitcher(),
+                          ],
+                        ),
                         TextButton(
                           onPressed: state.isFinishing
                               ? null
