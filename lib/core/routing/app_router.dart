@@ -6,6 +6,7 @@ import '../../features/authentication/presentation/pages/home_page.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
+import '../../features/notifications/notifications_routes.dart';
 import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
@@ -30,7 +31,7 @@ class AppRouter {
   AppRouter(this._authSessionProvider, this._authRouterRefresh);
 
   late final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.splash,
+    initialLocation: AppRoutes.showcase,
     debugLogDiagnostics: true,
     refreshListenable: _authRouterRefresh,
     redirect: (context, state) =>
@@ -46,6 +47,7 @@ class AppRouter {
       ...CommunityHealthWorkersRoutes.routes,
       ...MedicalRecordsRoutes.routes,
       ...PatientsRoutes.routes,
+      ...NotificationsRoutes.routes,
       ...SettingsRoutes.routes,
       ...ShowcaseRoutes.routes,
       ...DoctorsRoutes.routes,
