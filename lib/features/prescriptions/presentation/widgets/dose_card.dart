@@ -16,18 +16,24 @@ class DoseCard extends StatelessWidget {
   final Color tileColor;
   final VoidCallback onTake;
 
+  /// PAT-05: opens the prescription details modal. Optional and additive —
+  /// callers that don't pass it get the exact same card as before, so this
+  /// doesn't change PAT-03's existing behaviour.
+  final VoidCallback? onTap;
+
   const DoseCard({
     super.key,
     required this.dose,
     required this.tileColor,
     required this.onTake,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final accent = _statusAccent(dose.status);
 
-    return Container(
+    final card = Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.08),
@@ -87,6 +93,18 @@ class DoseCard extends StatelessWidget {
           const SizedBox(width: 8),
           _Trailing(dose: dose, accent: accent, onTake: onTake),
         ],
+      ),
+    );
+
+    if (onTap == null) return card;
+
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: card,
       ),
     );
   }

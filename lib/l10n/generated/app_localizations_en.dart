@@ -138,4 +138,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectedLabel => 'Selected';
+
+  @override
+  String get backOnlineMessage => 'You\'re back online';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingSlide1Title => 'Care That Follows You';
+
+  @override
+  String get onboardingSlide1Body =>
+      'Stop repeating your medical history. Your record travels with you between your community health worker and the hospital.';
+
+  @override
+  String get onboardingSlide2Title => 'From Village to Hospital, Instantly';
+
+  @override
+  String get onboardingSlide2Body =>
+      'Community health workers log a visit once — doctors see it the moment a patient is referred.';
+
+  @override
+  String get onboardingSlide3Title => 'Works Without Signal';
+
+  @override
+  String get onboardingSlide3Body =>
+      'Keep working in areas with no internet. Everything syncs automatically the moment you\'re back online.';
 }

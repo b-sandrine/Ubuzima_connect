@@ -41,5 +41,15 @@
   "useDeviceLanguage": "Utiliser la langue de l'appareil",
   "useDeviceLanguageSubtitle": "Suivre automatiquement la langue de ce téléphone",
   "languageUpdatedMessage": "Langue mise à jour",
-  "selectedLabel": "Sélectionné"
+  "selectedLabel": "Sélectionné",
+  "backOnlineMessage": "Vous êtes de nouveau en ligne",
+  "onboardingSkip": "Passer",
+  "onboardingNext": "Suivant",
+  "onboardingGetStarted": "Commencer",
+  "onboardingSlide1Title": "Des soins qui vous suivent",
+  "onboardingSlide1Body": "Ne répétez plus vos antécédents médicaux. Votre dossier vous accompagne entre votre agent de santé communautaire et l'hôpital.",
+  "onboardingSlide2Title": "Du village à l'hôpital, instantanément",
+  "onboardingSlide2Body": "Les agents de santé communautaires enregistrent une visite une seule fois \u2014 les médecins la voient dès que le patient est référé.",
+  "onboardingSlide3Title": "Fonctionne sans signal",
+  "onboardingSlide3Body": "Continuez à travailler dans les zones sans internet. Tout se synchronise automatiquement dès que vous êtes de nouveau en ligne."
 }
