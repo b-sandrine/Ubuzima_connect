@@ -6,8 +6,9 @@ import '../../features/authentication/presentation/pages/home_page.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
-import '../../features/patient_intake/patient_intake_routes.dart';
 import '../../features/notifications/notifications_routes.dart';
+import '../../features/onboarding/onboarding_routes.dart';
+import '../../features/patient_intake/patient_intake_routes.dart';
 import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
@@ -17,6 +18,7 @@ import 'app_routes.dart';
 import 'auth_router_refresh.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
+import 'pages/offline_indicator_info_page.dart';
 import 'route_guards.dart';
 
 /// Single `GoRouter` instance for the whole app. Each feature contributes
@@ -42,12 +44,17 @@ class AppRouter {
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
       ),
+      GoRoute(
+        path: AppRoutes.offlineIndicatorInfo,
+        builder: (context, state) => const OfflineIndicatorInfoPage(),
+      ),
       ...AuthenticationRoutes.routes,
       ...PrescriptionsRoutes.routes,
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
       ...PatientIntakeRoutes.routes,
       ...MedicalRecordsRoutes.routes,
+      ...OnboardingRoutes.routes,
       ...PatientsRoutes.routes,
       ...NotificationsRoutes.routes,
       ...SettingsRoutes.routes,

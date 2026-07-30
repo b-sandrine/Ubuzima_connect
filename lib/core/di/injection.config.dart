@@ -82,6 +82,18 @@ import '../../features/medical_records/domain/usecases/get_patient_timeline.dart
     as _i209;
 import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
     as _i855;
+import '../../features/onboarding/data/datasources/local/onboarding_local_data_source.dart'
+    as _i645;
+import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart'
+    as _i452;
+import '../../features/onboarding/domain/repositories/onboarding_repository.dart'
+    as _i430;
+import '../../features/onboarding/domain/usecases/complete_onboarding.dart'
+    as _i561;
+import '../../features/onboarding/domain/usecases/get_onboarding_complete.dart'
+    as _i826;
+import '../../features/onboarding/presentation/bloc/onboarding_cubit.dart'
+    as _i153;
 import '../../features/patient_intake/data/datasources/local/rwanda_locations_data_source.dart'
     as _i138;
 import '../../features/patient_intake/data/datasources/remote/patient_intake_remote_data_source.dart'
@@ -131,6 +143,7 @@ import '../../features/referrals/presentation/bloc/referral_form_bloc.dart'
     as _i668;
 import '../accessibility/accessibility_cubit.dart' as _i1064;
 import '../analytics/analytics_service.dart' as _i726;
+import '../connectivity/connectivity_cubit.dart' as _i690;
 import '../database/app_database.dart' as _i982;
 import '../helpers/id_generator.dart' as _i580;
 import '../localization/locale_cubit.dart' as _i960;
@@ -199,6 +212,9 @@ Future<_i174.GetIt> init(
     () => _i231.TimelineLocalDataSourceImpl(),
   );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
+  gh.lazySingleton<_i645.OnboardingLocalDataSource>(
+    () => _i645.OnboardingLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
+  );
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i96.PatientIntakeRemoteDataSource>(
     () => _i96.PatientIntakeRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
@@ -254,6 +270,9 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i611.ThemeCubit>(
     () => _i611.ThemeCubit(gh<_i744.LocalStorageService>()),
   );
+  gh.lazySingleton<_i690.ConnectivityCubit>(
+    () => _i690.ConnectivityCubit(gh<_i47.ConnectivityService>()),
+  );
   gh.lazySingleton<_i710.ReferralRepository>(
     () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
   );
@@ -263,9 +282,14 @@ Future<_i174.GetIt> init(
       gh<_i231.TimelineLocalDataSource>(),
     ),
   );
+  gh.lazySingleton<_i430.OnboardingRepository>(
+    () => _i452.OnboardingRepositoryImpl(gh<_i645.OnboardingLocalDataSource>()),
+  );
   gh.lazySingleton<_i579.PatientIntakeRepository>(
     () => _i66.PatientIntakeRepositoryImpl(
       gh<_i96.PatientIntakeRemoteDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
     () => _i504.FirebaseAuthRemoteDataSourceImpl(
       gh<_i59.FirebaseAuth>(),
@@ -273,6 +297,15 @@ Future<_i174.GetIt> init(
       gh<_i974.FirebaseFirestore>(),
       gh<_i838.RoleSelectionLocalDataSource>(),
     ),
+  );
+  gh.factory<_i561.CompleteOnboarding>(
+    () => _i561.CompleteOnboarding(gh<_i430.OnboardingRepository>()),
+  );
+  gh.factory<_i826.GetOnboardingComplete>(
+    () => _i826.GetOnboardingComplete(gh<_i430.OnboardingRepository>()),
+  );
+  gh.factory<_i153.OnboardingCubit>(
+    () => _i153.OnboardingCubit(gh<_i561.CompleteOnboarding>()),
   );
   gh.lazySingleton<_i552.MedicationRepository>(
     () =>
@@ -382,6 +415,7 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i377.PatientIntakeBloc>(
     () => _i377.PatientIntakeBloc(gh<_i277.SubmitPatientIntake>()),
+  );
   gh.factory<_i996.RegisterBloc>(
     () => _i996.RegisterBloc(
       gh<_i42.RegisterWithEmail>(),

@@ -248,4 +248,38 @@ class AppLocalizationsRw extends AppLocalizations {
 
   @override
   String get selectedLabel => 'Byahiswemo';
+
+  @override
+  String get backOnlineMessage => 'Ugarutse kuri interineti';
+
+  @override
+  String get onboardingSkip => 'Simbuka';
+
+  @override
+  String get onboardingNext => 'Komeza';
+
+  @override
+  String get onboardingGetStarted => 'Tangira';
+
+  @override
+  String get onboardingSlide1Title => 'Ubuvuzi Bugukurikira';
+
+  @override
+  String get onboardingSlide1Body =>
+      'Reka gusubiramo amateka y\'ubuzima bwawe. Amakuru yawe agenda hamwe nawe hagati y\'umujyanama w\'ubuzima n\'ibitaro.';
+
+  @override
+  String get onboardingSlide2Title =>
+      'Uhereye mu Mudugudu Ukagera ku Bitaro Ako Kanya';
+
+  @override
+  String get onboardingSlide2Body =>
+      'Abajyanama b\'ubuzima banditse gusura rimwe — abaganga barabibona ako kanya umurwayi yoherejwe.';
+
+  @override
+  String get onboardingSlide3Title => 'Ikora Nubwo Nta Interineti';
+
+  @override
+  String get onboardingSlide3Body =>
+      'Komeza gukora ahantu nta interineti ihari. Byose bizahita bijyana igihe uzagaruka kuri interineti.';
 }
