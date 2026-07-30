@@ -184,6 +184,14 @@ class ShowcasePage extends StatelessWidget {
       color: AppColors.roleChw,
       route: AppRoutes.chwHealthRecord,
     ),
+    _ShowcaseEntry(
+      task: 'CHW',
+      title: 'New Patient Registration',
+      subtitle: 'CHW · 3-step intake: identity, demographics, confirm',
+      icon: Icons.person_add_alt_1_outlined,
+      color: AppColors.roleChw,
+      route: AppRoutes.newPatientIntake,
+    ),
   ];
 
   @override
