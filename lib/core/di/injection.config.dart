@@ -82,7 +82,6 @@ import '../../features/medical_records/domain/usecases/get_patient_timeline.dart
     as _i209;
 import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
     as _i855;
-<<<<<<< HEAD
 import '../../features/onboarding/data/datasources/local/onboarding_local_data_source.dart'
     as _i645;
 import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart'
@@ -95,7 +94,6 @@ import '../../features/onboarding/domain/usecases/get_onboarding_complete.dart'
     as _i826;
 import '../../features/onboarding/presentation/bloc/onboarding_cubit.dart'
     as _i153;
-=======
 import '../../features/patient_intake/data/datasources/local/rwanda_locations_data_source.dart'
     as _i138;
 import '../../features/patient_intake/data/datasources/remote/patient_intake_remote_data_source.dart'
@@ -108,7 +106,6 @@ import '../../features/patient_intake/domain/usecases/submit_patient_intake.dart
     as _i277;
 import '../../features/patient_intake/presentation/bloc/patient_intake_bloc.dart'
     as _i377;
->>>>>>> main
 import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
     as _i325;
 import '../../features/prescriptions/data/datasources/remote/medication_remote_data_source.dart'
@@ -270,13 +267,11 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i960.LocaleCubit>(
     () => _i960.LocaleCubit(gh<_i744.LocalStorageService>()),
   );
-<<<<<<< HEAD
-  gh.lazySingleton<_i690.ConnectivityCubit>(
-    () => _i690.ConnectivityCubit(gh<_i47.ConnectivityService>()),
-=======
   gh.lazySingleton<_i611.ThemeCubit>(
     () => _i611.ThemeCubit(gh<_i744.LocalStorageService>()),
->>>>>>> main
+  );
+  gh.lazySingleton<_i690.ConnectivityCubit>(
+    () => _i690.ConnectivityCubit(gh<_i47.ConnectivityService>()),
   );
   gh.lazySingleton<_i710.ReferralRepository>(
     () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
@@ -287,9 +282,21 @@ Future<_i174.GetIt> init(
       gh<_i231.TimelineLocalDataSource>(),
     ),
   );
-<<<<<<< HEAD
   gh.lazySingleton<_i430.OnboardingRepository>(
     () => _i452.OnboardingRepositoryImpl(gh<_i645.OnboardingLocalDataSource>()),
+  );
+  gh.lazySingleton<_i579.PatientIntakeRepository>(
+    () => _i66.PatientIntakeRepositoryImpl(
+      gh<_i96.PatientIntakeRemoteDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
+    () => _i504.FirebaseAuthRemoteDataSourceImpl(
+      gh<_i59.FirebaseAuth>(),
+      gh<_i116.GoogleSignIn>(),
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i838.RoleSelectionLocalDataSource>(),
+    ),
   );
   gh.factory<_i561.CompleteOnboarding>(
     () => _i561.CompleteOnboarding(gh<_i430.OnboardingRepository>()),
@@ -299,18 +306,6 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i153.OnboardingCubit>(
     () => _i153.OnboardingCubit(gh<_i561.CompleteOnboarding>()),
-=======
-  gh.lazySingleton<_i579.PatientIntakeRepository>(
-    () => _i66.PatientIntakeRepositoryImpl(
-      gh<_i96.PatientIntakeRemoteDataSource>(),
-  gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
-    () => _i504.FirebaseAuthRemoteDataSourceImpl(
-      gh<_i59.FirebaseAuth>(),
-      gh<_i116.GoogleSignIn>(),
-      gh<_i974.FirebaseFirestore>(),
-      gh<_i838.RoleSelectionLocalDataSource>(),
-    ),
->>>>>>> main
   );
   gh.lazySingleton<_i552.MedicationRepository>(
     () =>
@@ -420,6 +415,7 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i377.PatientIntakeBloc>(
     () => _i377.PatientIntakeBloc(gh<_i277.SubmitPatientIntake>()),
+  );
   gh.factory<_i996.RegisterBloc>(
     () => _i996.RegisterBloc(
       gh<_i42.RegisterWithEmail>(),
