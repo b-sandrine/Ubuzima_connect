@@ -39,7 +39,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get somethingWentWrong => 'Something went wrong';
 
   @override
-  String get offlineBannerMessage => 'You\'re offline. Changes will sync when you\'re back online.';
+  String get offlineBannerMessage =>
+      'You\'re offline. Changes will sync when you\'re back online.';
 
   @override
   String get login => 'Login';
@@ -51,7 +52,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeMessage => 'Welcome to Ubuzima Connect';
 
   @override
-  String get welcomeSubtitle => 'Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.';
+  String get welcomeSubtitle =>
+      'Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.';
 
   @override
   String get continueLabel => 'Continue';
@@ -63,7 +65,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginWelcomeBackChw => 'Welcome Back';
 
   @override
-  String get loginSubtitle => 'Sign in with your email or Google account to continue.';
+  String get loginSubtitle =>
+      'Sign in with your email or Google account to continue.';
 
   @override
   String get loginEmailLabel => 'Email address';
@@ -96,7 +99,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginOfflineAccessTitle => 'Offline Access Available';
 
   @override
-  String get loginOfflineAccessMessage => 'CHWs can access cached patient records without internet. Data syncs when reconnected.';
+  String get loginOfflineAccessMessage =>
+      'CHWs can access cached patient records without internet. Data syncs when reconnected.';
 
   @override
   String get loginPhoneTab => 'Phone';
@@ -129,16 +133,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginContinueOffline => 'Continue Offline (CHW Mode)';
 
   @override
-  String get loginPatientSubtitle => 'Sign in to manage your health and medications';
+  String get loginPatientSubtitle =>
+      'Sign in to manage your health and medications';
 
   @override
-  String get loginDoctorSubtitle => 'Sign in to review patients, referrals and timelines';
+  String get loginDoctorSubtitle =>
+      'Sign in to review patients, referrals and timelines';
 
   @override
   String get registerTitle => 'Create your account';
 
   @override
-  String get registerSubtitle => 'Join Ubuzima Connect and start managing your health.';
+  String get registerSubtitle =>
+      'Join Ubuzima Connect and start managing your health.';
 
   @override
   String get registerNameLabel => 'Full name';
@@ -162,7 +169,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleSelectionTitle => 'Community Healthcare';
 
   @override
-  String get roleSelectionSubtitle => 'Empowering health workers across Rwanda with smart, calm tools for better care.';
+  String get roleSelectionSubtitle =>
+      'Empowering health workers across Rwanda with smart, calm tools for better care.';
 
   @override
   String get rolePatient => 'Patient';
@@ -174,7 +182,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleCommunityHealthWorker => 'Community Health Worker';
 
   @override
-  String get roleCommunityHealthWorkerDescription => 'Patients, referrals & field visits';
+  String get roleCommunityHealthWorkerDescription =>
+      'Patients, referrals & field visits';
 
   @override
   String get roleDoctor => 'Doctor / Clinician';
@@ -225,13 +234,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseLanguageHeading => 'Choose Your Language';
 
   @override
-  String get chooseLanguageSubtitle => 'The app switches right away. You can change this anytime.';
+  String get chooseLanguageSubtitle =>
+      'The app switches right away. You can change this anytime.';
 
   @override
   String get useDeviceLanguage => 'Use Device Language';
 
   @override
-  String get useDeviceLanguageSubtitle => 'Follow this phone\'s language automatically';
+  String get useDeviceLanguageSubtitle =>
+      'Follow this phone\'s language automatically';
 
   @override
   String get languageUpdatedMessage => 'Language updated';
@@ -255,17 +266,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSlide1Title => 'Care That Follows You';
 
   @override
-  String get onboardingSlide1Body => 'Stop repeating your medical history. Your record travels with you between your community health worker and the hospital.';
+  String get onboardingSlide1Body =>
+      'Stop repeating your medical history. Your record travels with you between your community health worker and the hospital.';
 
   @override
   String get onboardingSlide2Title => 'From Village to Hospital, Instantly';
 
   @override
-  String get onboardingSlide2Body => 'Community health workers log a visit once — doctors see it the moment a patient is referred.';
+  String get onboardingSlide2Body =>
+      'Community health workers log a visit once — doctors see it the moment a patient is referred.';
 
   @override
   String get onboardingSlide3Title => 'Works Without Signal';
 
   @override
-  String get onboardingSlide3Body => 'Keep working in areas with no internet. Everything syncs automatically the moment you\'re back online.';
+  String get onboardingSlide3Body =>
+      'Keep working in areas with no internet. Everything syncs automatically the moment you\'re back online.';
 }

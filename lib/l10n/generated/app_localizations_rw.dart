@@ -39,7 +39,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get somethingWentWrong => 'Habaye ikibazo';
 
   @override
-  String get offlineBannerMessage => 'Nta interineti ufite. Impinduka zizahuzwa nyuma yo kongera guhuza na interineti.';
+  String get offlineBannerMessage =>
+      'Nta interineti ufite. Impinduka zizahuzwa nyuma yo kongera guhuza na interineti.';
 
   @override
   String get login => 'Injira';
@@ -51,7 +52,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get welcomeMessage => 'Murakaza neza kuri Ubuzima Connect';
 
   @override
-  String get welcomeSubtitle => 'Ibikoresho by\'ubuzima byiza mu Rwanda — huza na mujyanama w\'ubuzima, muganga, cyangwa ucunga ubuzima bwawe.';
+  String get welcomeSubtitle =>
+      'Ibikoresho by\'ubuzima byiza mu Rwanda — huza na mujyanama w\'ubuzima, muganga, cyangwa ucunga ubuzima bwawe.';
 
   @override
   String get continueLabel => 'Komeza';
@@ -63,7 +65,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginWelcomeBackChw => 'Murakaza neza';
 
   @override
-  String get loginSubtitle => 'Injira ukoresheje imeri cyangwa konti ya Google.';
+  String get loginSubtitle =>
+      'Injira ukoresheje imeri cyangwa konti ya Google.';
 
   @override
   String get loginEmailLabel => 'Aderesi ya imeri';
@@ -96,7 +99,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginOfflineAccessTitle => 'Kwinjira nta murandasi birashoboka';
 
   @override
-  String get loginOfflineAccessMessage => 'Abajyanama b\'ubuzima bashobora kubona amakuru y\'aburwayi bari mu buryo bw\'ububiko nta murandasi. Amakuru ahuzwa iyo wongeye guhuza na interineti.';
+  String get loginOfflineAccessMessage =>
+      'Abajyanama b\'ubuzima bashobora kubona amakuru y\'aburwayi bari mu buryo bw\'ububiko nta murandasi. Amakuru ahuzwa iyo wongeye guhuza na interineti.';
 
   @override
   String get loginPhoneTab => 'Telefoni';
@@ -132,13 +136,15 @@ class AppLocalizationsRw extends AppLocalizations {
   String get loginPatientSubtitle => 'Injira ucunge ubuzima n\'imiti yawe';
 
   @override
-  String get loginDoctorSubtitle => 'Injira usuzume abarwayi, kohereza n\'amateka';
+  String get loginDoctorSubtitle =>
+      'Injira usuzume abarwayi, kohereza n\'amateka';
 
   @override
   String get registerTitle => 'Fungura konti yawe';
 
   @override
-  String get registerSubtitle => 'Injira muri Ubuzima Connect utangire gucunga ubuzima bwawe.';
+  String get registerSubtitle =>
+      'Injira muri Ubuzima Connect utangire gucunga ubuzima bwawe.';
 
   @override
   String get registerNameLabel => 'Amazina yuzuye';
@@ -162,7 +168,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get roleSelectionTitle => 'Ubuvuzi bw\'Abaturage';
 
   @override
-  String get roleSelectionSubtitle => 'Guha abakozi b\'ubuzima mu Rwanda ibikoresho byoroshye kandi byizewe, kugira ngo bavure neza.';
+  String get roleSelectionSubtitle =>
+      'Guha abakozi b\'ubuzima mu Rwanda ibikoresho byoroshye kandi byizewe, kugira ngo bavure neza.';
 
   @override
   String get rolePatient => 'Umurwayi';
@@ -174,7 +181,8 @@ class AppLocalizationsRw extends AppLocalizations {
   String get roleCommunityHealthWorker => 'Umujyanama w\'Ubuzima';
 
   @override
-  String get roleCommunityHealthWorkerDescription => 'Abarwayi, kohereza no gusura';
+  String get roleCommunityHealthWorkerDescription =>
+      'Abarwayi, kohereza no gusura';
 
   @override
   String get roleDoctor => 'Muganga';
@@ -225,13 +233,15 @@ class AppLocalizationsRw extends AppLocalizations {
   String get chooseLanguageHeading => 'Hitamo Ururimi Rwawe';
 
   @override
-  String get chooseLanguageSubtitle => 'Porogaramu izahita ihinduka. Ushobora guhindura ibi igihe cyose.';
+  String get chooseLanguageSubtitle =>
+      'Porogaramu izahita ihinduka. Ushobora guhindura ibi igihe cyose.';
 
   @override
   String get useDeviceLanguage => 'Koresha Ururimi rwa Telefoni';
 
   @override
-  String get useDeviceLanguageSubtitle => 'Kurikiza ururimi rwa telefoni yawe mu buryo bwikora';
+  String get useDeviceLanguageSubtitle =>
+      'Kurikiza ururimi rwa telefoni yawe mu buryo bwikora';
 
   @override
   String get languageUpdatedMessage => 'Ururimi rwahinduwe';
@@ -255,17 +265,21 @@ class AppLocalizationsRw extends AppLocalizations {
   String get onboardingSlide1Title => 'Ubuvuzi Bugukurikira';
 
   @override
-  String get onboardingSlide1Body => 'Reka gusubiramo amateka y\'ubuzima bwawe. Amakuru yawe agenda hamwe nawe hagati y\'umujyanama w\'ubuzima n\'ibitaro.';
+  String get onboardingSlide1Body =>
+      'Reka gusubiramo amateka y\'ubuzima bwawe. Amakuru yawe agenda hamwe nawe hagati y\'umujyanama w\'ubuzima n\'ibitaro.';
 
   @override
-  String get onboardingSlide2Title => 'Uhereye mu Mudugudu Ukagera ku Bitaro Ako Kanya';
+  String get onboardingSlide2Title =>
+      'Uhereye mu Mudugudu Ukagera ku Bitaro Ako Kanya';
 
   @override
-  String get onboardingSlide2Body => 'Abajyanama b\'ubuzima banditse gusura rimwe — abaganga barabibona ako kanya umurwayi yoherejwe.';
+  String get onboardingSlide2Body =>
+      'Abajyanama b\'ubuzima banditse gusura rimwe — abaganga barabibona ako kanya umurwayi yoherejwe.';
 
   @override
   String get onboardingSlide3Title => 'Ikora Nubwo Nta Interineti';
 
   @override
-  String get onboardingSlide3Body => 'Komeza gukora ahantu nta interineti ihari. Byose bizahita bijyana igihe uzagaruka kuri interineti.';
+  String get onboardingSlide3Body =>
+      'Komeza gukora ahantu nta interineti ihari. Byose bizahita bijyana igihe uzagaruka kuri interineti.';
 }
