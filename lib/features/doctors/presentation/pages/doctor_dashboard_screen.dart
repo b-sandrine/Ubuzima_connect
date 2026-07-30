@@ -174,7 +174,7 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                     for (final patient in data.queue) ...[
                       QueueCard(
                         patient: patient,
-                        onTap: () => _printAction('Queue · ${patient.name}'),
+                        onTap: () => context.push(AppRoutes.consultation),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                     ],

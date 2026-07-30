@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
@@ -105,9 +107,13 @@ class _TimelineView extends StatelessWidget {
     return [
       AppTopBar(
         onBack: () => Navigator.of(context).maybePop(),
-        trailing: const [
-          CircleIconButton(icon: LucideIcons.upload),
-          CircleIconButton(icon: LucideIcons.bell, showDot: true),
+        trailing: [
+          CircleIconButton(
+            icon: LucideIcons.stethoscope,
+            onTap: () => context.push(AppRoutes.consultation),
+          ),
+          const CircleIconButton(icon: LucideIcons.upload),
+          const CircleIconButton(icon: LucideIcons.bell, showDot: true),
         ],
       ),
       const SizedBox(height: 14),
