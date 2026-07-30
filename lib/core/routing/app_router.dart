@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../features/authentication/authentication_routes.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
+import '../../features/onboarding/onboarding_routes.dart';
 import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
@@ -12,6 +13,7 @@ import '../../features/showcase/showcase_routes.dart';
 import 'app_routes.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
+import 'pages/offline_indicator_info_page.dart';
 import 'pages/placeholder_page.dart';
 import 'pages/splash_page.dart';
 import 'route_guards.dart';
@@ -53,11 +55,16 @@ class AppRouter {
         path: AppRoutes.home,
         builder: (context, state) => const PlaceholderPage(title: 'Home'),
       ),
+      GoRoute(
+        path: AppRoutes.offlineIndicatorInfo,
+        builder: (context, state) => const OfflineIndicatorInfoPage(),
+      ),
       ...AuthenticationRoutes.routes,
       ...PrescriptionsRoutes.routes,
       ...ReferralsRoutes.routes,
       ...CommunityHealthWorkersRoutes.routes,
       ...MedicalRecordsRoutes.routes,
+      ...OnboardingRoutes.routes,
       ...PatientsRoutes.routes,
       ...SettingsRoutes.routes,
       ...ShowcaseRoutes.routes,

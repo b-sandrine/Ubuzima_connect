@@ -18,6 +18,7 @@ abstract final class RouteGuards {
     final atRegister = state.matchedLocation == AppRoutes.register;
     final atSplash = state.matchedLocation == AppRoutes.splash;
     final atRoleSelection = state.matchedLocation == AppRoutes.roleSelection;
+    final atOnboarding = state.matchedLocation == AppRoutes.onboarding;
     // Standalone feature screens delivered ahead of the auth/session flow are
     // reachable via the demo hub without a real session.
     final atDemoScreen = AppRoutes.demoReachable.contains(
@@ -26,11 +27,22 @@ abstract final class RouteGuards {
 
     // Role selection (AUTH-05) is the entry point of onboarding, so it has
     // to be reachable without a session — as do both auth screens it hands
-    // off to, and the demo-reachable feature screens.
+    // off to, the tutorial (TUTORIAL-01) that precedes it, and the
+    // demo-reachable feature screens.
+    //
+    // TODO(auth-flow owner): TUTORIAL-01 is currently only reachable
+    // directly/via the demo hub, not shown automatically. To make it the
+    // real first-run screen: inject `OnboardingLocalDataSource` (or a thin
+    // wrapper) into `AppRouter`, and when unauthenticated + atRoleSelection
+    // + `!onboardingLocalDataSource.readOnboardingComplete()`, redirect to
+    // `AppRoutes.onboarding` instead of falling through. Left undone here
+    // rather than changing `AppRouter`'s constructor/DI wiring, since that
+    // intersects with the auth session work in progress.
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
         !atRegister &&
         !atRoleSelection &&
+        !atOnboarding &&
         !atDemoScreen) {
       return AppRoutes.roleSelection;
     }

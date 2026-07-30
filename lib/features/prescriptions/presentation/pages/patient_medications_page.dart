@@ -14,6 +14,7 @@ import '../bloc/medication_bloc.dart';
 import '../widgets/ai_insight_card.dart';
 import '../widgets/dose_card.dart';
 import '../widgets/medication_summary_card.dart';
+import '../widgets/prescription_details_sheet.dart';
 import '../widgets/refill_banner.dart';
 
 /// PAT-03 — the patient's current-medications screen. Shows today's dose
@@ -63,9 +64,9 @@ class _MedicationsView extends StatelessWidget {
                 prev.errorMessage != curr.errorMessage &&
                 curr.errorMessage != null,
             listener: (context, state) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             },
             builder: (context, state) {
               if (state.status == MedicationStatus.loading ||
@@ -110,17 +111,17 @@ class _MedicationsView extends StatelessWidget {
                         SegmentedTabs(
                           tabs: PatientMedicationsPage._tabs,
                           selectedIndex: state.selectedTab,
-                          onSelected: (i) => context
-                              .read<MedicationBloc>()
-                              .add(MedicationEvent.tabChanged(i)),
+                          onSelected: (i) => context.read<MedicationBloc>().add(
+                            MedicationEvent.tabChanged(i),
+                          ),
                         ),
                         const SizedBox(height: 18),
                         if (state.selectedTab == 0)
                           _TodayTab(state: state)
                         else
                           _ComingSoonTab(
-                            label: PatientMedicationsPage._tabs[state
-                                .selectedTab],
+                            label:
+                                PatientMedicationsPage._tabs[state.selectedTab],
                           ),
                       ]),
                     ),
@@ -181,6 +182,17 @@ class _TodayTab extends StatelessWidget {
                 tileColor: _tileColorFor(dose),
                 onTake: () => context.read<MedicationBloc>().add(
                   MedicationEvent.doseMarkedTaken(dose.id),
+                ),
+                onTap: () => showPrescriptionDetailsSheet(
+                  context,
+                  dose: dose,
+                  tileColor: _tileColorFor(dose),
+                  onTake: () => context.read<MedicationBloc>().add(
+                    MedicationEvent.doseMarkedTaken(dose.id),
+                  ),
+                  onRequestRefill: () => context.read<MedicationBloc>().add(
+                    const MedicationEvent.refillRequested(),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
