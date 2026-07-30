@@ -1,24 +1,34 @@
 rules_version = '2';
 
-// Security rules for the collections behind the patient/doctor/CHW screens
-// (medications, referrals, medical records, patient records). The baseline
-// is deny-by-default: a request must be authenticated to touch any document,
-// and writes must keep the document well-formed. Owner-level scoping keys on
-// an `ownerId` field once the authentication/role model is wired in — the
-// helpers below are ready for it.
+// Security rules for Ubuzima Connect. Deny-by-default: every request must
+// be authenticated, and users may only write their own profile document.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // A signed-in user (email/password or Google) is required for everything.
     function isSignedIn() {
       return request.auth != null;
     }
 
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
     // True when the document either has no owner yet (shared demo data) or is
-    // owned by the requester — the scoping to enable once records carry owners.
+    // owned by the requester.
     function ownsResource(resource) {
       return !('ownerId' in resource.data) ||
              resource.data.ownerId == request.auth.uid;
+    }
+
+    // AUTH — profile created on register / first sign-in.
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll(['uid', 'email', 'role'])
+        && request.resource.data.uid == userId;
+      allow update: if isOwner(userId)
+        && request.resource.data.uid == resource.data.uid;
+      allow delete: if isOwner(userId);
     }
 
     // PAT-03 — a patient's prescription schedule and its dose subcollection.
@@ -60,8 +70,7 @@ service cloud.firestore {
       }
     }
 
-    // Everything not explicitly matched above is denied. Teammates add their
-    // own collections' rules here as their features land.
+    // Everything not explicitly matched above is denied.
     match /{document=**} {
       allow read, write: if false;
     }
