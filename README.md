@@ -10,14 +10,18 @@ for the Firestore data model, ERD, and security rules.
 
 ## Stack
 
-Flutter · BLoC · Firebase (Auth, Firestore, Storage, Messaging) · SQLite
-(sqflite) · GetIt + Injectable · GoRouter · Freezed · json_serializable
+Flutter · BLoC · Firebase (Auth, Firestore, Storage, Messaging, AI Logic /
+Gemini) · SQLite (sqflite) · GetIt + Injectable · GoRouter · Freezed ·
+json_serializable
 
 ## Prerequisites
 
 - Flutter 3.44+ / Dart 3.12+ (`flutter --version`)
 - An Android emulator or a physical device. **Run on a device/emulator — not
   web or desktop.**
+- In the Firebase console for **`ubuzima-connect-alu`**, enable **AI Logic →
+  Gemini Developer API**. Debug builds use App Check’s debug provider — register
+  the debug token printed in logcat under App Check.
 
 ## Getting started
 
