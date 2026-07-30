@@ -43,7 +43,7 @@ abstract final class DummyPatientSearchData {
       age: 52,
       location: 'Ward 3B',
       status: PatientRecordStatus.critical,
-      tags: ['Hypertension', 'Diabetes'],
+      tags: ['Hypertension', 'Diabetes', 'CKD'],
       lastActivityLabel: 'Just now',
     ),
     PatientRecord(

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/routing/app_routes.dart';
+import 'presentation/pages/consultation_screen.dart';
 import 'presentation/pages/doctor_dashboard_screen.dart';
 import 'presentation/pages/patient_search_screen.dart';
 
@@ -15,6 +16,10 @@ abstract final class DoctorsRoutes {
     GoRoute(
       path: AppRoutes.patientSearch,
       builder: (context, state) => const PatientSearchScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.consultation,
+      builder: (context, state) => const ConsultationScreen(),
     ),
   ];
 }
