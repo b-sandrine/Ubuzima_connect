@@ -197,7 +197,7 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     AiInsightBanner(
-                      insight: data.insight,
+                      message: data.insight.message,
                       onTap: () => _printAction('Review follow-up insight'),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -248,13 +248,13 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
                       for (final patient in patients) ...[
                         PatientRecordCard(
                           patient: patient,
-                          onTap: () => context.push(AppRoutes.patientTimeline),
+                          onTap: () => context.push(AppRoutes.patientDetail),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                       ],
                     const SizedBox(height: AppSpacing.sm),
                     RegisterPatientButton(
-                      onTap: () => _printAction('Register New Patient'),
+                      onTap: () => context.push(AppRoutes.newPatientIntake),
                     ),
                   ],
                 ),
@@ -276,6 +276,10 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
         context.go(AppRoutes.doctorDashboard);
       case 1:
         break;
+      case 3:
+        context.go(AppRoutes.doctorNotifications);
+      case 4:
+        context.go(AppRoutes.doctorSettings);
       default:
         setState(() => _navIndex = index);
     }

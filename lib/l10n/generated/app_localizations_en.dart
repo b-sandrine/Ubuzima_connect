@@ -52,7 +52,118 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeMessage => 'Welcome to Ubuzima Connect';
 
   @override
+  String get welcomeSubtitle =>
+      'Smart healthcare tools for Rwanda — connect with your community health worker, doctor, or manage your own care.';
+
+  @override
   String get continueLabel => 'Continue';
+
+  @override
+  String get loginWelcomeBack => 'Welcome back';
+
+  @override
+  String get loginWelcomeBackChw => 'Welcome Back';
+
+  @override
+  String get loginSubtitle =>
+      'Sign in with your email or Google account to continue.';
+
+  @override
+  String get loginEmailLabel => 'Email address';
+
+  @override
+  String get loginEmailHint => 'you@example.com';
+
+  @override
+  String get loginPasswordLabel => 'Password';
+
+  @override
+  String get loginPasswordHint => 'Enter your password';
+
+  @override
+  String get loginOrContinueWith => 'Or continue with';
+
+  @override
+  String get loginOrContinueWithLower => 'or continue with';
+
+  @override
+  String get loginWithGoogle => 'Continue with Google';
+
+  @override
+  String get loginNoAccount => 'Don\'t have an account? ';
+
+  @override
+  String get loginChwSubtitle => 'Sign in to continue your health work';
+
+  @override
+  String get loginOfflineAccessTitle => 'Offline Access Available';
+
+  @override
+  String get loginOfflineAccessMessage =>
+      'CHWs can access cached patient records without internet. Data syncs when reconnected.';
+
+  @override
+  String get loginPhoneTab => 'Phone';
+
+  @override
+  String get loginEmailTab => 'Email';
+
+  @override
+  String get loginPhoneLabel => 'Phone Number';
+
+  @override
+  String get loginPhoneHint => '07X XXX XXXX';
+
+  @override
+  String get loginForgotPassword => 'Forgot password?';
+
+  @override
+  String get loginRememberMe => 'Remember me on this device';
+
+  @override
+  String get loginBiometric => 'Biometric';
+
+  @override
+  String get loginQrCode => 'QR Login';
+
+  @override
+  String get loginFeatureComingSoon => 'Coming soon';
+
+  @override
+  String get loginContinueOffline => 'Continue Offline (CHW Mode)';
+
+  @override
+  String get loginPatientSubtitle =>
+      'Sign in to manage your health and medications';
+
+  @override
+  String get loginDoctorSubtitle =>
+      'Sign in to review patients, referrals and timelines';
+
+  @override
+  String get registerTitle => 'Create your account';
+
+  @override
+  String get registerSubtitle =>
+      'Join Ubuzima Connect and start managing your health.';
+
+  @override
+  String get registerNameLabel => 'Full name';
+
+  @override
+  String get registerNameHint => 'Enter your full name';
+
+  @override
+  String get registerPasswordHint => 'At least 6 characters';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirm password';
+
+  @override
+  String get registerConfirmPasswordHint => 'Re-enter your password';
+
+  @override
+  String get registerHaveAccount => 'Already have an account? ';
 
   @override
   String get roleSelectionTitle => 'Community Healthcare';

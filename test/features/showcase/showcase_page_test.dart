@@ -6,7 +6,7 @@ import 'package:ubuzima_connect/features/showcase/presentation/pages/showcase_pa
 
 void main() {
   Future<GoRouter> pump(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(1170, 4200);
+    tester.view.physicalSize = const Size(1170, 9200);
     tester.view.devicePixelRatio = 3.0;
     addTearDown(tester.view.reset);
 
@@ -33,14 +33,22 @@ void main() {
     await pump(tester);
 
     expect(find.text('Screen Showcase'), findsOneWidget);
-    expect(find.text('8 screens'), findsOneWidget);
+    expect(find.text('21 screens'), findsOneWidget);
     expect(find.text('Role Selection'), findsOneWidget);
     expect(find.text('Current Medications'), findsOneWidget);
     expect(find.text('Patient Timeline'), findsOneWidget);
     expect(find.text('Doctor Dashboard'), findsOneWidget);
     expect(find.text('Patient Search'), findsOneWidget);
+    expect(find.text('Patient Details'), findsOneWidget);
     expect(find.text('Referral Management'), findsOneWidget);
     expect(find.text('Refer to Hospital'), findsOneWidget);
+    expect(find.text('Health Record'), findsOneWidget);
+    expect(find.text('Patient Dashboard'), findsOneWidget);
+    expect(find.text('Medical Records'), findsOneWidget);
+    expect(find.text('Doctor Alerts'), findsOneWidget);
+    expect(find.text('Patient Alerts'), findsOneWidget);
+    expect(find.text('Doctor Settings'), findsOneWidget);
+    expect(find.text('Patient Settings'), findsOneWidget);
   });
 
   testWidgets('tapping a card opens that screen', (tester) async {
