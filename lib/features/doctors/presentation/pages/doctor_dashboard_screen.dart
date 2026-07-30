@@ -219,6 +219,8 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
         break;
       case 1:
         context.go(AppRoutes.patientSearch);
+      case 3:
+        context.go(AppRoutes.doctorNotifications);
       default:
         setState(() => _navIndex = index);
     }
