@@ -58,6 +58,12 @@ class ReferralCard extends StatelessWidget {
   final VoidCallback onWithdraw;
   final bool isBusy;
 
+  /// Jumps to the referred patient's chart / starts seeing them — available
+  /// regardless of the referral's status, since a doctor may want to pull up
+  /// the chart before deciding, not only after accepting.
+  final VoidCallback? onOpenDetails;
+  final VoidCallback? onStartConsultation;
+
   const ReferralCard({
     super.key,
     required this.referral,
@@ -67,6 +73,8 @@ class ReferralCard extends StatelessWidget {
     this.selectedRoute,
     this.onRouteSelected,
     this.isBusy = false,
+    this.onOpenDetails,
+    this.onStartConsultation,
   });
 
   @override
@@ -125,6 +133,13 @@ class ReferralCard extends StatelessWidget {
           ],
           const SizedBox(height: 12),
           _TimelineRow(referral: referral),
+          if (onOpenDetails != null || onStartConsultation != null) ...[
+            const SizedBox(height: 12),
+            _QueueActions(
+              onOpenDetails: onOpenDetails,
+              onStartConsultation: onStartConsultation,
+            ),
+          ],
           if (showRouting) ...[
             const SizedBox(height: 16),
             const Text(
@@ -315,6 +330,96 @@ class _TimelineRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The doctor's queue-management actions — jump to the patient's chart, or
+/// go straight into seeing them — distinct from Accept/Decline, which
+/// decide the referral itself.
+class _QueueActions extends StatelessWidget {
+  final VoidCallback? onOpenDetails;
+  final VoidCallback? onStartConsultation;
+
+  const _QueueActions({this.onOpenDetails, this.onStartConsultation});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (onOpenDetails != null)
+          Expanded(
+            child: _GhostButton(
+              icon: LucideIcons.userRound,
+              label: 'Patient Details',
+              color: AppColors.primary,
+              onTap: onOpenDetails!,
+            ),
+          ),
+        if (onOpenDetails != null && onStartConsultation != null)
+          const SizedBox(width: 10),
+        if (onStartConsultation != null)
+          Expanded(
+            child: _GhostButton(
+              icon: LucideIcons.stethoscope,
+              label: 'Start Consultation',
+              color: AppColors.secondary,
+              onTap: onStartConsultation!,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _GhostButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _GhostButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withValues(alpha: 0.06),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 40,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 15, color: color),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

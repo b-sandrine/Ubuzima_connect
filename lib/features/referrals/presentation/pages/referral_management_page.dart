@@ -11,6 +11,8 @@ import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
+import '../../../doctors/presentation/widgets/patient_filter_chip.dart';
+import '../../../doctors/presentation/widgets/patient_search_field.dart';
 import '../../domain/entities/referral.dart';
 import '../../domain/entities/referral_board.dart';
 import '../bloc/referral_board_bloc.dart';
@@ -45,6 +47,27 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
   /// a transient UI selection until Accept is pressed.
   final Map<String, String> _routes = {};
   int _navIndex = 1;
+
+  /// Queue search/priority filter — local UI state, same pattern Patient
+  /// Search uses for its own query/filter (narrows the already-loaded list
+  /// rather than round-tripping to Firestore for a client-side concern).
+  String _query = '';
+  ReferralUrgency? _priorityFilter;
+
+  List<Referral> _filtered(List<Referral> referrals) {
+    final query = _query.trim().toLowerCase();
+    return referrals.where((r) {
+      final matchesQuery =
+          query.isEmpty ||
+          r.specialty.toLowerCase().contains(query) ||
+          r.facility.toLowerCase().contains(query) ||
+          r.reason.toLowerCase().contains(query) ||
+          r.reference.toLowerCase().contains(query);
+      final matchesPriority =
+          _priorityFilter == null || r.urgency == _priorityFilter;
+      return matchesQuery && matchesPriority;
+    }).toList();
+  }
 
   void _onNavTap(int index) {
     switch (index) {
@@ -164,36 +187,75 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
         onSelected: (i) => bloc.add(ReferralBoardEvent.tabChanged(i)),
       ),
       const SizedBox(height: 16),
+      PatientSearchField(
+        onChanged: (value) => setState(() => _query = value),
+      ),
+      const SizedBox(height: 10),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (final option in [
+              (label: 'All', value: null),
+              (label: 'Urgent', value: ReferralUrgency.urgent),
+              (label: 'Pending', value: ReferralUrgency.pending),
+              (label: 'Routine', value: ReferralUrgency.routine),
+            ]) ...[
+              PatientFilterChip(
+                label: option.label,
+                selected: _priorityFilter == option.value,
+                onTap: () => setState(() => _priorityFilter = option.value),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
       if (pending > 0) ...[
         _PendingBanner(pending: pending, urgent: urgent),
         const SizedBox(height: 16),
       ],
-      if (state.visibleReferrals.isEmpty)
-        const _EmptyQueue()
-      else
-        for (final referral in state.visibleReferrals) ...[
-          ReferralCard(
-            referral: referral,
-            // Routing chips stay unselected until the doctor picks one; if
-            // none is picked, Accept still routes to the referral's specialty.
-            selectedRoute: _routes[referral.reference],
-            isBusy: state.actioningReference == referral.reference,
-            onRouteSelected: (route) =>
-                setState(() => _routes[referral.reference] = route),
-            onAccept: () => bloc.add(
-              ReferralBoardEvent.accepted(
-                referral.reference,
-                routedSpecialty:
-                    _routes[referral.reference] ?? referral.specialty,
-              ),
-            ),
-            onDecline: () =>
-                bloc.add(ReferralBoardEvent.declined(referral.reference)),
-            onWithdraw: () =>
-                bloc.add(ReferralBoardEvent.withdrawn(referral.reference)),
-          ),
-          const SizedBox(height: 14),
-        ],
+      Builder(
+        builder: (context) {
+          final filtered = _filtered(state.visibleReferrals);
+          if (filtered.isEmpty) return const _EmptyQueue();
+
+          return Column(
+            children: [
+              for (final referral in filtered) ...[
+                ReferralCard(
+                  referral: referral,
+                  // Routing chips stay unselected until the doctor picks
+                  // one; if none is picked, Accept still routes to the
+                  // referral's specialty.
+                  selectedRoute: _routes[referral.reference],
+                  isBusy: state.actioningReference == referral.reference,
+                  onRouteSelected: (route) =>
+                      setState(() => _routes[referral.reference] = route),
+                  onAccept: () => bloc.add(
+                    ReferralBoardEvent.accepted(
+                      referral.reference,
+                      routedSpecialty:
+                          _routes[referral.reference] ?? referral.specialty,
+                    ),
+                  ),
+                  onDecline: () => bloc.add(
+                    ReferralBoardEvent.declined(referral.reference),
+                  ),
+                  onWithdraw: () => bloc.add(
+                    ReferralBoardEvent.withdrawn(referral.reference),
+                  ),
+                  onOpenDetails: () => context.push(AppRoutes.patientDetail),
+                  onStartConsultation: () =>
+                      context.push(AppRoutes.consultation),
+                ),
+                const SizedBox(height: 14),
+              ],
+            ],
+          );
+        },
+      ),
     ];
   }
 }

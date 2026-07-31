@@ -23,11 +23,11 @@ import '../../../domain/models/schedule_item.dart';
 ///                                         onDuty) + stat counts
 ///   doctors/{uid}/emergency_alerts/{id} → Emergency Alerts panel
 ///   doctors/{uid}/schedule/{id}         → Today's Schedule
-///   doctors/{uid}/queue/{id}            → Patient Queue
 ///
-/// Referral Status reads the *same* `referrals` collection DOC-06's
-/// Referral Management screen owns — not a separate copy — so a referral
-/// actually routed to this doctor shows up here too.
+/// Referral Status *and* Patient Queue both read the same `referrals`
+/// collection DOC-06's Referral Management screen owns — not separate
+/// copies — so a referral actually routed to this doctor shows up in
+/// both places.
 ///
 /// No seed data — a fresh account reads back empty lists/blank fields
 /// until real activity exists. [DashboardStat]'s icon/colour aren't
@@ -72,9 +72,6 @@ class DoctorDashboardRemoteDataSourceImpl
 
   CollectionReference<Map<String, dynamic>> get _schedule =>
       _doc.collection('schedule');
-
-  CollectionReference<Map<String, dynamic>> get _queue =>
-      _doc.collection('queue');
 
   CollectionReference<Map<String, dynamic>> get _referrals =>
       _firestore.collection(FirestorePaths.referrals);
@@ -179,23 +176,26 @@ class DoctorDashboardRemoteDataSourceImpl
     }
   }
 
+  /// Patients actually referred to this doctor (incoming, not declined) —
+  /// the same underlying data [getReferrals] reads, just re-shaped into the
+  /// Dashboard's queue tile. Queue position is the item's index in this
+  /// list; there's no separate stored position.
   @override
   Future<List<QueuePatient>> getPatientQueue() async {
     try {
-      final docs = await _queue.orderBy('sortOrder').get();
-      return docs.docs.map((d) {
-        final data = d.data();
-        return QueuePatient(
-          id: d.id,
-          queueNumber: (data['queueNumber'] as num?)?.toInt() ?? 0,
-          name: data['name'] as String? ?? '',
-          reason: data['reason'] as String? ?? '',
-          priority: QueuePriority.values.byName(
-            data['priority'] as String? ?? 'routine',
+      final referrals = await _incomingReferrals();
+      return [
+        for (var i = 0; i < referrals.length; i++)
+          QueuePatient(
+            id: referrals[i].$1.id,
+            queueNumber: i + 1,
+            name: referrals[i].$2,
+            reason: referrals[i].$1.data()['reason'] as String? ?? '',
+            priority: _queuePriorityFor(
+              referrals[i].$1.data()['urgency'] as String?,
+            ),
           ),
-          photoUrl: data['photoUrl'] as String?,
-        );
-      }).toList();
+      ];
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? 'Could not load the patient queue.');
     }
@@ -207,34 +207,48 @@ class DoctorDashboardRemoteDataSourceImpl
   @override
   Future<List<Referral>> getReferrals() async {
     try {
-      final results = await Future.wait([
-        _referrals.where('direction', isEqualTo: 'incoming').get(),
-        _referralPatientDoc.get(),
-      ]);
-      final docs = results[0] as QuerySnapshot<Map<String, dynamic>>;
-      final patientName =
-          (results[1] as DocumentSnapshot<Map<String, dynamic>>)
-              .data()?['name'] as String? ??
-          '';
-
-      return docs.docs
-          .where((d) => d.data()['status'] != 'declined')
-          .map((d) {
-            final data = d.data();
-            return Referral(
-              id: d.id,
-              patientName: patientName,
-              specialty: data['specialty'] as String? ?? '',
-              facility: data['facility'] as String? ?? '',
-              status: data['status'] == 'accepted'
-                  ? ReferralStatus.approved
-                  : ReferralStatus.pending,
-              note: data['receivedLabel'] as String? ?? '',
-            );
-          })
-          .toList();
+      final referrals = await _incomingReferrals();
+      return [
+        for (final (doc, patientName) in referrals)
+          Referral(
+            id: doc.id,
+            patientName: patientName,
+            specialty: doc.data()['specialty'] as String? ?? '',
+            facility: doc.data()['facility'] as String? ?? '',
+            status: doc.data()['status'] == 'accepted'
+                ? ReferralStatus.approved
+                : ReferralStatus.pending,
+            note: doc.data()['receivedLabel'] as String? ?? '',
+          ),
+      ];
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? 'Could not load referral status.');
     }
   }
+
+  /// Incoming, non-declined referral documents paired with the (single,
+  /// shared) referred patient's name.
+  Future<List<(QueryDocumentSnapshot<Map<String, dynamic>>, String)>>
+  _incomingReferrals() async {
+    final results = await Future.wait([
+      _referrals.where('direction', isEqualTo: 'incoming').get(),
+      _referralPatientDoc.get(),
+    ]);
+    final docs = results[0] as QuerySnapshot<Map<String, dynamic>>;
+    final patientName =
+        (results[1] as DocumentSnapshot<Map<String, dynamic>>)
+            .data()?['name'] as String? ??
+        '';
+
+    return docs.docs
+        .where((d) => d.data()['status'] != 'declined')
+        .map((d) => (d, patientName))
+        .toList();
+  }
+
+  QueuePriority _queuePriorityFor(String? urgency) => switch (urgency) {
+    'urgent' => QueuePriority.urgent,
+    'routine' => QueuePriority.routine,
+    _ => QueuePriority.moderate,
+  };
 }
