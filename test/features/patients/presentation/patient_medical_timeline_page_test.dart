@@ -13,8 +13,8 @@ import 'package:ubuzima_connect/features/patients/presentation/pages/patient_med
 class _MockGetTimeline extends Mock implements GetPatientTimeline {}
 
 const _timeline = PatientTimeline(
-  totalEvents: 24,
-  earlierCount: 6,
+  totalEvents: 2,
+  earlierCount: 0,
   aiViewLabel: '7-year view',
   patient: TimelinePatient(
     name: 'Marie Uwase',

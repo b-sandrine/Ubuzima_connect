@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:ubuzima_connect/core/di/injection.dart';
+import 'package:ubuzima_connect/core/routing/auth_session.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/pages/chw_referral_page.dart';
 import 'package:ubuzima_connect/features/referrals/domain/entities/referral_draft.dart';
 import 'package:ubuzima_connect/features/referrals/domain/usecases/create_referral.dart';
@@ -11,6 +12,8 @@ import 'package:ubuzima_connect/features/referrals/presentation/bloc/referral_fo
 class _MockCreateReferral extends Mock implements CreateReferral {}
 
 class _FakeDraft extends Fake implements ReferralDraft {}
+
+class _MockAuthSession extends Mock implements AuthSessionProvider {}
 
 void main() {
   late _MockCreateReferral createReferral;
@@ -22,6 +25,9 @@ void main() {
     getIt.registerFactory<ReferralFormBloc>(
       () => ReferralFormBloc(createReferral),
     );
+    final auth = _MockAuthSession();
+    when(() => auth.currentDisplayName).thenReturn('Jean Habimana');
+    getIt.registerSingleton<AuthSessionProvider>(auth);
   });
 
   tearDown(() => getIt.reset());
@@ -41,7 +47,7 @@ void main() {
     await pump(tester);
 
     expect(find.text('Refer to Hospital'), findsOneWidget);
-    expect(find.text('CHW · Kigali Sector'), findsOneWidget);
+    expect(find.text('CHW · Jean Habimana'), findsOneWidget);
     expect(find.text('Muhima District Hospital'), findsOneWidget);
     expect(find.text('Emergency'), findsOneWidget);
     expect(find.text('Send to Hospital'), findsOneWidget);

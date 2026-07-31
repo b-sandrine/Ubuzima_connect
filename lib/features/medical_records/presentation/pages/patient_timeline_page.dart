@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
@@ -15,6 +16,7 @@ import '../../domain/entities/patient_timeline.dart';
 import '../bloc/timeline_bloc.dart';
 import '../widgets/timeline_analysis_card.dart';
 import '../widgets/timeline_event_card.dart';
+import '../widgets/timeline_pdf_export.dart';
 import '../widgets/trend_chart.dart';
 
 /// DOC-04 — the doctor's patient medical timeline. A filterable, searchable
@@ -40,9 +42,21 @@ class _TimelineView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
+      bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 1,
-        items: [
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              context.go(AppRoutes.doctorDashboard);
+            case 2:
+              showComingSoon(context, 'AI Insights');
+            case 3:
+              context.go(AppRoutes.doctorNotifications);
+            case 4:
+              context.go(AppRoutes.doctorSettings);
+          }
+        },
+        items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),
           BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
           BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
@@ -180,19 +194,36 @@ class _TimelineView extends StatelessWidget {
               color: AppColors.textTertiary,
             ),
           ),
-          Row(
-            children: const [
-              Icon(LucideIcons.download, size: 15, color: AppColors.primary),
-              SizedBox(width: 4),
-              Text(
-                'Export PDF',
-                style: TextStyle(
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () => exportTimelinePdf(
+                timeline: timeline,
+                events: state.visibleEvents,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.download,
+                      size: 15,
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Export PDF',
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -210,9 +241,15 @@ class _TimelineView extends StatelessWidget {
             ),
           const SizedBox(height: 4),
         ],
-      if (timeline.earlierCount > 0) ...[
+      if (timeline.earlierCount > 0 &&
+          !state.earlierRevealed &&
+          state.filter == TimelineFilter.all &&
+          state.query.isEmpty) ...[
         const SizedBox(height: 4),
-        _LoadEarlierButton(count: timeline.earlierCount),
+        _LoadEarlierButton(
+          count: timeline.earlierCount,
+          onTap: () => bloc.add(const TimelineViewEvent.earlierRequested()),
+        ),
       ],
       const SizedBox(height: 16),
       TimelineAnalysisCard(
@@ -403,44 +440,54 @@ class _YearPill extends StatelessWidget {
 }
 
 /// The dashed "Load Earlier Records (N more)" affordance beneath the oldest
-/// loaded event, as in the design. Static for the demo timeline.
+/// loaded event, as in the design. Reveals the collapsed older events on tap.
 class _LoadEarlierButton extends StatelessWidget {
   final int count;
+  final VoidCallback onTap;
 
-  const _LoadEarlierButton({required this.count});
+  const _LoadEarlierButton({required this.count, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.06),
+      child: Material(
+        color: AppColors.primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              LucideIcons.rotateCcw,
-              size: 15,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'Load Earlier Records ($count more)',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
-                ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
               ),
             ),
-          ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  LucideIcons.rotateCcw,
+                  size: 15,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Load Earlier Records ($count more)',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

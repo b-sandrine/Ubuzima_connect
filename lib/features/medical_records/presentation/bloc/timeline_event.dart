@@ -36,4 +36,6 @@ sealed class TimelineViewEvent with _$TimelineViewEvent {
 
   const factory TimelineViewEvent.searchChanged(String query) =
       TimelineSearchChanged;
+
+  const factory TimelineViewEvent.earlierRequested() = TimelineEarlierRequested;
 }

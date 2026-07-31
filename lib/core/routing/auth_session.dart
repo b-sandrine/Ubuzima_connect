@@ -12,6 +12,14 @@ abstract interface class AuthSessionProvider {
 
   UserRole get currentRole;
 
+  /// The signed-in Firebase user's uid, or null when unauthenticated.
+  String? get currentUserId;
+
+  /// The signed-in user's real display name (captured at registration), or
+  /// null when unauthenticated or not set. UI that shows "who's logged in"
+  /// should read this instead of falling back to seeded/demo data.
+  String? get currentDisplayName;
+
   Stream<AuthSessionStatus> get statusStream;
 }
 
@@ -24,6 +32,12 @@ class NoOpAuthSessionProvider implements AuthSessionProvider {
 
   @override
   UserRole get currentRole => UserRole.unknown;
+
+  @override
+  String? get currentUserId => null;
+
+  @override
+  String? get currentDisplayName => null;
 
   @override
   Stream<AuthSessionStatus> get statusStream =>

@@ -17,14 +17,14 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
 
   PatientTimeline _seed() {
     return const PatientTimeline(
-      totalEvents: 24,
+      totalEvents: 14,
       earlierCount: 6,
-      aiViewLabel: '7-year view',
+      aiViewLabel: '11-year view',
       patient: TimelinePatient(
         name: 'Marie Uwase',
         summary: 'ID: RW-2847 · 52F · Kigali District',
         criticality: 'Critical',
-        careHistory: '7 yrs',
+        careHistory: '11 yrs',
       ),
       trend: [
         TrendPoint(label: '2018', systolic: 162, glucose: 7.8),
@@ -97,6 +97,54 @@ class TimelineLocalDataSourceImpl implements TimelineLocalDataSource {
           dateLabel: 'Jan 2018',
           year: 2018,
           detail: 'BP 162/98 · Stage 2 HTN · First diagnosis',
+        ),
+        TimelineEvent(
+          id: 'evt-prehtn-labs',
+          category: EventCategory.labResult,
+          title: 'Lipid Panel',
+          dateLabel: 'Sep 2017',
+          year: 2017,
+          detail: 'LDL 3.4 mmol/L · Borderline dyslipidemia flagged',
+        ),
+        TimelineEvent(
+          id: 'evt-prehtn-visit-2',
+          category: EventCategory.visit,
+          title: 'Follow-Up Check',
+          dateLabel: 'Feb 2017',
+          year: 2017,
+          detail: 'BP 138/88 · Advised on salt intake and weight loss',
+        ),
+        TimelineEvent(
+          id: 'evt-prehtn-visit-1',
+          category: EventCategory.visit,
+          title: 'Annual Health Screening',
+          dateLabel: 'Jun 2016',
+          year: 2016,
+          detail: 'BP 132/86 · Borderline elevated, advised monitoring',
+        ),
+        TimelineEvent(
+          id: 'evt-family-history',
+          category: EventCategory.diagnosis,
+          title: 'Family History Noted',
+          dateLabel: 'Aug 2015',
+          year: 2015,
+          detail: 'Maternal HTN and T2DM recorded · Risk counselling given',
+        ),
+        TimelineEvent(
+          id: 'evt-baseline-visit',
+          category: EventCategory.visit,
+          title: 'Routine Checkup',
+          dateLabel: 'Mar 2015',
+          year: 2015,
+          detail: 'BP 128/82 · Weight 79kg · No concerns raised',
+        ),
+        TimelineEvent(
+          id: 'evt-first-registration',
+          category: EventCategory.visit,
+          title: 'First Registration',
+          dateLabel: 'Jan 2014',
+          year: 2014,
+          detail: 'Patient registered at Kigali District clinic',
         ),
       ],
       // Filled by ClinicalAiService on first remote read.
