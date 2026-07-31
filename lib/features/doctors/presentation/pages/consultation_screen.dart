@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/helpers/date_formatter.dart';
 import '../../../../core/helpers/debouncer.dart';
 import '../../../../core/routing/app_routes.dart';
@@ -13,7 +14,6 @@ import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
-import '../../data/repositories/mock_consultation_repository.dart';
 import '../../domain/models/consultation.dart';
 import '../../domain/repositories/consultation_repository.dart';
 import '../widgets/consultation_actions_bar.dart';
@@ -26,13 +26,16 @@ import '../widgets/vitals_entry_section.dart';
 /// built out (editable, auto-saved, clinically flagged); Diagnosis, Notes
 /// and Treatment land as their own tasks later, so they render as light
 /// placeholders here rather than guessed-at designs.
+///
+/// Data comes from a [ConsultationRepository] resolved via DI — matching
+/// the other doctor screens (Dashboard, Patient Search, Patient Details).
 class ConsultationScreen extends StatefulWidget {
   final ConsultationRepository repository;
 
-  const ConsultationScreen({
+  ConsultationScreen({
     super.key,
-    this.repository = const MockConsultationRepository(),
-  });
+    ConsultationRepository? repository,
+  }) : repository = repository ?? getIt<ConsultationRepository>();
 
   @override
   State<ConsultationScreen> createState() => _ConsultationScreenState();
@@ -44,6 +47,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   late Future<Consultation> _future;
   Consultation? _consultation;
   int _selectedTab = 0;
+  int _navIndex = 1;
   bool _isSaving = false;
 
   final _systolicController = TextEditingController();
@@ -128,6 +132,21 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
 
   void _onRefer() => context.push(AppRoutes.newReferral);
 
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        context.go(AppRoutes.doctorDashboard);
+      case 1:
+        context.go(AppRoutes.patientSearch);
+      case 3:
+        context.go(AppRoutes.doctorNotifications);
+      case 4:
+        context.go(AppRoutes.doctorSettings);
+      default:
+        setState(() => _navIndex = index);
+    }
+  }
+
   void _onComingSoon(String feature) {
     showModalBottomSheet(
       context: context,
@@ -184,8 +203,8 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       bottomNavigationBar: DoctorBottomNavigationBar(
-        currentIndex: 1,
-        onTap: (_) {},
+        currentIndex: _navIndex,
+        onTap: _onNavTap,
       ),
       body: AppGradientBackground(
         child: SafeArea(

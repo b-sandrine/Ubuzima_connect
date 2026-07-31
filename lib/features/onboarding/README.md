@@ -22,7 +22,7 @@ presentation/
 The screen itself works end-to-end — swipe through 3 slides, Skip/Get
 Started both call `CompleteOnboarding` (persists
 `StorageKeys.onboardingComplete = true`) and navigate to role selection.
-It's reachable directly at `/onboarding` and via the showcase hub.
+It's reachable directly at `/onboarding`.
 
 **What's still open:** it isn't wired to *automatically* appear on a
 genuinely first cold start. That decision point is
