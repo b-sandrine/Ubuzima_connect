@@ -18,4 +18,10 @@ abstract final class AppConstants {
   /// live data to read and write against.
   static const String demoPatientId = 'demo-marie-uwase';
   static const String demoChwPatientId = 'demo-marie-uwimana';
+
+  /// The signed-in doctor these screens operate on until real doctor
+  /// accounts/auth-linked profiles land. Seeded into Firestore on first run
+  /// so the doctor dashboard, patient search, patient details, and
+  /// consultation screens always have live data to read and write against.
+  static const String demoDoctorId = 'demo-dr-habimana';
 }
