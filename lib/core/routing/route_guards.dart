@@ -15,12 +15,16 @@ abstract final class RouteGuards {
     AppRoutes.referralManagement,
     AppRoutes.newReferral,
     AppRoutes.patientTimeline,
+    AppRoutes.doctorDashboard,
+    AppRoutes.patientSearch,
   };
 
   static const Set<String> _chwRoutes = {
     AppRoutes.chwDashboard,
     AppRoutes.chwReferral,
-    AppRoutes.chwHealthRecord,
+    AppRoutes.chwPatientList,
+    AppRoutes.chwNotifications,
+    AppRoutes.chwSettings,
   };
 
   static String? redirect(
@@ -35,7 +39,10 @@ abstract final class RouteGuards {
     final atReset = location == AppRoutes.resetPassword;
     final atSplash = location == AppRoutes.splash;
     final atRoleSelection = location == AppRoutes.roleSelection;
-    final atDemoScreen = AppRoutes.demoReachable.contains(location);
+    final atOnboarding = location == AppRoutes.onboarding;
+    final atDemoScreen =
+        AppRoutes.demoReachable.contains(location) ||
+        AppRoutes.isChwHealthRecord(location);
 
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
@@ -82,7 +89,8 @@ abstract final class RouteGuards {
     if (_doctorRoutes.contains(location)) {
       return role == UserRole.doctor;
     }
-    if (_chwRoutes.contains(location)) {
+    if (_chwRoutes.contains(location) ||
+        AppRoutes.isChwHealthRecord(location)) {
       return role == UserRole.communityHealthWorker;
     }
     return true;

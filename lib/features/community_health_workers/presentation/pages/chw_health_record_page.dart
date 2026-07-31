@@ -10,9 +10,9 @@ import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/branding/ubuzima_wordmark.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
-import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
 import '../../domain/entities/health_record.dart';
 import '../bloc/health_record_bloc.dart';
+import '../widgets/chw_bottom_nav.dart';
 import '../widgets/conditions_card.dart';
 import '../widgets/demographics_card.dart';
 import '../widgets/health_assessment_card.dart';
@@ -23,7 +23,9 @@ import '../widgets/patient_header_card.dart';
 /// identity, demographics, an AI risk assessment, conditions & symptoms, and
 /// the outstanding next steps.
 class ChwHealthRecordPage extends StatelessWidget {
-  const ChwHealthRecordPage({super.key});
+  final String? patientId;
+
+  const ChwHealthRecordPage({super.key, this.patientId});
 
   static const List<String> _tabs = [
     'Overview',
@@ -35,8 +37,8 @@ class ChwHealthRecordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          getIt<HealthRecordBloc>()..add(const HealthRecordEvent.started()),
+      create: (_) => getIt<HealthRecordBloc>()
+        ..add(HealthRecordEvent.started(patientId: patientId)),
       child: const _HealthRecordView(),
     );
   }
@@ -49,27 +51,7 @@ class _HealthRecordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: UbuzimaBottomNav(
-        currentIndex: 1,
-        onTap: (index) {
-          if (index == 2) context.push(AppRoutes.newPatientIntake);
-        },
-        items: const [
-          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
-          BottomNavItem(icon: LucideIcons.users, label: 'Patients'),
-          BottomNavItem(
-            icon: LucideIcons.userPlus,
-            label: 'Register',
-            isPrimary: true,
-          ),
-          BottomNavItem(
-            icon: LucideIcons.triangleAlert,
-            label: 'Alerts',
-            badgeCount: 2,
-          ),
-          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
-        ],
-      ),
+      bottomNavigationBar: const ChwBottomNav(currentIndex: 1),
       body: AppGradientBackground(
         child: SafeArea(
           child: BlocConsumer<HealthRecordBloc, HealthRecordState>(
@@ -124,9 +106,30 @@ class _HealthRecordView extends StatelessWidget {
         sector: record.sector,
         dateLabel: record.dateLabel,
         onBack: () => Navigator.of(context).maybePop(),
+        onAlerts: () => context.go(AppRoutes.chwNotifications),
       ),
       const SizedBox(height: 16),
-      PatientHeaderCard(patient: record.patient),
+      PatientHeaderCard(
+        patient: record.patient,
+        onNewVisit: () => _logNewVisit(context, record.patient.name),
+        onRefer: () => context.push(AppRoutes.chwReferral),
+        onAiAssist: () {
+          bloc.add(const HealthRecordEvent.aiAssessmentRequested());
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Refreshing AI assessment and updating next steps…',
+              ),
+            ),
+          );
+        },
+        onOverflowSelected: (value) => switch (value) {
+          'patients' => context.go(AppRoutes.chwPatientList),
+          'alerts' => context.go(AppRoutes.chwNotifications),
+          'settings' => context.go(AppRoutes.chwSettings),
+          _ => null,
+        },
+      ),
       const SizedBox(height: 16),
       SegmentedTabs(
         tabs: ChwHealthRecordPage._tabs,
@@ -136,7 +139,12 @@ class _HealthRecordView extends StatelessWidget {
       const SizedBox(height: 18),
       DemographicsCard(rows: record.demographics),
       const SizedBox(height: 18),
-      HealthAssessmentCard(assessment: record.assessment),
+      HealthAssessmentCard(
+        assessment: record.assessment,
+        isRefreshing: state.isRefreshingAssessment,
+        onAskAi: () =>
+            bloc.add(const HealthRecordEvent.aiAssessmentRequested()),
+      ),
       const SizedBox(height: 18),
       ConditionsCard(conditions: record.conditions),
       const SizedBox(height: 18),
@@ -147,6 +155,60 @@ class _HealthRecordView extends StatelessWidget {
       ),
     ];
   }
+
+  Future<void> _logNewVisit(BuildContext context, String patientName) async {
+    final visitType = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: Text(
+                  'Start a new visit',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              for (final type in const [
+                'Home visit',
+                'Follow-up visit',
+                'ANC / prenatal check',
+                'Vaccination visit',
+              ])
+                ListTile(
+                  leading: const Icon(
+                    LucideIcons.clipboardPlus,
+                    color: AppColors.primary,
+                  ),
+                  title: Text(type),
+                  onTap: () => Navigator.of(context).pop(type),
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!context.mounted || visitType == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$visitType logged for $patientName'),
+        action: SnackBarAction(
+          label: 'Refer',
+          onPressed: () => context.push(AppRoutes.chwReferral),
+        ),
+      ),
+    );
+  }
 }
 
 /// The two-row record header: the app lockup and CHW actions on top, then the
@@ -155,11 +217,13 @@ class _Header extends StatelessWidget {
   final String sector;
   final String dateLabel;
   final VoidCallback onBack;
+  final VoidCallback? onAlerts;
 
   const _Header({
     required this.sector,
     required this.dateLabel,
     required this.onBack,
+    this.onAlerts,
   });
 
   @override
@@ -170,7 +234,11 @@ class _Header extends StatelessWidget {
         Row(
           children: [
             const Expanded(child: UbuzimaWordmark()),
-            const CircleIconButton(icon: LucideIcons.bell, showDot: true),
+            CircleIconButton(
+              icon: LucideIcons.bell,
+              showDot: true,
+              onTap: onAlerts,
+            ),
             const SizedBox(width: 8),
             const _ChwAvatar(),
           ],

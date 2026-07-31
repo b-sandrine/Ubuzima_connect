@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -7,6 +10,7 @@ import '../../../../core/accessibility/accessibility_cubit.dart';
 import '../../../../core/constants/storage_keys.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
+import '../../../../core/security/secure_storage_service.dart';
 import '../../../../core/storage/local_storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -16,8 +20,11 @@ import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
+import '../../../authentication/domain/usecases/sign_out.dart';
+import '../../../community_health_workers/presentation/widgets/chw_bottom_nav.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
+import '../../data/repositories/mock_chw_settings_repository.dart';
 import '../../data/repositories/mock_doctor_settings_repository.dart';
 import '../../data/repositories/mock_patient_settings_repository.dart';
 import '../../domain/models/emergency_contact.dart';
@@ -33,20 +40,9 @@ import '../widgets/settings_tile.dart';
 import '../widgets/sign_out_tile.dart';
 import '../widgets/text_size_stepper.dart';
 
-/// Which role's settings a [SettingsPage] renders — drives the default
-/// repository, seeded emergency contacts, and bottom nav / cross-navigation
-/// wiring, while the page layout itself stays identical (only the Patient
-/// screen was designed; the Doctor screen reuses the same layout with
-/// doctor content, matching how Notifications handled the same gap).
-enum SettingsAudience { doctor, patient }
+enum SettingsAudience { doctor, patient, chw }
 
-/// The shared Settings screen for both the doctor and patient roles:
-/// profile card, Appearance & Accessibility, Emergency Contacts, Account
-/// Preferences, Connectivity, and App Support.
-///
-/// Data comes from a [SettingsRepository] — a mock per audience by default
-/// — so swapping in a Firestore-backed implementation later only touches
-/// the constructor call, not this screen.
+/// Shared Settings screen for doctor, patient, and CHW audiences.
 class SettingsPage extends StatefulWidget {
   final SettingsAudience audience;
   final SettingsRepository? repository;
@@ -62,24 +58,42 @@ class _SettingsData {
   final List<EmergencyContact> contacts;
 
   const _SettingsData({required this.profile, required this.contacts});
+
+  _SettingsData copyWith({
+    UserProfileSummary? profile,
+    List<EmergencyContact>? contacts,
+  }) {
+    return _SettingsData(
+      profile: profile ?? this.profile,
+      contacts: contacts ?? this.contacts,
+    );
+  }
 }
 
 class _SettingsPageState extends State<SettingsPage> {
   late Future<_SettingsData> _future;
+  _SettingsData? _data;
   int _navIndex = 4;
 
   final LocalStorageService _storage = getIt<LocalStorageService>();
+  final SecureStorageService _secure = getIt<SecureStorageService>();
+
   late bool _pushNotifications;
   late bool _biometricLogin;
   late bool _dataSharing;
   late bool _offlineMode;
   late bool _autoSync;
 
-  SettingsRepository get _repository =>
-      widget.repository ??
-      (widget.audience == SettingsAudience.doctor
-          ? const MockDoctorSettingsRepository()
-          : const MockPatientSettingsRepository());
+  String get _audienceKey => widget.audience.name;
+
+  SettingsRepository get _repository {
+    if (widget.repository != null) return widget.repository!;
+    return switch (widget.audience) {
+      SettingsAudience.doctor => const MockDoctorSettingsRepository(),
+      SettingsAudience.patient => const MockPatientSettingsRepository(),
+      SettingsAudience.chw => const MockChwSettingsRepository(),
+    };
+  }
 
   @override
   void initState() {
@@ -100,10 +114,51 @@ class _SettingsPageState extends State<SettingsPage> {
       _repository.getEmergencyContacts(),
     ]);
 
-    return _SettingsData(
-      profile: results[0] as UserProfileSummary,
-      contacts: results[1] as List<EmergencyContact>,
+    var profile = results[0] as UserProfileSummary;
+    var contacts = List<EmergencyContact>.from(
+      results[1] as List<EmergencyContact>,
     );
+
+    final savedName = _storage.getString(
+      '${StorageKeys.settingsProfileName}.$_audienceKey',
+    );
+    final savedFacility = _storage.getString(
+      '${StorageKeys.settingsProfileFacility}.$_audienceKey',
+    );
+    if ((savedName != null && savedName.trim().isNotEmpty) ||
+        (savedFacility != null && savedFacility.trim().isNotEmpty)) {
+      profile = UserProfileSummary(
+        fullName: savedName?.trim().isNotEmpty == true
+            ? savedName!.trim()
+            : profile.fullName,
+        roleLabel: profile.roleLabel,
+        facility: savedFacility?.trim().isNotEmpty == true
+            ? savedFacility!.trim()
+            : profile.facility,
+        displayId: profile.displayId,
+        accentColor: profile.accentColor,
+        photoUrl: profile.photoUrl,
+        isActive: profile.isActive,
+      );
+    }
+
+    final savedContacts = _storage.getString(
+      '${StorageKeys.settingsEmergencyContacts}.$_audienceKey',
+    );
+    if (savedContacts != null && savedContacts.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(savedContacts) as List<dynamic>;
+        contacts = decoded
+            .map((raw) => _contactFromJson(raw as Map<String, dynamic>))
+            .toList();
+      } catch (_) {
+        // Keep seeded contacts if persisted JSON is corrupt.
+      }
+    }
+
+    final data = _SettingsData(profile: profile, contacts: contacts);
+    _data = data;
+    return data;
   }
 
   Future<void> _refresh() async {
@@ -112,32 +167,587 @@ class _SettingsPageState extends State<SettingsPage> {
     await next;
   }
 
+  void _snack(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   void _onNavTap(int index) {
-    final isDoctor = widget.audience == SettingsAudience.doctor;
-    switch (index) {
-      case 0:
-        context.go(isDoctor ? AppRoutes.doctorDashboard : AppRoutes.patientDashboard);
-      case 1:
-        context.go(isDoctor ? AppRoutes.patientSearch : AppRoutes.patientRecords);
-      case 2:
-        if (!isDoctor) context.go(AppRoutes.patientAiInsights);
-      case 3:
-        context.go(
-          isDoctor ? AppRoutes.doctorNotifications : AppRoutes.patientNotifications,
-        );
-      case 4:
-        break;
-      default:
-        setState(() => _navIndex = index);
+    switch (widget.audience) {
+      case SettingsAudience.chw:
+        ChwBottomNav.handleTap(context, index);
+      case SettingsAudience.doctor:
+        switch (index) {
+          case 0:
+            context.go(AppRoutes.doctorDashboard);
+          case 1:
+            context.go(AppRoutes.patientSearch);
+          case 3:
+            context.go(AppRoutes.doctorNotifications);
+          case 4:
+            break;
+          default:
+            setState(() => _navIndex = index);
+        }
+      case SettingsAudience.patient:
+        switch (index) {
+          case 0:
+            context.go(AppRoutes.patientDashboard);
+          case 1:
+            context.go(AppRoutes.patientRecords);
+          case 2:
+            context.go(AppRoutes.patientAiInsights);
+          case 3:
+            context.go(AppRoutes.patientNotifications);
+          case 4:
+            break;
+          default:
+            setState(() => _navIndex = index);
+        }
     }
   }
 
-  void _printAction(String action) => debugPrint('Tapped: $action');
+  Future<void> _signOut() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sign out?'),
+        content: const Text(
+          'You will need to sign in again to access clinical data.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final result = await getIt<SignOut>()();
+    if (!mounted) return;
+    result.fold(
+      (failure) => _snack(failure.message),
+      (_) => context.go(AppRoutes.splash),
+    );
+  }
+
+  Future<void> _editProfile() async {
+    final data = _data;
+    if (data == null) return;
+    final nameCtrl = TextEditingController(text: data.profile.fullName);
+    final facilityCtrl = TextEditingController(text: data.profile.facility);
+
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit profile'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              decoration: const InputDecoration(labelText: 'Full name'),
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: facilityCtrl,
+              decoration: const InputDecoration(labelText: 'Facility / sector'),
+              textCapitalization: TextCapitalization.words,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+
+    if (saved != true || !mounted) return;
+    final name = nameCtrl.text.trim();
+    final facility = facilityCtrl.text.trim();
+    if (name.isEmpty) {
+      _snack('Name cannot be empty.');
+      return;
+    }
+
+    await _storage.setString(
+      '${StorageKeys.settingsProfileName}.$_audienceKey',
+      name,
+    );
+    await _storage.setString(
+      '${StorageKeys.settingsProfileFacility}.$_audienceKey',
+      facility.isEmpty ? data.profile.facility : facility,
+    );
+
+    setState(() {
+      _data = data.copyWith(
+        profile: UserProfileSummary(
+          fullName: name,
+          roleLabel: data.profile.roleLabel,
+          facility: facility.isEmpty ? data.profile.facility : facility,
+          displayId: data.profile.displayId,
+          accentColor: data.profile.accentColor,
+          photoUrl: data.profile.photoUrl,
+          isActive: data.profile.isActive,
+        ),
+      );
+      _future = Future.value(_data);
+    });
+    _snack('Profile updated.');
+  }
+
+  Future<void> _addContact() async {
+    final data = _data;
+    if (data == null) return;
+    final nameCtrl = TextEditingController();
+    final relationCtrl = TextEditingController();
+    final phoneCtrl = TextEditingController();
+
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add emergency contact'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameCtrl,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: relationCtrl,
+              decoration: const InputDecoration(labelText: 'Relationship'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: phoneCtrl,
+              decoration: const InputDecoration(labelText: 'Phone number'),
+              keyboardType: TextInputType.phone,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+
+    if (saved != true || !mounted) return;
+    final name = nameCtrl.text.trim();
+    final phone = phoneCtrl.text.trim();
+    if (name.isEmpty || phone.isEmpty) {
+      _snack('Name and phone are required.');
+      return;
+    }
+
+    final contact = EmergencyContact(
+      id: 'contact-${DateTime.now().millisecondsSinceEpoch}',
+      name: name,
+      relationship: relationCtrl.text.trim().isEmpty
+          ? 'Contact'
+          : relationCtrl.text.trim(),
+      phoneNumber: phone,
+      icon: LucideIcons.userRound,
+      iconColor: AppColors.roleChw,
+    );
+
+    final next = [...data.contacts, contact];
+    await _persistContacts(next);
+    setState(() {
+      _data = data.copyWith(contacts: next);
+      _future = Future.value(_data);
+    });
+    _snack('Contact added.');
+  }
+
+  Future<void> _persistContacts(List<EmergencyContact> contacts) async {
+    final payload = jsonEncode([
+      for (final c in contacts)
+        {
+          'id': c.id,
+          'name': c.name,
+          'relationship': c.relationship,
+          'phoneNumber': c.phoneNumber,
+        },
+    ]);
+    await _storage.setString(
+      '${StorageKeys.settingsEmergencyContacts}.$_audienceKey',
+      payload,
+    );
+  }
+
+  EmergencyContact _contactFromJson(Map<String, dynamic> json) {
+    return EmergencyContact(
+      id: json['id'] as String? ?? 'contact',
+      name: json['name'] as String? ?? '',
+      relationship: json['relationship'] as String? ?? 'Contact',
+      phoneNumber: json['phoneNumber'] as String? ?? '',
+      icon: LucideIcons.userRound,
+      iconColor: AppColors.danger,
+    );
+  }
+
+  Future<void> _callNumber(String name, String number) async {
+    await Clipboard.setData(ClipboardData(text: number));
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Call $name'),
+        content: Text(
+          'Phone number $number was copied to your clipboard. '
+          'Paste it into your dialer to place the call.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _snack('Number copied: $number');
+            },
+            child: const Text('Done'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _contactMore(EmergencyContact contact) async {
+    final data = _data;
+    if (data == null) return;
+
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(LucideIcons.phone),
+              title: const Text('Call'),
+              onTap: () => Navigator.pop(context, 'call'),
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.copy),
+              title: const Text('Copy number'),
+              onTap: () => Navigator.pop(context, 'copy'),
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.trash2, color: AppColors.danger),
+              title: const Text(
+                'Remove contact',
+                style: TextStyle(color: AppColors.danger),
+              ),
+              onTap: () => Navigator.pop(context, 'remove'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (!mounted || action == null) return;
+    switch (action) {
+      case 'call':
+        await _callNumber(contact.name, contact.phoneNumber);
+      case 'copy':
+        await Clipboard.setData(ClipboardData(text: contact.phoneNumber));
+        _snack('Copied ${contact.phoneNumber}');
+      case 'remove':
+        final next = data.contacts.where((c) => c.id != contact.id).toList();
+        await _persistContacts(next);
+        setState(() {
+          _data = data.copyWith(contacts: next);
+          _future = Future.value(_data);
+        });
+        _snack('Removed ${contact.name}');
+    }
+  }
+
+  Future<void> _showPrivacyPolicy() async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Privacy Policy'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'Ubuzima Connect processes health information to support '
+            'community care, referrals, and clinical follow-up in Rwanda.\n\n'
+            '• Patient data is used only for care coordination.\n'
+            '• Access is role-based (CHW, doctor, patient).\n'
+            '• You can turn off data sharing in Account Preferences.\n'
+            '• Offline mode keeps a local cache on this device.\n\n'
+            'For questions, contact your facility administrator or the '
+            'Ministry of Health support desk.',
+          ),
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _changePin() async {
+    final currentCtrl = TextEditingController();
+    final nextCtrl = TextEditingController();
+    final confirmCtrl = TextEditingController();
+
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Change PIN'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: currentCtrl,
+              decoration: const InputDecoration(labelText: 'Current PIN'),
+              keyboardType: TextInputType.number,
+              obscureText: true,
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: nextCtrl,
+              decoration: const InputDecoration(labelText: 'New PIN (4+ digits)'),
+              keyboardType: TextInputType.number,
+              obscureText: true,
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: confirmCtrl,
+              decoration: const InputDecoration(labelText: 'Confirm new PIN'),
+              keyboardType: TextInputType.number,
+              obscureText: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Update'),
+          ),
+        ],
+      ),
+    );
+
+    if (saved != true || !mounted) return;
+
+    final existing = await _secure.read(StorageKeys.appPin);
+    final current = currentCtrl.text.trim();
+    final next = nextCtrl.text.trim();
+    final confirm = confirmCtrl.text.trim();
+
+    if (existing != null && existing.isNotEmpty && current != existing) {
+      _snack('Current PIN is incorrect.');
+      return;
+    }
+    if (next.length < 4 || !RegExp(r'^\d+$').hasMatch(next)) {
+      _snack('PIN must be at least 4 digits.');
+      return;
+    }
+    if (next != confirm) {
+      _snack('New PIN confirmation does not match.');
+      return;
+    }
+
+    await _secure.write(StorageKeys.appPin, next);
+    _snack('PIN updated securely.');
+  }
+
+  Future<void> _showHelpCenter() async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Help Center'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'Quick guides\n\n'
+            '1. Register a patient from the + Register tab.\n'
+            '2. Open Patients to search your caseload.\n'
+            '3. Use Alerts for high-risk and emergency flags.\n'
+            '4. Start a visit or referral from a patient record.\n'
+            '5. Enable Offline Mode before traveling to low-signal areas.\n\n'
+            'Need more help? Send feedback from Settings → App Support.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push(AppRoutes.languageSettings);
+            },
+            child: const Text('Language'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _sendFeedback() async {
+    final ctrl = TextEditingController();
+    final sent = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Send feedback'),
+        content: TextField(
+          controller: ctrl,
+          maxLines: 5,
+          decoration: const InputDecoration(
+            hintText: 'Describe an issue or suggestion…',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Send'),
+          ),
+        ],
+      ),
+    );
+
+    if (sent != true || !mounted) return;
+    final text = ctrl.text.trim();
+    if (text.isEmpty) {
+      _snack('Please enter feedback before sending.');
+      return;
+    }
+    await _storage.setString(
+      'prefs.feedback.${DateTime.now().millisecondsSinceEpoch}',
+      text,
+    );
+    _snack('Thanks — feedback saved on this device.');
+  }
+
+  Future<void> _showAbout() async {
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('About Ubuzima'),
+        content: const Text(
+          'Ubuzima Connect\n'
+          'Version 2.4.1\n'
+          'Rwanda Ministry of Health\n\n'
+          'Community health records, referrals, and clinical coordination '
+          'for CHWs, doctors, and patients.',
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _rateApp() async {
+    var rating = 5;
+    final submitted = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setLocal) {
+            return AlertDialog(
+              title: const Text('Rate Ubuzima'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('How is the app working for your community work?'),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var i = 1; i <= 5; i++)
+                        IconButton(
+                          onPressed: () => setLocal(() => rating = i),
+                          icon: Icon(
+                            i <= rating ? Icons.star : Icons.star_border,
+                            color: AppColors.warning,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Submit'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (submitted == true && mounted) {
+      await _storage.setString('prefs.app_rating', '$rating');
+      _snack('Thanks for rating Ubuzima $rating/5.');
+    }
+  }
+
+  void _openAlerts() {
+    switch (widget.audience) {
+      case SettingsAudience.chw:
+        context.go(AppRoutes.chwNotifications);
+      case SettingsAudience.doctor:
+        context.go(AppRoutes.doctorNotifications);
+      case SettingsAudience.patient:
+        context.go(AppRoutes.patientNotifications);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isDoctor = widget.audience == SettingsAudience.doctor;
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppGradientBackground(
@@ -145,17 +755,18 @@ class _SettingsPageState extends State<SettingsPage> {
           child: FutureBuilder<_SettingsData>(
             future: _future,
             builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
+              if (snapshot.connectionState != ConnectionState.done &&
+                  _data == null) {
                 return const LoadingIndicator(message: 'Loading settings…');
               }
-              if (snapshot.hasError) {
+              if (snapshot.hasError && _data == null) {
                 return ErrorView(
                   message: 'Could not load settings. Please try again.',
                   onRetry: _refresh,
                 );
               }
 
-              final data = snapshot.requireData;
+              final data = _data ?? snapshot.requireData;
               return RefreshIndicator(
                 onRefresh: _refresh,
                 child: ListView(
@@ -166,8 +777,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     AppSpacing.xl,
                   ),
                   children: [
-                    const AppTopBar(
-                      trailing: [CircleIconButton(icon: LucideIcons.bell)],
+                    AppTopBar(
+                      trailing: [
+                        CircleIconButton(
+                          icon: LucideIcons.bell,
+                          onTap: _openAlerts,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const Text(
@@ -189,7 +805,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: AppSpacing.lg),
                     SettingsProfileCard(
                       profile: data.profile,
-                      onEditProfile: () => _printAction('Edit Profile'),
+                      onEditProfile: _editProfile,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const _SectionTitle('Appearance & Accessibility'),
@@ -201,7 +817,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         const _SectionTitle('Emergency Contacts'),
                         InkWell(
-                          onTap: () => _printAction('Emergency Contacts · Add'),
+                          onTap: _addContact,
                           borderRadius: BorderRadius.circular(AppRadius.full),
                           child: const StatusPill(
                             label: '+ Add',
@@ -214,15 +830,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     for (final contact in data.contacts) ...[
                       EmergencyContactCard(
                         contact: contact,
-                        onCall: () => _printAction('Call · ${contact.name}'),
-                        onMore: () => _printAction('More · ${contact.name}'),
+                        onCall: () =>
+                            _callNumber(contact.name, contact.phoneNumber),
+                        onMore: () => _contactMore(contact),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                     ],
                     EmergencySosCard(
                       facilityLabel: data.profile.facility,
                       emergencyNumber: '112',
-                      onCall: () => _printAction('Emergency SOS · Call'),
+                      onCall: () => _callNumber('Emergency SOS', '112'),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const _SectionTitle('Account Preferences'),
@@ -242,6 +859,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 StorageKeys.pushNotificationsEnabled,
                                 value,
                               );
+                              _snack(
+                                value
+                                    ? 'Push notifications enabled'
+                                    : 'Push notifications disabled',
+                              );
                             },
                           ),
                         ),
@@ -258,9 +880,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 StorageKeys.biometricLoginEnabled,
                                 value,
                               );
-                              // TODO: wire to `local_auth` once biometric
-                              // sign-in is implemented; this only persists
-                              // the user's preference for now.
+                              _snack(
+                                value
+                                    ? 'Biometric login preference saved'
+                                    : 'Biometric login preference off',
+                              );
                             },
                           ),
                         ),
@@ -268,7 +892,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           icon: LucideIcons.share2,
                           iconColor: const Color(0xFF6366F1),
                           title: 'Data Sharing',
-                          subtitle: 'Share health data with doctor',
+                          subtitle: 'Share health data with care team',
                           trailing: Switch(
                             value: _dataSharing,
                             onChanged: (value) {
@@ -276,6 +900,11 @@ class _SettingsPageState extends State<SettingsPage> {
                               _storage.setBool(
                                 StorageKeys.dataSharingEnabled,
                                 value,
+                              );
+                              _snack(
+                                value
+                                    ? 'Data sharing enabled'
+                                    : 'Data sharing disabled',
                               );
                             },
                           ),
@@ -285,14 +914,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           iconColor: AppColors.secondary,
                           title: 'Privacy Policy',
                           subtitle: 'View data usage terms',
-                          onTap: () => _printAction('Privacy Policy'),
+                          onTap: _showPrivacyPolicy,
                         ),
                         SettingsTile(
                           icon: LucideIcons.keyRound,
                           iconColor: AppColors.warning,
                           title: 'Change PIN',
                           subtitle: 'Update your security PIN',
-                          onTap: () => _printAction('Change PIN'),
+                          onTap: _changePin,
                         ),
                       ],
                     ),
@@ -315,8 +944,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 StorageKeys.offlineModeEnabled,
                                 value,
                               );
-                              // TODO: wire to `features/offline_sync` once
-                              // that feature's local cache is implemented.
+                              _snack(
+                                value
+                                    ? 'Offline mode enabled'
+                                    : 'Offline mode disabled',
+                              );
                             },
                           ),
                         ),
@@ -332,6 +964,11 @@ class _SettingsPageState extends State<SettingsPage> {
                               _storage.setBool(
                                 StorageKeys.autoSyncEnabled,
                                 value,
+                              );
+                              _snack(
+                                value
+                                    ? 'Auto sync enabled'
+                                    : 'Auto sync disabled',
                               );
                             },
                           ),
@@ -355,38 +992,35 @@ class _SettingsPageState extends State<SettingsPage> {
                           iconColor: AppColors.success,
                           title: 'Help Center',
                           subtitle: 'FAQs and user guides',
-                          onTap: () => _printAction('Help Center'),
+                          onTap: _showHelpCenter,
                         ),
                         SettingsTile(
                           icon: LucideIcons.messageSquare,
                           iconColor: AppColors.secondary,
                           title: 'Send Feedback',
                           subtitle: 'Report issues or suggestions',
-                          onTap: () => _printAction('Send Feedback'),
+                          onTap: _sendFeedback,
                         ),
                         SettingsTile(
                           icon: LucideIcons.info,
                           iconColor: AppColors.secondary,
                           title: 'About Ubuzima',
                           subtitle: 'Version 2.4.1 · Rwanda MoH',
-                          onTap: () => _printAction('About Ubuzima'),
+                          onTap: _showAbout,
                         ),
                         SettingsTile(
                           icon: LucideIcons.star,
                           iconColor: AppColors.warning,
                           title: 'Rate the App',
                           subtitle: 'Share your experience',
-                          onTap: () => _printAction('Rate the App'),
+                          onTap: _rateApp,
                         ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.sm + 2),
                     SignOutTile(
                       signedInAsLabel: 'Logged in as ${data.profile.fullName}',
-                      // TODO: call the real sign-out flow once this screen
-                      // is reached from an authenticated session — kept as
-                      // a no-op here per the existing auth flow.
-                      onTap: () => _printAction('Sign Out'),
+                      onTap: _signOut,
                     ),
                   ],
                 ),
@@ -395,9 +1029,17 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: isDoctor
-          ? DoctorBottomNavigationBar(currentIndex: _navIndex, onTap: _onNavTap)
-          : PatientBottomNavigationBar(currentIndex: _navIndex, onTap: _onNavTap),
+      bottomNavigationBar: switch (widget.audience) {
+        SettingsAudience.chw => const ChwBottomNav(currentIndex: 4),
+        SettingsAudience.doctor => DoctorBottomNavigationBar(
+          currentIndex: _navIndex,
+          onTap: _onNavTap,
+        ),
+        SettingsAudience.patient => PatientBottomNavigationBar(
+          currentIndex: _navIndex,
+          onTap: _onNavTap,
+        ),
+      },
     );
   }
 }
