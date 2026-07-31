@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
@@ -11,7 +12,7 @@ import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
 import '../../data/repositories/mock_doctor_notifications_repository.dart';
-import '../../data/repositories/mock_patient_notifications_repository.dart';
+import '../../data/repositories/patient_notifications_repository_impl.dart';
 import '../../domain/models/notification_section.dart';
 import '../../domain/repositories/notifications_repository.dart';
 import '../widgets/notification_card.dart';
@@ -51,7 +52,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       widget.repository ??
       (widget.audience == NotificationsAudience.doctor
           ? const MockDoctorNotificationsRepository()
-          : const MockPatientNotificationsRepository());
+          : getIt<PatientNotificationsRepositoryImpl>());
 
   @override
   void initState() {

@@ -19,7 +19,7 @@ import '../../../../shared/widgets/pills/status_pill.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
 import '../../data/repositories/mock_doctor_settings_repository.dart';
-import '../../data/repositories/mock_patient_settings_repository.dart';
+import '../../data/repositories/patient_settings_repository_impl.dart';
 import '../../domain/models/emergency_contact.dart';
 import '../../domain/models/user_profile_summary.dart';
 import '../../domain/repositories/settings_repository.dart';
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
       widget.repository ??
       (widget.audience == SettingsAudience.doctor
           ? const MockDoctorSettingsRepository()
-          : const MockPatientSettingsRepository());
+          : getIt<PatientSettingsRepositoryImpl>());
 
   @override
   void initState() {

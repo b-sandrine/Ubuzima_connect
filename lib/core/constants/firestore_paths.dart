@@ -15,4 +15,8 @@ abstract final class FirestorePaths {
   static const String notifications = 'notifications';
   static const String pharmacies = 'pharmacies';
   static const String syncQueue = 'sync_queue';
+  static const String patientDashboard = 'patient_dashboard';
+  static const String patientRecords = 'patient_records';
+  static const String aiInsights = 'ai_insights';
+  static const String settings = 'settings';
 }

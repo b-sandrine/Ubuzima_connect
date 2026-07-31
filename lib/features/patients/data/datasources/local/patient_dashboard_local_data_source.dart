@@ -1,28 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../domain/models/ai_health_insight.dart';
-import '../../domain/models/bp_trend_point.dart';
-import '../../domain/models/care_item.dart';
-import '../../domain/models/health_score.dart';
-import '../../domain/models/medication_reminder.dart';
-import '../../domain/models/patient_profile.dart';
-import '../../domain/models/quick_link.dart';
-import '../../domain/models/vital_reading.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../domain/models/ai_health_insight.dart';
+import '../../../domain/models/bp_trend_point.dart';
+import '../../../domain/models/care_item.dart';
+import '../../../domain/models/health_score.dart';
+import '../../../domain/models/medication_reminder.dart';
+import '../../../domain/models/patient_profile.dart';
+import '../../../domain/models/quick_link.dart';
+import '../../../domain/models/vital_reading.dart';
 
-/// Seeded data behind [MockPatientDashboardRepository]. Kept in its own file
-/// so swapping in a Firestore-backed repository later is a data-source
-/// change only — nothing in `presentation/` has to move.
-abstract final class DummyPatientDashboardData {
-  /// The AI Insight / Lab / Health-ID accent purple used across the design
-  /// file for AI-generated content — not part of the shared palette since
-  /// only the doctor and patient AI surfaces use it.
-  static const Color aiPurple = Color(0xFF7C3AED);
-  static const Color labPurple = Color(0xFF8B5CF6);
-  static const Color glucoseTeal = Color(0xFF0D9488);
+/// Seed values for the patient Home dashboard, written into Firestore on
+/// first read. Icon/colour for vitals, medications, care items and quick
+/// links are cosmetic constants keyed by id —
+/// [PatientDashboardRemoteDataSource] pairs them with the live
+/// value/status/label fields.
+abstract interface class PatientDashboardLocalDataSource {
+  PatientProfile readPatient();
 
-  static const PatientProfile patient = PatientProfile(
+  HealthScore readHealthScore();
+
+  List<VitalReading> readTodayVitals();
+
+  List<MedicationReminder> readMedicationReminders();
+
+  List<CareItem> readUpcomingCare();
+
+  AiHealthInsight readAiHealthInsight();
+
+  List<QuickLink> readQuickLinks();
+
+  List<BpTrendPoint> readBpTrend();
+}
+
+@LazySingleton(as: PatientDashboardLocalDataSource)
+class PatientDashboardLocalDataSourceImpl
+    implements PatientDashboardLocalDataSource {
+  static const Color _aiPurple = Color(0xFF7C3AED);
+  static const Color _labPurple = Color(0xFF8B5CF6);
+  static const Color _glucoseTeal = Color(0xFF0D9488);
+
+  @override
+  PatientProfile readPatient() => const PatientProfile(
     id: 'pat-2847',
     fullName: 'Marie Uwase',
     displayId: 'RW-2847',
@@ -30,7 +51,8 @@ abstract final class DummyPatientDashboardData {
     verified: true,
   );
 
-  static const HealthScore healthScore = HealthScore(
+  @override
+  HealthScore readHealthScore() => const HealthScore(
     score: 82,
     maxScore: 100,
     statusLabel: 'Good',
@@ -38,8 +60,9 @@ abstract final class DummyPatientDashboardData {
     weeklyChangeLabel: '+4 pts this week',
   );
 
-  static const List<VitalReading> todayVitals = [
-    VitalReading(
+  @override
+  List<VitalReading> readTodayVitals() => [
+    const VitalReading(
       id: 'vital-bp',
       label: 'Blood Pressure',
       value: '138/88',
@@ -55,11 +78,11 @@ abstract final class DummyPatientDashboardData {
       value: '5.6',
       subLabel: 'mmol/L · Fasting',
       icon: LucideIcons.droplet,
-      iconColor: glucoseTeal,
+      iconColor: _glucoseTeal,
       badgeLabel: 'Normal',
       badgeColor: AppColors.success,
     ),
-    VitalReading(
+    const VitalReading(
       id: 'vital-weight',
       label: 'Weight',
       value: '67.2',
@@ -69,19 +92,20 @@ abstract final class DummyPatientDashboardData {
       badgeLabel: 'Stable',
       badgeColor: AppColors.secondary,
     ),
-    VitalReading(
+    const VitalReading(
       id: 'vital-spo2',
       label: 'SpO2',
       value: '98%',
       subLabel: 'Oxygen Sat.',
       icon: LucideIcons.wind,
-      iconColor: aiPurple,
+      iconColor: _aiPurple,
       badgeLabel: 'Normal',
       badgeColor: AppColors.success,
     ),
   ];
 
-  static const List<MedicationReminder> medicationReminders = [
+  @override
+  List<MedicationReminder> readMedicationReminders() => const [
     MedicationReminder(
       id: 'med-amlodipine',
       name: 'Amlodipine 5mg',
@@ -116,8 +140,9 @@ abstract final class DummyPatientDashboardData {
     ),
   ];
 
-  static const List<CareItem> upcomingCare = [
-    CareItem(
+  @override
+  List<CareItem> readUpcomingCare() => [
+    const CareItem(
       id: 'care-bp-followup',
       title: 'BP Follow-Up',
       subtitle: 'Dr. A. Mukamana',
@@ -136,13 +161,14 @@ abstract final class DummyPatientDashboardData {
       subtitle: 'HbA1c, Lipid Panel, Kidney Function',
       detail: 'CHC Kigali Lab · Fasting required',
       dateLabel: 'Jun 10',
-      dateColor: labPurple,
+      dateColor: _labPurple,
       icon: LucideIcons.flaskConical,
-      iconColor: labPurple,
+      iconColor: _labPurple,
     ),
   ];
 
-  static const AiHealthInsight aiHealthInsight = AiHealthInsight(
+  @override
+  AiHealthInsight readAiHealthInsight() => const AiHealthInsight(
     title: 'Trend Detected',
     tagLabel: 'AI',
     message:
@@ -151,21 +177,22 @@ abstract final class DummyPatientDashboardData {
     updatedLabel: 'Updated today · 06:00 AM',
   );
 
-  static const List<QuickLink> quickLinks = [
-    QuickLink(
+  @override
+  List<QuickLink> readQuickLinks() => [
+    const QuickLink(
       id: 'quick-health-id',
       icon: LucideIcons.grid2x2,
       label: 'Health ID',
       color: AppColors.primary,
       selected: true,
     ),
-    QuickLink(
+    const QuickLink(
       id: 'quick-records',
       icon: LucideIcons.folderOpen,
       label: 'Records',
       color: AppColors.secondary,
     ),
-    QuickLink(
+    const QuickLink(
       id: 'quick-meds',
       icon: LucideIcons.pill,
       label: 'Meds',
@@ -175,11 +202,12 @@ abstract final class DummyPatientDashboardData {
       id: 'quick-ai-insights',
       icon: LucideIcons.brain,
       label: 'AI Insights',
-      color: aiPurple,
+      color: _aiPurple,
     ),
   ];
 
-  static const List<BpTrendPoint> bpTrend = [
+  @override
+  List<BpTrendPoint> readBpTrend() => const [
     BpTrendPoint(dayLabel: 'Mon', systolic: 132, diastolic: 82),
     BpTrendPoint(dayLabel: 'Tue', systolic: 136, diastolic: 84),
     BpTrendPoint(dayLabel: 'Wed', systolic: 140, diastolic: 85),

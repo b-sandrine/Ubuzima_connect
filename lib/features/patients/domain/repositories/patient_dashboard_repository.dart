@@ -9,10 +9,8 @@ import '../models/vital_reading.dart';
 
 /// The data contract the Patient Dashboard is built against.
 ///
-/// [MockPatientDashboardRepository] fulfills it today with seeded,
-/// `Future.delayed` data; a later Firestore-backed implementation can
-/// implement the same interface, and `PatientDashboardScreen` won't need to
-/// change at all.
+/// [PatientDashboardRepositoryImpl] fulfills it with a Firestore-backed data
+/// source, seeded once from [PatientDashboardLocalDataSource] on first read.
 abstract class PatientDashboardRepository {
   Future<PatientProfile> getCurrentPatient();
 

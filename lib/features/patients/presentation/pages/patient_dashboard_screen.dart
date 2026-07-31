@@ -7,7 +7,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
-import '../../data/repositories/mock_patient_dashboard_repository.dart';
+import '../../../../core/di/injection.dart';
 import '../../domain/models/ai_health_insight.dart';
 import '../../domain/models/bp_trend_point.dart';
 import '../../domain/models/care_item.dart';
@@ -31,17 +31,13 @@ import '../widgets/vital_reading_card.dart';
 /// reminders, upcoming care, an AI-generated health insight, quick actions,
 /// and a 7-day blood-pressure trend.
 ///
-/// Data comes from a [PatientDashboardRepository] —
-/// [MockPatientDashboardRepository] by default — so swapping in a
-/// Firestore-backed implementation later only touches the constructor call,
-/// not this screen.
+/// Data comes from a [PatientDashboardRepository] — the Firestore-backed
+/// implementation by default, resolved through DI so tests can still pass
+/// a fake in directly.
 class PatientDashboardScreen extends StatefulWidget {
-  final PatientDashboardRepository repository;
+  final PatientDashboardRepository? repository;
 
-  const PatientDashboardScreen({
-    super.key,
-    this.repository = const MockPatientDashboardRepository(),
-  });
+  const PatientDashboardScreen({super.key, this.repository});
 
   @override
   State<PatientDashboardScreen> createState() =>
@@ -74,6 +70,9 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   late Future<_DashboardData> _future;
   int _navIndex = 0;
 
+  PatientDashboardRepository get _repository =>
+      widget.repository ?? getIt<PatientDashboardRepository>();
+
   @override
   void initState() {
     super.initState();
@@ -82,14 +81,14 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
 
   Future<_DashboardData> _load() async {
     final results = await Future.wait([
-      widget.repository.getCurrentPatient(),
-      widget.repository.getHealthScore(),
-      widget.repository.getTodayVitals(),
-      widget.repository.getMedicationReminders(),
-      widget.repository.getUpcomingCare(),
-      widget.repository.getAiHealthInsight(),
-      widget.repository.getQuickLinks(),
-      widget.repository.getBpTrend(),
+      _repository.getCurrentPatient(),
+      _repository.getHealthScore(),
+      _repository.getTodayVitals(),
+      _repository.getMedicationReminders(),
+      _repository.getUpcomingCare(),
+      _repository.getAiHealthInsight(),
+      _repository.getQuickLinks(),
+      _repository.getBpTrend(),
     ]);
 
     return _DashboardData(

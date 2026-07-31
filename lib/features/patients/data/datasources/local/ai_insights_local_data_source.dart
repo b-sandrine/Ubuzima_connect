@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../domain/models/ai_health_summary.dart';
-import '../../domain/models/bp_trend_point.dart';
-import '../../domain/models/guidance_tip.dart';
-import '../../domain/models/health_overview.dart';
-import '../../domain/models/recent_insight.dart';
-import '../../domain/models/risk_signal.dart';
-import '../../domain/models/vital_reading.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../domain/models/ai_health_summary.dart';
+import '../../../domain/models/bp_trend_point.dart';
+import '../../../domain/models/guidance_tip.dart';
+import '../../../domain/models/health_overview.dart';
+import '../../../domain/models/recent_insight.dart';
+import '../../../domain/models/risk_signal.dart';
+import '../../../domain/models/vital_reading.dart';
 
-/// Seeded data behind [MockAiInsightsRepository]. Kept in its own file so
-/// swapping in a Firestore-backed repository later is a data-source change
-/// only — nothing in `presentation/` has to move.
-abstract final class DummyAiInsightsData {
-  static const Color aiPurple = Color(0xFF7C3AED);
+/// Seed values for the AI Insights screen, written into Firestore on first
+/// read. Icon/colour for summary metrics, risk signals, guidance tips and
+/// recent insights are cosmetic constants keyed by id —
+/// [AiInsightsRemoteDataSource] pairs them with the live value/description
+/// fields.
+abstract interface class AiInsightsLocalDataSource {
+  HealthOverview readHealthOverview();
 
-  static const HealthOverview healthOverview = HealthOverview(
+  List<VitalReading> readHealthSummaryMetrics();
+
+  List<BpTrendPoint> readBpTrend30Days();
+
+  List<RiskSignal> readRiskSignals();
+
+  List<GuidanceTip> readGuidanceTips();
+
+  AiHealthSummary readAiHealthSummary();
+
+  List<RecentInsight> readRecentInsights();
+}
+
+@LazySingleton(as: AiInsightsLocalDataSource)
+class AiInsightsLocalDataSourceImpl implements AiInsightsLocalDataSource {
+  static const Color _aiPurple = Color(0xFF7C3AED);
+
+  @override
+  HealthOverview readHealthOverview() => const HealthOverview(
     score: 75,
     maxScore: 100,
     statusLabel: 'Good Health',
@@ -26,7 +47,8 @@ abstract final class DummyAiInsightsData {
     watchCount: 1,
   );
 
-  static const List<VitalReading> healthSummaryMetrics = [
+  @override
+  List<VitalReading> readHealthSummaryMetrics() => const [
     VitalReading(
       id: 'summary-bp',
       label: 'Blood Pressure',
@@ -69,9 +91,8 @@ abstract final class DummyAiInsightsData {
     ),
   ];
 
-  /// 30 days of BP readings (May 3 – Jun 2), trending upward — the same
-  /// story as the dashboard's 7-day trend, just zoomed out.
-  static List<BpTrendPoint> get bpTrend30Days {
+  @override
+  List<BpTrendPoint> readBpTrend30Days() {
     const systolic = [
       130, 131, 133, 132, 134, 136, 135, 137, 139, 138, //
       140, 142, 141, 139, 138, 140, 141, 143, 142, 140, //
@@ -94,7 +115,7 @@ abstract final class DummyAiInsightsData {
     ];
   }
 
-  static String _shortDate(DateTime date) {
+  String _shortDate(DateTime date) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', //
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -102,7 +123,8 @@ abstract final class DummyAiInsightsData {
     return '${months[date.month - 1]} ${date.day}';
   }
 
-  static const List<RiskSignal> riskSignals = [
+  @override
+  List<RiskSignal> readRiskSignals() => const [
     RiskSignal(
       id: 'risk-hypertension',
       icon: LucideIcons.heartPulse,
@@ -141,7 +163,8 @@ abstract final class DummyAiInsightsData {
     ),
   ];
 
-  static const List<GuidanceTip> guidanceTips = [
+  @override
+  List<GuidanceTip> readGuidanceTips() => const [
     GuidanceTip(
       id: 'guidance-salt',
       icon: LucideIcons.utensils,
@@ -167,10 +190,10 @@ abstract final class DummyAiInsightsData {
     GuidanceTip(
       id: 'guidance-followup',
       icon: LucideIcons.calendarClock,
-      iconColor: aiPurple,
+      iconColor: _aiPurple,
       title: 'Schedule Follow-Up',
       tagLabel: 'Due Soon',
-      tagColor: aiPurple,
+      tagColor: _aiPurple,
       description:
           'Your last BP check was 3 weeks ago. Book a follow-up with Dr. '
           'Mukamana at Gasabo CHC to reassess your medication dosage.',
@@ -178,7 +201,8 @@ abstract final class DummyAiInsightsData {
     ),
   ];
 
-  static const AiHealthSummary aiHealthSummary = AiHealthSummary(
+  @override
+  AiHealthSummary readAiHealthSummary() => const AiHealthSummary(
     patientName: 'Marie Uwase',
     dateLabel: 'June 2, 2025',
     body:
@@ -204,12 +228,13 @@ abstract final class DummyAiInsightsData {
       AiSummaryTag(
         icon: LucideIcons.calendarClock,
         label: 'Follow-up due',
-        color: aiPurple,
+        color: _aiPurple,
       ),
     ],
   );
 
-  static const List<RecentInsight> recentInsights = [
+  @override
+  List<RecentInsight> readRecentInsights() => const [
     RecentInsight(
       id: 'insight-streak',
       icon: LucideIcons.pill,
@@ -232,7 +257,7 @@ abstract final class DummyAiInsightsData {
     RecentInsight(
       id: 'insight-labs',
       icon: LucideIcons.flaskConical,
-      iconColor: aiPurple,
+      iconColor: _aiPurple,
       title: 'Lab Results Reviewed',
       timestampLabel: 'May 30',
       description:

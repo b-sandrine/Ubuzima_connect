@@ -8,9 +8,8 @@ import '../models/vital_reading.dart';
 
 /// The data contract the AI Insights screen is built against.
 ///
-/// [MockAiInsightsRepository] fulfills it today with seeded, `Future.delayed`
-/// data; a later Firestore-backed implementation can implement the same
-/// interface, and `AiInsightsPage` won't need to change at all.
+/// [AiInsightsRepositoryImpl] fulfills it with a Firestore-backed data
+/// source, seeded once from [AiInsightsLocalDataSource] on first read.
 abstract class AiInsightsRepository {
   Future<HealthOverview> getHealthOverview();
 

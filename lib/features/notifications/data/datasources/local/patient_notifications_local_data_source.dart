@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../domain/models/notification_item.dart';
-import '../../domain/models/notification_section.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../domain/models/notification_item.dart';
+import '../../../domain/models/notification_section.dart';
 
-/// Seeded data behind [MockPatientNotificationsRepository].
+/// Seed values for the patient Alerts feed, written into Firestore on first
+/// read. Icon/colour for each section and item are cosmetic constants keyed
+/// by title/id — [PatientNotificationsRemoteDataSource] pairs them with the
+/// live title/description/badge/read-state fields.
 ///
-/// No dedicated patient notifications design was available (the design
-/// file only had the doctor list), so per product direction this reuses
-/// the doctor screen's card language and section structure — icon tile,
-/// coloured accent, badge, action button — retold from the patient's own
-/// point of view instead of a clinician's. Content stays consistent with
-/// the seeded patient dashboard/records data (Marie Uwase, Dr. Mukamana).
-abstract final class DummyPatientNotificationsData {
-  static const Color aiPurple = Color(0xFF7C3AED);
+/// No dedicated patient notifications design was available (the design file
+/// only had the doctor list), so per product direction this reuses the
+/// doctor screen's card language and section structure, retold from the
+/// patient's own point of view. Content stays consistent with the seeded
+/// patient dashboard/records data (Marie Uwase, Dr. Mukamana).
+abstract interface class PatientNotificationsLocalDataSource {
+  List<NotificationSection> readSections();
+}
 
-  static const List<NotificationSection> sections = [
+@LazySingleton(as: PatientNotificationsLocalDataSource)
+class PatientNotificationsLocalDataSourceImpl
+    implements PatientNotificationsLocalDataSource {
+  static const Color _aiPurple = Color(0xFF7C3AED);
+
+  @override
+  List<NotificationSection> readSections() => const [
     NotificationSection(
       title: 'Medication Reminders',
       icon: LucideIcons.pill,
@@ -87,7 +97,7 @@ abstract final class DummyPatientNotificationsData {
     NotificationSection(
       title: 'AI Health Insights',
       icon: LucideIcons.brain,
-      color: aiPurple,
+      color: _aiPurple,
       items: [
         NotificationItem(
           id: 'notif-ai-trend',
@@ -99,8 +109,8 @@ abstract final class DummyPatientNotificationsData {
               'increasing hydration.',
           timestampLabel: 'Today, 06:00 AM',
           badgeLabel: 'AI',
-          badgeColor: aiPurple,
-          accentColor: aiPurple,
+          badgeColor: _aiPurple,
+          accentColor: _aiPurple,
           icon: LucideIcons.brain,
           actionLabel: 'Learn More',
           actionIcon: LucideIcons.info,

@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../../core/theme/app_colors.dart';
-import '../../domain/models/patient_tag.dart';
-import '../../domain/models/records_patient_profile.dart';
-import '../../domain/models/visit_summary.dart';
+import '../../../../../core/theme/app_colors.dart';
+import '../../../domain/models/patient_tag.dart';
+import '../../../domain/models/records_patient_profile.dart';
+import '../../../domain/models/visit_summary.dart';
 
-/// Seeded data behind [MockPatientRecordsRepository]. Kept in its own file
-/// so swapping in a Firestore-backed repository later is a data-source
-/// change only — nothing in `presentation/` has to move.
-abstract final class DummyPatientRecordsData {
-  static const Color labPurple = Color(0xFF8B5CF6);
-  static const Color mildOrange = Color(0xFFFB923C);
+/// Seed values for the Medical Records screen, written into Firestore on
+/// first read. Icon/colour/chips are cosmetic constants keyed by tag label
+/// or visit id — [PatientRecordsRemoteDataSource] pairs them with the live
+/// title/date/status/description fields.
+abstract interface class PatientRecordsLocalDataSource {
+  RecordsPatientProfile readProfile();
 
-  static const RecordsPatientProfile profile = RecordsPatientProfile(
+  List<VisitSummary> readVisitSummaries();
+
+  int readTotalVisitCount();
+}
+
+@LazySingleton(as: PatientRecordsLocalDataSource)
+class PatientRecordsLocalDataSourceImpl
+    implements PatientRecordsLocalDataSource {
+  static const Color _labPurple = Color(0xFF8B5CF6);
+  static const Color _mildOrange = Color(0xFFFB923C);
+
+  @override
+  RecordsPatientProfile readProfile() => const RecordsPatientProfile(
     fullName: 'Marie Uwase',
     displayId: 'RW-2847',
     dobLabel: '14 Mar 1985',
@@ -25,9 +38,11 @@ abstract final class DummyPatientRecordsData {
     ],
   );
 
-  static const int totalVisitCount = 8;
+  @override
+  int readTotalVisitCount() => 8;
 
-  static const List<VisitSummary> visitSummaries = [
+  @override
+  List<VisitSummary> readVisitSummaries() => const [
     VisitSummary(
       id: 'visit-bp-followup',
       title: 'BP Follow-Up',
@@ -50,7 +65,7 @@ abstract final class DummyPatientRecordsData {
         VisitChip(
           icon: LucideIcons.flaskConical,
           label: 'Lab Ordered',
-          color: labPurple,
+          color: _labPurple,
         ),
       ],
     ),
@@ -82,7 +97,7 @@ abstract final class DummyPatientRecordsData {
       statusLabel: 'Stable',
       statusColor: AppColors.success,
       icon: LucideIcons.stethoscope,
-      iconColor: mildOrange,
+      iconColor: _mildOrange,
       doctorLine: 'Dr. Amina Mukamana · CHC Kigali',
       description:
           'Routine wellness check. Weight stable at 67kg. No new '

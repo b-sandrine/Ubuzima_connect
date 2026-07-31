@@ -10,7 +10,7 @@ import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
-import '../../data/repositories/mock_ai_insights_repository.dart';
+import '../../../../core/di/injection.dart';
 import '../../domain/models/ai_health_summary.dart';
 import '../../domain/models/bp_trend_point.dart';
 import '../../domain/models/guidance_tip.dart';
@@ -45,16 +45,13 @@ extension on _InsightsFilter {
 /// summary + trend, risk signals, personalized guidance, the full AI
 /// analysis narrative, and recent insight history.
 ///
-/// Data comes from an [AiInsightsRepository] — [MockAiInsightsRepository] by
-/// default — so swapping in a Firestore-backed implementation later only
-/// touches the constructor call, not this screen.
+/// Data comes from an [AiInsightsRepository] — the Firestore-backed
+/// implementation by default, resolved through DI so tests can still pass
+/// a fake in directly.
 class AiInsightsPage extends StatefulWidget {
-  final AiInsightsRepository repository;
+  final AiInsightsRepository? repository;
 
-  const AiInsightsPage({
-    super.key,
-    this.repository = const MockAiInsightsRepository(),
-  });
+  const AiInsightsPage({super.key, this.repository});
 
   @override
   State<AiInsightsPage> createState() => _AiInsightsPageState();
@@ -85,6 +82,9 @@ class _AiInsightsPageState extends State<AiInsightsPage> {
   final int _navIndex = 2;
   _InsightsFilter _filter = _InsightsFilter.all;
 
+  AiInsightsRepository get _repository =>
+      widget.repository ?? getIt<AiInsightsRepository>();
+
   @override
   void initState() {
     super.initState();
@@ -93,13 +93,13 @@ class _AiInsightsPageState extends State<AiInsightsPage> {
 
   Future<_InsightsData> _load() async {
     final results = await Future.wait([
-      widget.repository.getHealthOverview(),
-      widget.repository.getHealthSummaryMetrics(),
-      widget.repository.getBpTrend(),
-      widget.repository.getRiskSignals(),
-      widget.repository.getGuidanceTips(),
-      widget.repository.getAiHealthSummary(),
-      widget.repository.getRecentInsights(),
+      _repository.getHealthOverview(),
+      _repository.getHealthSummaryMetrics(),
+      _repository.getBpTrend(),
+      _repository.getRiskSignals(),
+      _repository.getGuidanceTips(),
+      _repository.getAiHealthSummary(),
+      _repository.getRecentInsights(),
     ]);
 
     return _InsightsData(

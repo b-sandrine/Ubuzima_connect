@@ -10,7 +10,7 @@ import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
-import '../../data/repositories/mock_patient_records_repository.dart';
+import '../../../../core/di/injection.dart';
 import '../../domain/models/records_patient_profile.dart';
 import '../../domain/models/visit_summary.dart';
 import '../../domain/repositories/patient_records_repository.dart';
@@ -23,17 +23,13 @@ import '../widgets/visit_summary_card.dart';
 /// Visits / Lab Results / Prescriptions / Timeline segmented control, and
 /// the visit-summary history.
 ///
-/// Data comes from a [PatientRecordsRepository] —
-/// [MockPatientRecordsRepository] by default — so swapping in a
-/// Firestore-backed implementation later only touches the constructor
-/// call, not this screen.
+/// Data comes from a [PatientRecordsRepository] — the Firestore-backed
+/// implementation by default, resolved through DI so tests can still pass
+/// a fake in directly.
 class PatientRecordsPage extends StatefulWidget {
-  final PatientRecordsRepository repository;
+  final PatientRecordsRepository? repository;
 
-  const PatientRecordsPage({
-    super.key,
-    this.repository = const MockPatientRecordsRepository(),
-  });
+  const PatientRecordsPage({super.key, this.repository});
 
   @override
   State<PatientRecordsPage> createState() => _PatientRecordsPageState();
@@ -63,6 +59,9 @@ class _PatientRecordsPageState extends State<PatientRecordsPage> {
   int _tabIndex = 0;
   int _navIndex = 1;
 
+  PatientRecordsRepository get _repository =>
+      widget.repository ?? getIt<PatientRecordsRepository>();
+
   @override
   void initState() {
     super.initState();
@@ -71,9 +70,9 @@ class _PatientRecordsPageState extends State<PatientRecordsPage> {
 
   Future<_RecordsData> _load() async {
     final results = await Future.wait([
-      widget.repository.getPatientProfile(),
-      widget.repository.getVisitSummaries(),
-      widget.repository.getTotalVisitCount(),
+      _repository.getPatientProfile(),
+      _repository.getVisitSummaries(),
+      _repository.getTotalVisitCount(),
     ]);
 
     return _RecordsData(

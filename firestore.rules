@@ -70,6 +70,40 @@ service cloud.firestore {
       }
     }
 
+    // Patient Home dashboard.
+    match /patient_dashboard/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+    }
+
+    // Patient Medical Records screen + its loaded visits.
+    match /patient_records/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+
+      match /visits/{visitId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+
+    // Patient AI Insights screen.
+    match /ai_insights/{patientId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+    }
+
+    // Doctor/patient Alerts feed.
+    match /notifications/{userId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+    }
+
+    // Doctor/patient Settings profile + emergency contacts.
+    match /settings/{userId} {
+      allow read: if isSignedIn() && ownsResource(resource);
+      allow write: if isSignedIn();
+    }
+
     // Everything not explicitly matched above is denied.
     match /{document=**} {
       allow read, write: if false;

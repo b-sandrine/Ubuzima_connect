@@ -82,6 +82,12 @@ import '../../features/medical_records/domain/usecases/get_patient_timeline.dart
     as _i209;
 import '../../features/medical_records/presentation/bloc/timeline_bloc.dart'
     as _i855;
+import '../../features/notifications/data/datasources/local/patient_notifications_local_data_source.dart'
+    as _i520;
+import '../../features/notifications/data/datasources/remote/patient_notifications_remote_data_source.dart'
+    as _i399;
+import '../../features/notifications/data/repositories/patient_notifications_repository_impl.dart'
+    as _i992;
 import '../../features/patient_intake/data/datasources/local/rwanda_locations_data_source.dart'
     as _i138;
 import '../../features/patient_intake/data/datasources/remote/patient_intake_remote_data_source.dart'
@@ -94,6 +100,30 @@ import '../../features/patient_intake/domain/usecases/submit_patient_intake.dart
     as _i277;
 import '../../features/patient_intake/presentation/bloc/patient_intake_bloc.dart'
     as _i377;
+import '../../features/patients/data/datasources/local/ai_insights_local_data_source.dart'
+    as _i549;
+import '../../features/patients/data/datasources/local/patient_dashboard_local_data_source.dart'
+    as _i341;
+import '../../features/patients/data/datasources/local/patient_records_local_data_source.dart'
+    as _i737;
+import '../../features/patients/data/datasources/remote/ai_insights_remote_data_source.dart'
+    as _i840;
+import '../../features/patients/data/datasources/remote/patient_dashboard_remote_data_source.dart'
+    as _i762;
+import '../../features/patients/data/datasources/remote/patient_records_remote_data_source.dart'
+    as _i764;
+import '../../features/patients/data/repositories/ai_insights_repository_impl.dart'
+    as _i270;
+import '../../features/patients/data/repositories/patient_dashboard_repository_impl.dart'
+    as _i589;
+import '../../features/patients/data/repositories/patient_records_repository_impl.dart'
+    as _i1036;
+import '../../features/patients/domain/repositories/ai_insights_repository.dart'
+    as _i83;
+import '../../features/patients/domain/repositories/patient_dashboard_repository.dart'
+    as _i322;
+import '../../features/patients/domain/repositories/patient_records_repository.dart'
+    as _i224;
 import '../../features/prescriptions/data/datasources/local/medication_local_data_source.dart'
     as _i325;
 import '../../features/prescriptions/data/datasources/remote/medication_remote_data_source.dart'
@@ -129,6 +159,12 @@ import '../../features/referrals/presentation/bloc/referral_board_bloc.dart'
     as _i460;
 import '../../features/referrals/presentation/bloc/referral_form_bloc.dart'
     as _i668;
+import '../../features/settings/data/datasources/local/patient_settings_local_data_source.dart'
+    as _i1031;
+import '../../features/settings/data/datasources/remote/patient_settings_remote_data_source.dart'
+    as _i780;
+import '../../features/settings/data/repositories/patient_settings_repository_impl.dart'
+    as _i980;
 import '../accessibility/accessibility_cubit.dart' as _i1064;
 import '../analytics/analytics_service.dart' as _i726;
 import '../database/app_database.dart' as _i982;
@@ -173,8 +209,14 @@ Future<_i174.GetIt> init(
     () => registerModule.secureStorage,
   );
   gh.lazySingleton<_i974.Logger>(() => registerModule.logger);
+  gh.lazySingleton<_i520.PatientNotificationsLocalDataSource>(
+    () => _i520.PatientNotificationsLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i138.RwandaLocationsDataSource>(
     () => _i138.RwandaLocationsDataSourceImpl(),
+  );
+  gh.lazySingleton<_i737.PatientRecordsLocalDataSource>(
+    () => _i737.PatientRecordsLocalDataSourceImpl(),
   );
   gh.lazySingleton<_i812.SecureStorageService>(
     () => _i812.SecureStorageServiceImpl(gh<_i558.FlutterSecureStorage>()),
@@ -192,20 +234,58 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i554.HealthRecordLocalDataSource>(
     () => _i554.HealthRecordLocalDataSourceImpl(),
   );
+  gh.lazySingleton<_i549.AiInsightsLocalDataSource>(
+    () => _i549.AiInsightsLocalDataSourceImpl(),
+  );
+  gh.lazySingleton<_i1031.PatientSettingsLocalDataSource>(
+    () => _i1031.PatientSettingsLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i325.MedicationLocalDataSource>(
     () => _i325.MedicationLocalDataSourceImpl(),
+  );
+  gh.lazySingleton<_i840.AiInsightsRemoteDataSource>(
+    () => _i840.AiInsightsRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i549.AiInsightsLocalDataSource>(),
+    ),
   );
   gh.lazySingleton<_i231.TimelineLocalDataSource>(
     () => _i231.TimelineLocalDataSourceImpl(),
   );
+  gh.lazySingleton<_i341.PatientDashboardLocalDataSource>(
+    () => _i341.PatientDashboardLocalDataSourceImpl(),
+  );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
+  gh.lazySingleton<_i399.PatientNotificationsRemoteDataSource>(
+    () => _i399.PatientNotificationsRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i520.PatientNotificationsLocalDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i780.PatientSettingsRemoteDataSource>(
+    () => _i780.PatientSettingsRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i1031.PatientSettingsLocalDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i96.PatientIntakeRemoteDataSource>(
     () => _i96.PatientIntakeRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
   );
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
         _i838.RoleSelectionLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
+  );
+  gh.lazySingleton<_i764.PatientRecordsRemoteDataSource>(
+    () => _i764.PatientRecordsRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i737.PatientRecordsLocalDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i980.PatientSettingsRepositoryImpl>(
+    () => _i980.PatientSettingsRepositoryImpl(
+      gh<_i780.PatientSettingsRemoteDataSource>(),
+    ),
   );
   gh.lazySingleton<_i910.FirebaseMessagingService>(
     () => _i910.FirebaseMessagingService(
@@ -239,6 +319,12 @@ Future<_i174.GetIt> init(
       gh<_i554.HealthRecordLocalDataSource>(),
     ),
   );
+  gh.lazySingleton<_i762.PatientDashboardRemoteDataSource>(
+    () => _i762.PatientDashboardRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i341.PatientDashboardLocalDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i694.MedicationRemoteDataSource>(
     () => _i694.MedicationRemoteDataSourceImpl(
       gh<_i974.FirebaseFirestore>(),
@@ -254,6 +340,15 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i611.ThemeCubit>(
     () => _i611.ThemeCubit(gh<_i744.LocalStorageService>()),
   );
+  gh.lazySingleton<_i83.AiInsightsRepository>(
+    () =>
+        _i270.AiInsightsRepositoryImpl(gh<_i840.AiInsightsRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i322.PatientDashboardRepository>(
+    () => _i589.PatientDashboardRepositoryImpl(
+      gh<_i762.PatientDashboardRemoteDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i710.ReferralRepository>(
     () => _i1054.ReferralRepositoryImpl(gh<_i1015.ReferralRemoteDataSource>()),
   );
@@ -261,6 +356,16 @@ Future<_i174.GetIt> init(
     () => _i596.TimelineRemoteDataSourceImpl(
       gh<_i974.FirebaseFirestore>(),
       gh<_i231.TimelineLocalDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i224.PatientRecordsRepository>(
+    () => _i1036.PatientRecordsRepositoryImpl(
+      gh<_i764.PatientRecordsRemoteDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i992.PatientNotificationsRepositoryImpl>(
+    () => _i992.PatientNotificationsRepositoryImpl(
+      gh<_i399.PatientNotificationsRemoteDataSource>(),
     ),
   );
   gh.lazySingleton<_i579.PatientIntakeRepository>(
