@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/constants/app_constants.dart';
@@ -34,8 +35,9 @@ abstract interface class ReferralRemoteDataSource {
 class ReferralRemoteDataSourceImpl implements ReferralRemoteDataSource {
   final FirebaseFirestore _firestore;
   final ReferralLocalDataSource _seed;
+  final FirebaseAuth _auth;
 
-  ReferralRemoteDataSourceImpl(this._firestore, this._seed);
+  ReferralRemoteDataSourceImpl(this._firestore, this._seed, this._auth);
 
   static const String _patientId = AppConstants.demoPatientId;
 
@@ -86,7 +88,7 @@ class ReferralRemoteDataSourceImpl implements ReferralRemoteDataSource {
         'status': ReferralStatus.pending.name,
         'facility': draft.destinationFacility,
         'receivedLabel': 'Just now',
-        'referringPhysician': 'You',
+        'referringPhysician': _auth.currentUser?.displayName ?? 'You',
         'referringFacility': 'This facility',
         'reason': draft.reason,
         'clinicalSummary': summary.isEmpty ? null : summary,

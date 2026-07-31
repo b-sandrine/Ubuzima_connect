@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
@@ -52,6 +53,8 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
         context.go(AppRoutes.doctorDashboard);
       case 1:
         context.go(AppRoutes.patientSearch);
+      case 2:
+        showComingSoon(context, 'AI Insights');
       case 3:
         context.go(AppRoutes.doctorNotifications);
       case 4:

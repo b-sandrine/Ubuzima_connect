@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
@@ -43,9 +45,23 @@ class _PatientTimelineView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
+      bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 1,
-        items: [
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              context.go(AppRoutes.patientDashboard);
+            case 1:
+              context.go(AppRoutes.patientRecords);
+            case 2:
+              context.go(AppRoutes.patientAiInsights);
+            case 3:
+              context.go(AppRoutes.patientNotifications);
+            case 4:
+              context.go(AppRoutes.patientSettings);
+          }
+        },
+        items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),
           BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
           BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
@@ -211,9 +227,15 @@ class _PatientTimelineView extends StatelessWidget {
             ),
           const SizedBox(height: 4),
         ],
-      if (timeline.earlierCount > 0) ...[
+      if (timeline.earlierCount > 0 &&
+          !state.earlierRevealed &&
+          state.filter == TimelineFilter.all &&
+          state.query.isEmpty) ...[
         const SizedBox(height: 4),
-        _LoadEarlierButton(count: timeline.earlierCount),
+        _LoadEarlierButton(
+          count: timeline.earlierCount,
+          onTap: () => bloc.add(const TimelineViewEvent.earlierRequested()),
+        ),
       ],
       const SizedBox(height: 16),
       PatientInsightCard(
@@ -324,44 +346,54 @@ class _YearPill extends StatelessWidget {
 }
 
 /// The dashed "Load Earlier Records (N more)" affordance beneath the oldest
-/// loaded event. Static for the demo timeline, same as DOC-04.
+/// loaded event, same as DOC-04. Reveals the collapsed older events on tap.
 class _LoadEarlierButton extends StatelessWidget {
   final int count;
+  final VoidCallback onTap;
 
-  const _LoadEarlierButton({required this.count});
+  const _LoadEarlierButton({required this.count, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: AppColors.primary.withValues(alpha: 0.06),
+      child: Material(
+        color: AppColors.primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              LucideIcons.rotateCcw,
-              size: 15,
-              color: AppColors.primary,
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                'Load Earlier Records ($count more)',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
-                ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
               ),
             ),
-          ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  LucideIcons.rotateCcw,
+                  size: 15,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Load Earlier Records ($count more)',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -90,9 +90,9 @@ abstract final class AppRoutes {
   /// selection. See `route_guards.dart` for where that redirect is wired.
   static const String onboarding = '/onboarding';
 
-  /// Routes openable without a Firebase session.
-  /// Clinical Firestore screens require auth; only the CHW offline
-  /// dashboard stays reachable for offline continue.
+  /// Routes openable without a Firebase session. Clinical Firestore screens
+  /// require auth; only the CHW offline flow ("Continue Offline" on the CHW
+  /// login) and onboarding itself stay reachable pre-auth.
   static const Set<String> demoReachable = {
     chwDashboard,
     chwReferral,
@@ -101,21 +101,6 @@ abstract final class AppRoutes {
     chwNotifications,
     chwSettings,
     newPatientIntake,
-    patientTimeline,
-    patientMedicalTimeline,
-    doctorDashboard,
-    patientSearch,
-    consultation,
-    languageSettings,
-    patientDetail,
-    patientDashboard,
-    patientRecords,
-    patientAiInsights,
-    patientMedications,
-    doctorNotifications,
-    patientNotifications,
-    doctorSettings,
-    patientSettings,
     onboarding,
   };
 }

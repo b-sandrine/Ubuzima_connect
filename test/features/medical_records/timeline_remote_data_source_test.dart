@@ -5,6 +5,8 @@ import 'package:ubuzima_connect/core/constants/firestore_paths.dart';
 import 'package:ubuzima_connect/features/medical_records/data/datasources/local/timeline_local_data_source.dart';
 import 'package:ubuzima_connect/features/medical_records/data/datasources/remote/timeline_remote_data_source.dart';
 
+import '../../helpers/fake_clinical_ai_service.dart';
+
 void main() {
   late FakeFirebaseFirestore firestore;
   late TimelineRemoteDataSourceImpl dataSource;
@@ -14,6 +16,7 @@ void main() {
     dataSource = TimelineRemoteDataSourceImpl(
       firestore,
       TimelineLocalDataSourceImpl(),
+      const FakeClinicalAiService(),
     );
   });
 

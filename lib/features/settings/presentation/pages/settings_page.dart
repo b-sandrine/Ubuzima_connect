@@ -15,6 +15,7 @@ import '../../../../core/storage/local_storage_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/theme_cubit.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
@@ -184,6 +185,8 @@ class _SettingsPageState extends State<SettingsPage> {
             context.go(AppRoutes.doctorDashboard);
           case 1:
             context.go(AppRoutes.patientSearch);
+          case 2:
+            showComingSoon(context, 'AI Insights');
           case 3:
             context.go(AppRoutes.doctorNotifications);
           case 4:
@@ -609,7 +612,7 @@ class _SettingsPageState extends State<SettingsPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              context.push(AppRoutes.languageSettings);
+              context.push(AppRoutes.languageSettings, extra: widget.audience);
             },
             child: const Text('Language'),
           ),

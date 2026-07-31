@@ -11,7 +11,9 @@ abstract final class SettingsRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutes.languageSettings,
-      builder: (context, state) => const LanguageSettingsPage(),
+      builder: (context, state) => LanguageSettingsPage(
+        audience: state.extra as SettingsAudience? ?? SettingsAudience.patient,
+      ),
     ),
     GoRoute(
       path: AppRoutes.doctorSettings,
