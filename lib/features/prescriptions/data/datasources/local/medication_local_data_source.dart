@@ -133,10 +133,8 @@ class MedicationLocalDataSourceImpl implements MedicationLocalDataSource {
           tags: [DoseTag.instruction('Evening dose')],
         ),
       ],
-      aiInsight:
-          "You've maintained 82% adherence this month — excellent progress! "
-          'Taking Metformin consistently with meals reduces gastrointestinal '
-          'side effects and improves glucose control by up to 18%.',
+      // Filled by ClinicalAiService on first remote read.
+      aiInsight: '',
     );
   }
 }

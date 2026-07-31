@@ -69,6 +69,8 @@ dependencies:
 
   # Lucide icon set — the same icons used in the design file
   lucide_icons_flutter: ^3.1.15
+  firebase_ai: ^2.3.0
+  firebase_app_check: ^0.3.2+10
 
 dev_dependencies:
   flutter_test:

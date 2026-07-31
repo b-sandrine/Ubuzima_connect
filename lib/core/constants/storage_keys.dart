@@ -28,4 +28,14 @@ abstract final class StorageKeys {
   // Connectivity (Settings — Connectivity)
   static const String offlineModeEnabled = 'prefs.offline_mode_enabled';
   static const String autoSyncEnabled = 'prefs.auto_sync_enabled';
+
+  // Editable settings profile / contacts (per audience suffix appended at use)
+  static const String settingsProfileName = 'prefs.settings_profile_name';
+  static const String settingsProfileFacility =
+      'prefs.settings_profile_facility';
+  static const String settingsEmergencyContacts =
+      'prefs.settings_emergency_contacts';
+
+  // Secure storage
+  static const String appPin = 'secure.app_pin';
 }
