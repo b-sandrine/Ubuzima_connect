@@ -68,6 +68,8 @@ import '../../features/community_health_workers/domain/usecases/complete_next_st
     as _i665;
 import '../../features/community_health_workers/domain/usecases/get_health_record.dart'
     as _i509;
+import '../../features/community_health_workers/presentation/bloc/chw_patient_list_bloc.dart'
+    as _i104;
 import '../../features/community_health_workers/presentation/bloc/health_record_bloc.dart'
     as _i1071;
 import '../../features/doctors/data/repositories/mock_doctor_dashboard_repository.dart'
@@ -114,6 +116,8 @@ import '../../features/patient_intake/data/repositories/patient_intake_repositor
     as _i66;
 import '../../features/patient_intake/domain/repositories/patient_intake_repository.dart'
     as _i579;
+import '../../features/patient_intake/domain/usecases/list_registered_patients.dart'
+    as _i547;
 import '../../features/patient_intake/domain/usecases/submit_patient_intake.dart'
     as _i277;
 import '../../features/patient_intake/presentation/bloc/patient_intake_bloc.dart'
@@ -245,10 +249,13 @@ Future<_i174.GetIt> init(
       gh<_i671.ClinicalAiService>(),
     ),
   );
-  gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i96.PatientIntakeRemoteDataSource>(
-    () => _i96.PatientIntakeRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+    () => _i96.PatientIntakeRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i59.FirebaseAuth>(),
+    ),
   );
+  gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i552.HealthRecordRemoteDataSource>(
     () => _i552.HealthRecordRemoteDataSourceImpl(
       gh<_i974.FirebaseFirestore>(),
@@ -393,6 +400,9 @@ Future<_i174.GetIt> init(
   gh.factory<_i572.GetReferralBoard>(
     () => _i572.GetReferralBoard(gh<_i710.ReferralRepository>()),
   );
+  gh.factory<_i547.ListRegisteredPatients>(
+    () => _i547.ListRegisteredPatients(gh<_i579.PatientIntakeRepository>()),
+  );
   gh.factory<_i277.SubmitPatientIntake>(
     () => _i277.SubmitPatientIntake(gh<_i579.PatientIntakeRepository>()),
   );
@@ -421,6 +431,9 @@ Future<_i174.GetIt> init(
   );
   gh.lazySingleton<_i742.AuthRepository>(
     () => _i317.AuthRepositoryImpl(gh<_i504.FirebaseAuthRemoteDataSource>()),
+  );
+  gh.factory<_i104.ChwPatientListBloc>(
+    () => _i104.ChwPatientListBloc(gh<_i547.ListRegisteredPatients>()),
   );
   gh.factory<_i92.MedicationBloc>(
     () => _i92.MedicationBloc(

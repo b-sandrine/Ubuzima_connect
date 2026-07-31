@@ -4,6 +4,8 @@ import 'package:ubuzima_connect/features/community_health_workers/data/datasourc
 import 'package:ubuzima_connect/features/community_health_workers/data/datasources/remote/health_record_remote_data_source.dart';
 import 'package:ubuzima_connect/features/community_health_workers/data/repositories/health_record_repository_impl.dart';
 
+import '../../helpers/fake_clinical_ai_service.dart';
+
 void main() {
   late HealthRecordRepositoryImpl repository;
 
@@ -11,6 +13,7 @@ void main() {
     final remote = HealthRecordRemoteDataSourceImpl(
       FakeFirebaseFirestore(),
       HealthRecordLocalDataSourceImpl(),
+      const FakeClinicalAiService(),
     );
     repository = HealthRecordRepositoryImpl(remote);
   });

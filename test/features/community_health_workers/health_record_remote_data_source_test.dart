@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ubuzima_connect/features/community_health_workers/data/datasources/local/health_record_local_data_source.dart';
 import 'package:ubuzima_connect/features/community_health_workers/data/datasources/remote/health_record_remote_data_source.dart';
 
+import '../../helpers/fake_clinical_ai_service.dart';
+
 void main() {
   late FakeFirebaseFirestore firestore;
   late HealthRecordRemoteDataSourceImpl dataSource;
@@ -12,6 +14,7 @@ void main() {
     dataSource = HealthRecordRemoteDataSourceImpl(
       firestore,
       HealthRecordLocalDataSourceImpl(),
+      const FakeClinicalAiService(),
     );
   });
 

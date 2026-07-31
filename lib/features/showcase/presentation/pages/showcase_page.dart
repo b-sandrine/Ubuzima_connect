@@ -57,6 +57,14 @@ class ShowcasePage extends StatelessWidget {
       route: AppRoutes.chwDashboard,
     ),
     _ShowcaseEntry(
+      task: 'CHW-02',
+      title: 'CHW Patient List',
+      subtitle: 'CHW · search registered patients from Firestore',
+      icon: Icons.groups_outlined,
+      color: AppColors.roleChw,
+      route: AppRoutes.chwPatientList,
+    ),
+    _ShowcaseEntry(
       task: 'PAT-03',
       title: 'Current Medications',
       subtitle: 'Patient · today’s doses, adherence & refills',

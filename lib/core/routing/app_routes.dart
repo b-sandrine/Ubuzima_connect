@@ -21,6 +21,9 @@ abstract final class AppRoutes {
   /// CHW-06b — the community health worker's referral-to-hospital form.
   static const String chwReferral = '/chw/referral';
 
+  /// CHW-02 — searchable list of registered community patients.
+  static const String chwPatientList = '/chw/patients';
+
   /// The community health worker's patient health record.
   static const String chwHealthRecord = '/chw/record';
 
@@ -88,6 +91,7 @@ abstract final class AppRoutes {
     showcase,
     chwDashboard,
     chwReferral,
+    chwPatientList,
     chwHealthRecord,
     newPatientIntake,
     patientTimeline,

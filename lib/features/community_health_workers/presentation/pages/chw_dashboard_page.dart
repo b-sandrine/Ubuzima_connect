@@ -9,12 +9,20 @@ import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
 import '../../../authentication/domain/usecases/sign_out.dart';
-import '../../domain/entities/health_record.dart';
+import '../../../patient_intake/domain/entities/patient_intake_draft.dart';
+import '../../../patient_intake/domain/entities/registered_patient.dart';
+import '../../../patient_intake/domain/usecases/list_registered_patients.dart';
 
 /// CHW-01 — the community health worker's main dashboard. Shows today's
 /// summary, quick actions, and a snapshot of the assigned patient list.
 class ChwDashboardPage extends StatelessWidget {
-  const ChwDashboardPage({super.key});
+  final ListRegisteredPatients _listRegisteredPatients;
+
+  ChwDashboardPage({
+    super.key,
+    ListRegisteredPatients? listRegisteredPatients,
+  }) : _listRegisteredPatients =
+           listRegisteredPatients ?? getIt<ListRegisteredPatients>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,11 @@ class ChwDashboardPage extends StatelessWidget {
         currentIndex: 0,
         onTap: (i) async {
           if (i == 1) {
-            context.go(AppRoutes.chwHealthRecord);
+            context.go(AppRoutes.chwPatientList);
+            return;
+          }
+          if (i == 2) {
+            context.push(AppRoutes.newPatientIntake);
             return;
           }
           if (i == 4) {
@@ -74,9 +86,11 @@ class ChwDashboardPage extends StatelessWidget {
                     const SizedBox(height: 12),
                     const _QuickActionsGrid(),
                     const SizedBox(height: 24),
-                    const _SectionLabel('Recent Patients'),
+                    _RecentPatientsHeader(),
                     const SizedBox(height: 12),
-                    const _RecentPatientsList(),
+                    _RecentPatientsList(
+                      listRegisteredPatients: _listRegisteredPatients,
+                    ),
                     const SizedBox(height: 24),
                     const _SectionLabel('Upcoming Visits'),
                     const SizedBox(height: 12),
@@ -373,14 +387,14 @@ class _QuickActionsGrid extends StatelessWidget {
         label: 'Register Patient',
         color: const Color(0xFF7C3AED),
         tint: const Color(0xFFF5F3FF),
-        onTap: () {},
+        onTap: () => context.push(AppRoutes.newPatientIntake),
       ),
       _QuickAction(
         icon: LucideIcons.brain,
         label: 'AI Risk Check',
         color: AppColors.warning,
         tint: const Color(0xFFFFF7ED),
-        onTap: () {},
+        onTap: () => context.go(AppRoutes.chwPatientList),
       ),
     ];
 
@@ -457,49 +471,195 @@ class _QuickAction extends StatelessWidget {
 
 // -- Recent patients --
 
-final _kDemoPatients = [
-  (name: 'Amina Uwase', detail: 'Female · 28y · Risk: Moderate', risk: RiskLevel.moderate),
-  (name: 'Jean Habimana', detail: 'Male · 45y · Risk: High', risk: RiskLevel.high),
-  (name: 'Marie Mukamana', detail: 'Female · 33y · Risk: Low', risk: RiskLevel.low),
-];
-
-class _RecentPatientsList extends StatelessWidget {
-  const _RecentPatientsList();
-
+class _RecentPatientsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        for (final p in _kDemoPatients) ...[
-          _PatientRow(
-            name: p.name,
-            detail: p.detail,
-            riskLevel: p.risk,
-            onTap: () => context.go(AppRoutes.chwHealthRecord),
+        const Expanded(child: _SectionLabel('Recent Patients')),
+        TextButton(
+          onPressed: () => context.go(AppRoutes.chwPatientList),
+          child: const Text(
+            'See all',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: AppColors.roleChw,
+            ),
           ),
-          const SizedBox(height: 8),
-        ],
+        ),
       ],
     );
   }
 }
 
+class _RecentPatientsList extends StatefulWidget {
+  final ListRegisteredPatients listRegisteredPatients;
+
+  const _RecentPatientsList({required this.listRegisteredPatients});
+
+  @override
+  State<_RecentPatientsList> createState() => _RecentPatientsListState();
+}
+
+class _RecentPatientsListState extends State<_RecentPatientsList> {
+  static const _previewLimit = 5;
+
+  late Future<List<RegisteredPatient>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _load();
+  }
+
+  Future<List<RegisteredPatient>> _load() async {
+    final result = await widget.listRegisteredPatients();
+    return result.fold((_) => throw Exception('Could not load patients.'), (p) => p);
+  }
+
+  Future<void> _refresh() async {
+    final next = _load();
+    setState(() => _future = next);
+    await next;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<RegisteredPatient>>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(strokeWidth: 2.5),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return _RecentPatientsMessage(
+            icon: LucideIcons.triangleAlert,
+            title: 'Could not load patients',
+            subtitle: 'Pull to retry, or open the full patient list.',
+            actionLabel: 'Retry',
+            onAction: _refresh,
+          );
+        }
+
+        final patients = snapshot.data ?? const <RegisteredPatient>[];
+        if (patients.isEmpty) {
+          return _RecentPatientsMessage(
+            icon: LucideIcons.users,
+            title: 'No patients yet',
+            subtitle: 'Register a community patient to see them here.',
+            actionLabel: 'Register patient',
+            onAction: () => context.push(AppRoutes.newPatientIntake),
+          );
+        }
+
+        final preview = patients.take(_previewLimit).toList();
+        return Column(
+          children: [
+            for (final patient in preview) ...[
+              _PatientRow(
+                patient: patient,
+                onTap: () => context.go(AppRoutes.chwPatientList),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (patients.length > _previewLimit)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: () => context.go(AppRoutes.chwPatientList),
+                  child: Text(
+                    'View all ${patients.length} patients',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.roleChw,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _RecentPatientsMessage extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  const _RecentPatientsMessage({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: AppColors.textTertiary, size: 28),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14.5,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12.5,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextButton(onPressed: onAction, child: Text(actionLabel)),
+        ],
+      ),
+    );
+  }
+}
+
 class _PatientRow extends StatelessWidget {
-  final String name;
-  final String detail;
-  final RiskLevel riskLevel;
+  final RegisteredPatient patient;
   final VoidCallback onTap;
 
   const _PatientRow({
-    required this.name,
-    required this.detail,
-    required this.riskLevel,
+    required this.patient,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final riskColor = _riskColor(riskLevel);
+    final riskColor = _riskColor(patient.riskLevel);
 
     return Material(
       color: Colors.white,
@@ -534,7 +694,7 @@ class _PatientRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      patient.fullName,
                       style: const TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w700,
@@ -543,7 +703,7 @@ class _PatientRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      detail,
+                      patient.detailLine,
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -562,7 +722,7 @@ class _PatientRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
-                  _riskLabel(riskLevel),
+                  _riskLabel(patient.riskLevel),
                   style: TextStyle(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w700,
