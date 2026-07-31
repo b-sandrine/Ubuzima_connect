@@ -2,9 +2,10 @@ import '../../domain/models/consultation.dart';
 import '../../domain/repositories/consultation_repository.dart';
 import '../dummy/dummy_consultation_data.dart';
 
-/// Mock implementation of [ConsultationRepository] used until the
-/// Firestore-backed consultation is wired up. Every call goes through
-/// `Future.delayed` to mimic a real network round trip.
+/// Mock implementation of [ConsultationRepository] used as a widget-test
+/// fixture — the real app now runs on [FirestoreConsultationRepository].
+/// Every call goes through `Future.delayed` to mimic a real network round
+/// trip.
 class MockConsultationRepository implements ConsultationRepository {
   const MockConsultationRepository();
 

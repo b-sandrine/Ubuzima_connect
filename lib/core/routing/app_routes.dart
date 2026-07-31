@@ -90,18 +90,10 @@ abstract final class AppRoutes {
   /// selection. See `route_guards.dart` for where that redirect is wired.
   static const String onboarding = '/onboarding';
 
-  /// OFFLINE-01's demo destination. The real banner is global (app.dart);
-  /// this just gives the showcase card something to push to.
-  static const String offlineIndicatorInfo = '/offline-indicator-info';
-
-  /// Demo hub listing every delivered screen (not a product screen).
-  static const String showcase = '/showcase';
-
   /// Routes openable without a Firebase session.
-  /// Clinical Firestore screens require auth; only the showcase hub and the
-  /// CHW offline dashboard stay reachable for demos / offline continue.
+  /// Clinical Firestore screens require auth; only the CHW offline
+  /// dashboard stays reachable for offline continue.
   static const Set<String> demoReachable = {
-    showcase,
     chwDashboard,
     chwReferral,
     chwPatientList,
@@ -125,6 +117,5 @@ abstract final class AppRoutes {
     doctorSettings,
     patientSettings,
     onboarding,
-    offlineIndicatorInfo,
   };
 }
