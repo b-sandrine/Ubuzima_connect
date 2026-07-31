@@ -13,12 +13,10 @@ import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
 import '../../features/settings/settings_routes.dart';
-import '../../features/showcase/showcase_routes.dart';
 import 'app_routes.dart';
 import 'auth_router_refresh.dart';
 import 'auth_session.dart';
 import 'pages/not_found_page.dart';
-import 'pages/offline_indicator_info_page.dart';
 import 'route_guards.dart';
 
 /// Single `GoRouter` instance for the whole app. Each feature contributes
@@ -34,7 +32,7 @@ class AppRouter {
   AppRouter(this._authSessionProvider, this._authRouterRefresh);
 
   late final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.showcase,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     refreshListenable: _authRouterRefresh,
     redirect: (context, state) =>
@@ -43,10 +41,6 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomePage(),
-      ),
-      GoRoute(
-        path: AppRoutes.offlineIndicatorInfo,
-        builder: (context, state) => const OfflineIndicatorInfoPage(),
       ),
       ...AuthenticationRoutes.routes,
       ...PrescriptionsRoutes.routes,
@@ -58,7 +52,6 @@ class AppRouter {
       ...PatientsRoutes.routes,
       ...NotificationsRoutes.routes,
       ...SettingsRoutes.routes,
-      ...ShowcaseRoutes.routes,
       ...DoctorsRoutes.routes,
     ],
     errorBuilder: (context, state) => const NotFoundPage(),

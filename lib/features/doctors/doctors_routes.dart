@@ -24,7 +24,7 @@ abstract final class DoctorsRoutes {
     ),
     GoRoute(
       path: AppRoutes.consultation,
-      builder: (context, state) => const ConsultationScreen(),
+      builder: (context, state) => ConsultationScreen(),
     ),
   ];
 }
