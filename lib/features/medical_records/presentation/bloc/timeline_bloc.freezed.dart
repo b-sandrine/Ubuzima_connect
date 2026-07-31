@@ -55,13 +55,14 @@ extension TimelineViewEventPatterns on TimelineViewEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( TimelineStarted value)?  started,TResult Function( TimelineFilterChanged value)?  filterChanged,TResult Function( TimelineSearchChanged value)?  searchChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( TimelineStarted value)?  started,TResult Function( TimelineFilterChanged value)?  filterChanged,TResult Function( TimelineSearchChanged value)?  searchChanged,TResult Function( TimelineEarlierRequested value)?  earlierRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case TimelineStarted() when started != null:
 return started(_that);case TimelineFilterChanged() when filterChanged != null:
 return filterChanged(_that);case TimelineSearchChanged() when searchChanged != null:
-return searchChanged(_that);case _:
+return searchChanged(_that);case TimelineEarlierRequested() when earlierRequested != null:
+return earlierRequested(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return searchChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( TimelineStarted value)  started,required TResult Function( TimelineFilterChanged value)  filterChanged,required TResult Function( TimelineSearchChanged value)  searchChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( TimelineStarted value)  started,required TResult Function( TimelineFilterChanged value)  filterChanged,required TResult Function( TimelineSearchChanged value)  searchChanged,required TResult Function( TimelineEarlierRequested value)  earlierRequested,}){
 final _that = this;
 switch (_that) {
 case TimelineStarted():
 return started(_that);case TimelineFilterChanged():
 return filterChanged(_that);case TimelineSearchChanged():
-return searchChanged(_that);}
+return searchChanged(_that);case TimelineEarlierRequested():
+return earlierRequested(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +101,14 @@ return searchChanged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( TimelineStarted value)?  started,TResult? Function( TimelineFilterChanged value)?  filterChanged,TResult? Function( TimelineSearchChanged value)?  searchChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( TimelineStarted value)?  started,TResult? Function( TimelineFilterChanged value)?  filterChanged,TResult? Function( TimelineSearchChanged value)?  searchChanged,TResult? Function( TimelineEarlierRequested value)?  earlierRequested,}){
 final _that = this;
 switch (_that) {
 case TimelineStarted() when started != null:
 return started(_that);case TimelineFilterChanged() when filterChanged != null:
 return filterChanged(_that);case TimelineSearchChanged() when searchChanged != null:
-return searchChanged(_that);case _:
+return searchChanged(_that);case TimelineEarlierRequested() when earlierRequested != null:
+return earlierRequested(_that);case _:
   return null;
 
 }
@@ -122,12 +125,13 @@ return searchChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( TimelineFilter filter)?  filterChanged,TResult Function( String query)?  searchChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( TimelineFilter filter)?  filterChanged,TResult Function( String query)?  searchChanged,TResult Function()?  earlierRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case TimelineStarted() when started != null:
 return started();case TimelineFilterChanged() when filterChanged != null:
 return filterChanged(_that.filter);case TimelineSearchChanged() when searchChanged != null:
-return searchChanged(_that.query);case _:
+return searchChanged(_that.query);case TimelineEarlierRequested() when earlierRequested != null:
+return earlierRequested();case _:
   return orElse();
 
 }
@@ -145,12 +149,13 @@ return searchChanged(_that.query);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( TimelineFilter filter)  filterChanged,required TResult Function( String query)  searchChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( TimelineFilter filter)  filterChanged,required TResult Function( String query)  searchChanged,required TResult Function()  earlierRequested,}) {final _that = this;
 switch (_that) {
 case TimelineStarted():
 return started();case TimelineFilterChanged():
 return filterChanged(_that.filter);case TimelineSearchChanged():
-return searchChanged(_that.query);}
+return searchChanged(_that.query);case TimelineEarlierRequested():
+return earlierRequested();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +169,13 @@ return searchChanged(_that.query);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( TimelineFilter filter)?  filterChanged,TResult? Function( String query)?  searchChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( TimelineFilter filter)?  filterChanged,TResult? Function( String query)?  searchChanged,TResult? Function()?  earlierRequested,}) {final _that = this;
 switch (_that) {
 case TimelineStarted() when started != null:
 return started();case TimelineFilterChanged() when filterChanged != null:
 return filterChanged(_that.filter);case TimelineSearchChanged() when searchChanged != null:
-return searchChanged(_that.query);case _:
+return searchChanged(_that.query);case TimelineEarlierRequested() when earlierRequested != null:
+return earlierRequested();case _:
   return null;
 
 }
@@ -342,9 +348,41 @@ as String,
 }
 
 /// @nodoc
+
+
+class TimelineEarlierRequested implements TimelineViewEvent {
+  const TimelineEarlierRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineEarlierRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TimelineViewEvent.earlierRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$TimelineState {
 
- TimelineStatus get status; PatientTimeline? get timeline; TimelineFilter get filter; String get query; String? get errorMessage;
+ TimelineStatus get status; PatientTimeline? get timeline; TimelineFilter get filter; String get query; bool get earlierRevealed; String? get errorMessage;
 /// Create a copy of TimelineState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -355,16 +393,16 @@ $TimelineStateCopyWith<TimelineState> get copyWith => _$TimelineStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineState&&(identical(other.status, status) || other.status == status)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.filter, filter) || other.filter == filter)&&(identical(other.query, query) || other.query == query)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineState&&(identical(other.status, status) || other.status == status)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.filter, filter) || other.filter == filter)&&(identical(other.query, query) || other.query == query)&&(identical(other.earlierRevealed, earlierRevealed) || other.earlierRevealed == earlierRevealed)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,timeline,filter,query,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,timeline,filter,query,earlierRevealed,errorMessage);
 
 @override
 String toString() {
-  return 'TimelineState(status: $status, timeline: $timeline, filter: $filter, query: $query, errorMessage: $errorMessage)';
+  return 'TimelineState(status: $status, timeline: $timeline, filter: $filter, query: $query, earlierRevealed: $earlierRevealed, errorMessage: $errorMessage)';
 }
 
 
@@ -375,7 +413,7 @@ abstract mixin class $TimelineStateCopyWith<$Res>  {
   factory $TimelineStateCopyWith(TimelineState value, $Res Function(TimelineState) _then) = _$TimelineStateCopyWithImpl;
 @useResult
 $Res call({
- TimelineStatus status, PatientTimeline? timeline, TimelineFilter filter, String query, String? errorMessage
+ TimelineStatus status, PatientTimeline? timeline, TimelineFilter filter, String query, bool earlierRevealed, String? errorMessage
 });
 
 
@@ -392,13 +430,14 @@ class _$TimelineStateCopyWithImpl<$Res>
 
 /// Create a copy of TimelineState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? timeline = freezed,Object? filter = null,Object? query = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? timeline = freezed,Object? filter = null,Object? query = null,Object? earlierRevealed = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TimelineStatus,timeline: freezed == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
 as PatientTimeline?,filter: null == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
 as TimelineFilter,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String,earlierRevealed: null == earlierRevealed ? _self.earlierRevealed : earlierRevealed // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -484,10 +523,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  bool earlierRevealed,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TimelineState() when $default != null:
-return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.errorMessage);case _:
+return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.earlierRevealed,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -505,10 +544,10 @@ return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.error
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  bool earlierRevealed,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _TimelineState():
-return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.errorMessage);case _:
+return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.earlierRevealed,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -525,10 +564,10 @@ return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.error
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TimelineStatus status,  PatientTimeline? timeline,  TimelineFilter filter,  String query,  bool earlierRevealed,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _TimelineState() when $default != null:
-return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.errorMessage);case _:
+return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.earlierRevealed,_that.errorMessage);case _:
   return null;
 
 }
@@ -540,13 +579,14 @@ return $default(_that.status,_that.timeline,_that.filter,_that.query,_that.error
 
 
 class _TimelineState extends TimelineState {
-  const _TimelineState({this.status = TimelineStatus.initial, this.timeline, this.filter = TimelineFilter.all, this.query = '', this.errorMessage}): super._();
+  const _TimelineState({this.status = TimelineStatus.initial, this.timeline, this.filter = TimelineFilter.all, this.query = '', this.earlierRevealed = false, this.errorMessage}): super._();
   
 
 @override@JsonKey() final  TimelineStatus status;
 @override final  PatientTimeline? timeline;
 @override@JsonKey() final  TimelineFilter filter;
 @override@JsonKey() final  String query;
+@override@JsonKey() final  bool earlierRevealed;
 @override final  String? errorMessage;
 
 /// Create a copy of TimelineState
@@ -559,16 +599,16 @@ _$TimelineStateCopyWith<_TimelineState> get copyWith => __$TimelineStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineState&&(identical(other.status, status) || other.status == status)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.filter, filter) || other.filter == filter)&&(identical(other.query, query) || other.query == query)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineState&&(identical(other.status, status) || other.status == status)&&(identical(other.timeline, timeline) || other.timeline == timeline)&&(identical(other.filter, filter) || other.filter == filter)&&(identical(other.query, query) || other.query == query)&&(identical(other.earlierRevealed, earlierRevealed) || other.earlierRevealed == earlierRevealed)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,timeline,filter,query,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,timeline,filter,query,earlierRevealed,errorMessage);
 
 @override
 String toString() {
-  return 'TimelineState(status: $status, timeline: $timeline, filter: $filter, query: $query, errorMessage: $errorMessage)';
+  return 'TimelineState(status: $status, timeline: $timeline, filter: $filter, query: $query, earlierRevealed: $earlierRevealed, errorMessage: $errorMessage)';
 }
 
 
@@ -579,7 +619,7 @@ abstract mixin class _$TimelineStateCopyWith<$Res> implements $TimelineStateCopy
   factory _$TimelineStateCopyWith(_TimelineState value, $Res Function(_TimelineState) _then) = __$TimelineStateCopyWithImpl;
 @override @useResult
 $Res call({
- TimelineStatus status, PatientTimeline? timeline, TimelineFilter filter, String query, String? errorMessage
+ TimelineStatus status, PatientTimeline? timeline, TimelineFilter filter, String query, bool earlierRevealed, String? errorMessage
 });
 
 
@@ -596,13 +636,14 @@ class __$TimelineStateCopyWithImpl<$Res>
 
 /// Create a copy of TimelineState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? timeline = freezed,Object? filter = null,Object? query = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? timeline = freezed,Object? filter = null,Object? query = null,Object? earlierRevealed = null,Object? errorMessage = freezed,}) {
   return _then(_TimelineState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as TimelineStatus,timeline: freezed == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
 as PatientTimeline?,filter: null == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
 as TimelineFilter,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String,earlierRevealed: null == earlierRevealed ? _self.earlierRevealed : earlierRevealed // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

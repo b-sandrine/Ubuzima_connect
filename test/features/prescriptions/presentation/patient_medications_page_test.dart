@@ -136,7 +136,7 @@ void main() {
     expect(find.text('Requested'), findsOneWidget);
   });
 
-  testWidgets('switching tabs shows the coming-soon placeholder', (
+  testWidgets('the Prescriptions tab lists each medication once', (
     tester,
   ) async {
     await pump(tester);
@@ -144,6 +144,36 @@ void main() {
     await tester.tap(find.text('Prescriptions'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('coming soon'), findsOneWidget);
+    expect(find.text('ACTIVE PRESCRIPTIONS'), findsOneWidget);
+    expect(find.text('Amlodipine'), findsOneWidget);
+    expect(find.text('Metformin'), findsOneWidget);
+  });
+
+  testWidgets('the Adherence tab shows the streak and refill stats', (
+    tester,
+  ) async {
+    await pump(tester);
+
+    await tester.ensureVisible(find.text('Adherence'));
+    await tester.tap(find.text('Adherence'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Today's Adherence"), findsOneWidget);
+    expect(find.text('30'), findsOneWidget);
+    expect(find.text('1'), findsOneWidget);
+  });
+
+  testWidgets("the History tab logs today's doses chronologically", (
+    tester,
+  ) async {
+    await pump(tester);
+
+    await tester.ensureVisible(find.text('History'));
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("TODAY'S LOG"), findsOneWidget);
+    expect(find.text('Amlodipine · 5mg'), findsOneWidget);
+    expect(find.text('Metformin · 500mg'), findsOneWidget);
   });
 }
