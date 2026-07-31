@@ -95,6 +95,10 @@ class ReferralRemoteDataSourceImpl implements ReferralRemoteDataSource {
         'routeOptions': const <String>[],
         // Negative so freshly created referrals sort to the top of the list.
         'sortOrder': -DateTime.now().millisecondsSinceEpoch,
+        // A real timestamp (not just the display label) so anything that
+        // needs to know "was this referred today" — e.g. the Doctor
+        // Dashboard's Today's Schedule — has something reliable to check.
+        'createdAt': FieldValue.serverTimestamp(),
       });
       return reference;
     } on FirebaseException catch (e) {

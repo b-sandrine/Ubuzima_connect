@@ -155,14 +155,17 @@ class _DoctorDashboardScreenState extends State<DoctorDashboardScreen> {
                           _printAction('Today’s Schedule · See all'),
                     ),
                     const SizedBox(height: AppSpacing.sm + 2),
-                    for (final item in data.schedule) ...[
-                      ScheduleCard(
-                        item: item,
-                        onTap: () =>
-                            _printAction('Schedule · ${item.patientName}'),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
+                    if (data.schedule.isEmpty)
+                      const _EmptyScheduleMessage()
+                    else
+                      for (final item in data.schedule) ...[
+                        ScheduleCard(
+                          item: item,
+                          onTap: () =>
+                              _printAction('Schedule · ${item.patientName}'),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                      ],
                     const SizedBox(height: AppSpacing.sm),
                     _SectionHeader(
                       title: 'Patient Queue',
@@ -412,6 +415,44 @@ class _QuickAccessRow extends StatelessWidget {
           if (action != actions.last) const SizedBox(width: AppSpacing.sm),
         ],
       ],
+    );
+  }
+}
+
+class _EmptyScheduleMessage extends StatelessWidget {
+  const _EmptyScheduleMessage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSpacing.lg,
+        horizontal: AppSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            LucideIcons.calendarX2,
+            size: 18,
+            color: AppColors.textTertiary,
+          ),
+          SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              'No patient has been referred today',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

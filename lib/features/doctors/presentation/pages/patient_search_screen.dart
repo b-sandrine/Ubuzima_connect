@@ -20,7 +20,6 @@ import '../widgets/doctor_bottom_navigation_bar.dart';
 import '../widgets/patient_filter_chip.dart';
 import '../widgets/patient_record_card.dart';
 import '../widgets/patient_search_field.dart';
-import '../widgets/register_patient_button.dart';
 
 /// The doctor's Patient Search / Records screen: search, quick filters,
 /// panel stats, an AI follow-up nudge, and the recent patients list.
@@ -251,10 +250,6 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
                         ),
                         const SizedBox(height: AppSpacing.sm),
                       ],
-                    const SizedBox(height: AppSpacing.sm),
-                    RegisterPatientButton(
-                      onTap: () => context.push(AppRoutes.newPatientIntake),
-                    ),
                   ],
                 ),
               );

@@ -22,12 +22,14 @@ import '../../../domain/models/schedule_item.dart';
 ///   doctors/{uid}                      → doctor-only extras (hospital,
 ///                                         onDuty) + stat counts
 ///   doctors/{uid}/emergency_alerts/{id} → Emergency Alerts panel
-///   doctors/{uid}/schedule/{id}         → Today's Schedule
+///   doctors/{uid}/schedule/{id}         → manually-booked schedule slots
+///                                         (a future real booking flow)
 ///
-/// Referral Status *and* Patient Queue both read the same `referrals`
-/// collection DOC-06's Referral Management screen owns — not separate
-/// copies — so a referral actually routed to this doctor shows up in
-/// both places.
+/// Referral Status, Patient Queue, and Today's Schedule all read the same
+/// `referrals` collection DOC-06's Referral Management screen owns — not
+/// separate copies — so a referral actually routed to this doctor shows
+/// up everywhere. Today's Schedule only counts a referral once it has a
+/// real `createdAt` timestamp landing on today's date.
 ///
 /// No seed data — a fresh account reads back empty lists/blank fields
 /// until real activity exists. [DashboardStat]'s icon/colour aren't
@@ -184,11 +186,17 @@ class DoctorDashboardRemoteDataSourceImpl
     }
   }
 
+  /// Patients referred *today*, read from real referral timestamps —
+  /// merged with anything manually stored under `schedule` (a future real
+  /// appointment-booking flow would write there). A referral only counts
+  /// as "today" when it actually has a `createdAt` timestamp landing on
+  /// today's date; referrals without one (e.g. older seeded data predating
+  /// this field) are left out rather than guessed at.
   @override
   Future<List<ScheduleItem>> getTodaySchedule() async {
     try {
-      final docs = await _schedule.orderBy('sortOrder').get();
-      return docs.docs.map((d) {
+      final stored = await _schedule.orderBy('sortOrder').get();
+      final storedItems = stored.docs.map((d) {
         final data = d.data();
         return ScheduleItem(
           id: d.id,
@@ -200,7 +208,35 @@ class DoctorDashboardRemoteDataSourceImpl
             data['status'] as String? ?? 'none',
           ),
         );
-      }).toList();
+      });
+
+      final incoming = await _incomingReferrals();
+      final now = DateTime.now();
+      final referredToday = incoming.where((r) {
+        final createdAt = r.$1.data()['createdAt'];
+        if (createdAt is! Timestamp) return false;
+        final date = createdAt.toDate();
+        return date.year == now.year &&
+            date.month == now.month &&
+            date.day == now.day;
+      });
+
+      final referralItems = referredToday.map((r) {
+        final data = r.$1.data();
+        final createdAt = (data['createdAt'] as Timestamp).toDate();
+        return ScheduleItem(
+          id: 'referral-${r.$1.id}',
+          time: _formatTime(createdAt),
+          patientName: r.$2,
+          reason: data['reason'] as String? ?? 'Referral',
+          // No real appointment duration exists for a referral-triggered
+          // slot — a standard consult length, not a clinical value.
+          durationMinutes: 30,
+          status: ScheduleStatus.none,
+        );
+      });
+
+      return [...storedItems, ...referralItems];
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? "Could not load today's schedule.");
     }
@@ -274,6 +310,17 @@ class DoctorDashboardRemoteDataSourceImpl
         .where((d) => d.data()['status'] != 'declined')
         .map((d) => (d, patientName))
         .toList();
+  }
+
+  /// "08:30 AM" style, matching [ScheduleCard]'s split-on-space rendering —
+  /// no `intl`/`BuildContext` available in the data layer, so formatted by
+  /// hand rather than via `TimeOfDay.format` (which needs one).
+  String _formatTime(DateTime time) {
+    final hour24 = time.hour;
+    final period = hour24 < 12 ? 'AM' : 'PM';
+    final hour12 = hour24 % 12 == 0 ? 12 : hour24 % 12;
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '${hour12.toString().padLeft(2, '0')}:$minute $period';
   }
 
   QueuePriority _queuePriorityFor(String? urgency) => switch (urgency) {
