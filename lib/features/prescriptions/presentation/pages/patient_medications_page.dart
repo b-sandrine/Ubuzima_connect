@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
@@ -47,9 +49,21 @@ class _MedicationsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
-        currentIndex: 3,
-        items: [
+      bottomNavigationBar: UbuzimaBottomNav(
+        currentIndex: 1,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              context.go(AppRoutes.patientDashboard);
+            case 2:
+              context.go(AppRoutes.patientAiInsights);
+            case 3:
+              context.go(AppRoutes.patientNotifications);
+            case 4:
+              context.go(AppRoutes.patientSettings);
+          }
+        },
+        items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),
           BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
           BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
