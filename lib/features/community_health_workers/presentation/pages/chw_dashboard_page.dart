@@ -789,7 +789,7 @@ class _QuickActionsGrid extends StatelessWidget {
         label: 'Refer Patient',
         color: AppColors.secondary,
         tint: AppColors.rolePatientTint,
-        onTap: () => context.go(AppRoutes.chwReferral),
+        onTap: () => context.push(AppRoutes.chwReferral),
       ),
       _QuickAction(
         icon: LucideIcons.userRoundPlus,

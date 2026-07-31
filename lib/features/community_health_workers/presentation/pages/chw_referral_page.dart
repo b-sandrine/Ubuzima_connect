@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/routing/auth_session.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
@@ -101,14 +102,16 @@ class _ChwReferralView extends StatelessWidget {
   }
 }
 
-/// The "CHW · Kigali Sector" identity chip carried across the CHW surfaces.
+/// The CHW identity chip carried across the CHW surfaces — shows the real
+/// signed-in CHW's name rather than a fixed placeholder.
 class _ChwBadge extends StatelessWidget {
   const _ChwBadge();
 
   @override
   Widget build(BuildContext context) {
-    return const StatusPill(
-      label: 'CHW · Kigali Sector',
+    final name = getIt<AuthSessionProvider>().currentDisplayName;
+    return StatusPill(
+      label: (name == null || name.isEmpty) ? 'CHW' : 'CHW · $name',
       color: AppColors.primary,
       icon: Icons.badge_outlined,
       fontSize: 12,

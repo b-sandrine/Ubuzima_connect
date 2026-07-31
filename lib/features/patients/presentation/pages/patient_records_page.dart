@@ -98,7 +98,7 @@ class _PatientRecordsPageState extends State<PatientRecordsPage> {
       case 2:
         context.push(AppRoutes.patientMedications);
       case 3:
-        context.push(AppRoutes.patientTimeline);
+        context.push(AppRoutes.patientMedicalTimeline);
       default:
         setState(() => _tabIndex = index);
     }

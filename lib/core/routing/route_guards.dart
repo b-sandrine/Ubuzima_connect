@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';
 import 'auth_session.dart';
+import 'onboarding_status.dart';
 import 'role_home.dart';
 
 /// Redirect logic applied to every navigation: unauthenticated users are
@@ -29,6 +30,7 @@ abstract final class RouteGuards {
 
   static String? redirect(
     AuthSessionProvider authSessionProvider,
+    OnboardingStatusProvider onboardingStatusProvider,
     GoRouterState state,
   ) {
     final status = authSessionProvider.currentStatus;
@@ -43,6 +45,19 @@ abstract final class RouteGuards {
     final atDemoScreen =
         AppRoutes.demoReachable.contains(location) ||
         AppRoutes.isChwHealthRecord(location);
+
+    // TUTORIAL-01 — first-time unauthenticated users get bounced to the
+    // onboarding slides before anything else (login, role selection, deep
+    // links). Exempts the splash screen itself (so branding still paints
+    // first) and the CHW offline fast-path (demoReachable), which is meant
+    // to stay frictionless.
+    if (status == AuthSessionStatus.unauthenticated &&
+        !onboardingStatusProvider.isComplete &&
+        !atSplash &&
+        !atOnboarding &&
+        !atDemoScreen) {
+      return AppRoutes.onboarding;
+    }
 
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&

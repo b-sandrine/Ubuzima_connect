@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/localization/locale_extensions.dart';
+import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
+import '../../../community_health_workers/presentation/widgets/chw_bottom_nav.dart';
 import '../widgets/language_option_card.dart';
+import 'settings_page.dart' show SettingsAudience;
 
 /// SETTINGS-01 — lets the user pick English, Kinyarwanda, or Français, or
 /// fall back to following the device's language.
@@ -18,8 +23,18 @@ import '../widgets/language_option_card.dart';
 /// `core/localization/` because the choice affects the whole app, not just
 /// Settings) and it's provided once above `MaterialApp` in `app.dart`, so
 /// this page only needs to read its state and call `setLocale`/`clear`.
+///
+/// [audience] drives which role's routes the bottom nav lands on; it comes
+/// from `state.extra` in `settings_routes.dart` (this route is shared by
+/// all three roles, unlike `doctorSettings`/`patientSettings`/`chwSettings`),
+/// defaulting to patient for a direct/deep link that skipped Settings.
 class LanguageSettingsPage extends StatelessWidget {
-  const LanguageSettingsPage({super.key});
+  final SettingsAudience audience;
+
+  const LanguageSettingsPage({
+    super.key,
+    this.audience = SettingsAudience.patient,
+  });
 
   static const _languages = [
     (code: 'en', name: 'English', badge: 'EN', accent: AppColors.secondary),
@@ -38,9 +53,41 @@ class LanguageSettingsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
+      bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 4,
-        items: [
+        onTap: (index) {
+          switch (audience) {
+            case SettingsAudience.chw:
+              ChwBottomNav.handleTap(context, index);
+            case SettingsAudience.doctor:
+              switch (index) {
+                case 0:
+                  context.go(AppRoutes.doctorDashboard);
+                case 1:
+                  context.go(AppRoutes.patientSearch);
+                case 2:
+                  showComingSoon(context, 'AI Insights');
+                case 3:
+                  context.go(AppRoutes.doctorNotifications);
+                case 4:
+                  context.go(AppRoutes.doctorSettings);
+              }
+            case SettingsAudience.patient:
+              switch (index) {
+                case 0:
+                  context.go(AppRoutes.patientDashboard);
+                case 1:
+                  context.go(AppRoutes.patientRecords);
+                case 2:
+                  context.go(AppRoutes.patientAiInsights);
+                case 3:
+                  context.go(AppRoutes.patientNotifications);
+                case 4:
+                  context.go(AppRoutes.patientSettings);
+              }
+          }
+        },
+        items: const [
           BottomNavItem(icon: LucideIcons.house, label: 'Home'),
           BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
           BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),

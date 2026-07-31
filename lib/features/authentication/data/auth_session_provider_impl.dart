@@ -109,6 +109,12 @@ class FirebaseAuthSessionProvider implements routing.AuthSessionProvider {
   routing.UserRole get currentRole => _role;
 
   @override
+  String? get currentUserId => _authRepository.currentUser?.id;
+
+  @override
+  String? get currentDisplayName => _authRepository.currentUser?.displayName;
+
+  @override
   Stream<routing.AuthSessionStatus> get statusStream =>
       _statusController.stream;
 }
