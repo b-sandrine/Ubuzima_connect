@@ -11,8 +11,8 @@ import 'package:ubuzima_connect/features/medical_records/presentation/bloc/timel
 class _MockGetTimeline extends Mock implements GetPatientTimeline {}
 
 const _timeline = PatientTimeline(
-  totalEvents: 24,
-  earlierCount: 6,
+  totalEvents: 3,
+  earlierCount: 0,
   aiViewLabel: '7-year view',
   patient: TimelinePatient(
     name: 'Marie Uwase',

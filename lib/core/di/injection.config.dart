@@ -124,6 +124,8 @@ import '../../features/onboarding/domain/usecases/get_onboarding_complete.dart'
     as _i826;
 import '../../features/onboarding/presentation/bloc/onboarding_cubit.dart'
     as _i153;
+import '../../features/onboarding/presentation/onboarding_status_provider_impl.dart'
+    as _i703;
 import '../../features/patient_intake/data/datasources/local/rwanda_locations_data_source.dart'
     as _i138;
 import '../../features/patient_intake/data/datasources/remote/patient_intake_remote_data_source.dart'
@@ -190,6 +192,7 @@ import '../permissions/permission_service.dart' as _i271;
 import '../routing/app_router.dart' as _i282;
 import '../routing/auth_router_refresh.dart' as _i593;
 import '../routing/auth_session.dart' as _i565;
+import '../routing/onboarding_status.dart' as _i359;
 import '../security/secure_storage_service.dart' as _i812;
 import '../services/connectivity_service.dart' as _i47;
 import '../services/firebase_messaging_service.dart' as _i910;
@@ -251,6 +254,21 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i231.TimelineLocalDataSource>(
     () => _i231.TimelineLocalDataSourceImpl(),
   );
+  gh.lazySingleton<_i1015.ReferralRemoteDataSource>(
+    () => _i1015.ReferralRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i33.ReferralLocalDataSource>(),
+      gh<_i59.FirebaseAuth>(),
+    ),
+  );
+  gh.lazySingleton<_i694.MedicationRemoteDataSource>(
+    () => _i694.MedicationRemoteDataSourceImpl(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i325.MedicationLocalDataSource>(),
+      gh<_i671.ClinicalAiService>(),
+      gh<_i59.FirebaseAuth>(),
+    ),
+  );
   gh.lazySingleton<_i580.IdGenerator>(() => _i580.UuidIdGenerator());
   gh.lazySingleton<_i950.ChwCaseloadRepository>(
     () => _i950.ChwCaseloadRepository(
@@ -274,6 +292,11 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i645.OnboardingLocalDataSource>(
     () => _i645.OnboardingLocalDataSourceImpl(gh<_i744.LocalStorageService>()),
   );
+  gh.lazySingleton<_i359.OnboardingStatusProvider>(
+    () => _i703.OnboardingStatusProviderImpl(
+      gh<_i645.OnboardingLocalDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i354.AppLogger>(() => _i354.AppLogger(gh<_i974.Logger>()));
   gh.lazySingleton<_i552.HealthRecordRemoteDataSource>(
     () => _i552.HealthRecordRemoteDataSourceImpl(
@@ -292,6 +315,10 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i1065.ConsultationRemoteDataSource>(
     () =>
         _i1065.ConsultationRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+  );
+  gh.lazySingleton<_i552.MedicationRepository>(
+    () =>
+        _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
   );
   gh.lazySingleton<_i838.RoleSelectionLocalDataSource>(
     () =>
@@ -338,13 +365,6 @@ Future<_i174.GetIt> init(
   gh.factory<_i543.RegenerateAiAssessment>(
     () => _i543.RegenerateAiAssessment(gh<_i245.HealthRecordRepository>()),
   );
-  gh.lazySingleton<_i694.MedicationRemoteDataSource>(
-    () => _i694.MedicationRemoteDataSourceImpl(
-      gh<_i974.FirebaseFirestore>(),
-      gh<_i325.MedicationLocalDataSource>(),
-      gh<_i671.ClinicalAiService>(),
-    ),
-  );
   gh.lazySingleton<_i451.RoleSelectionRepository>(
     () => _i1028.RoleSelectionRepositoryImpl(
       gh<_i838.RoleSelectionLocalDataSource>(),
@@ -353,11 +373,14 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i47.ConnectivityService>(
     () => _i47.ConnectivityService(gh<_i932.NetworkInfo>()),
   );
-  gh.lazySingleton<_i1015.ReferralRemoteDataSource>(
-    () => _i1015.ReferralRemoteDataSourceImpl(
-      gh<_i974.FirebaseFirestore>(),
-      gh<_i33.ReferralLocalDataSource>(),
-    ),
+  gh.factory<_i566.GetTodaySchedule>(
+    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i340.MarkDoseTaken>(
+    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
+  );
+  gh.factory<_i843.RequestRefill>(
+    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
   );
   gh.lazySingleton<_i1064.AccessibilityCubit>(
     () => _i1064.AccessibilityCubit(gh<_i744.LocalStorageService>()),
@@ -420,12 +443,15 @@ Future<_i174.GetIt> init(
   gh.factory<_i826.GetOnboardingComplete>(
     () => _i826.GetOnboardingComplete(gh<_i430.OnboardingRepository>()),
   );
+  gh.factory<_i92.MedicationBloc>(
+    () => _i92.MedicationBloc(
+      gh<_i566.GetTodaySchedule>(),
+      gh<_i340.MarkDoseTaken>(),
+      gh<_i843.RequestRefill>(),
+    ),
+  );
   gh.factory<_i153.OnboardingCubit>(
     () => _i153.OnboardingCubit(gh<_i561.CompleteOnboarding>()),
-  );
-  gh.lazySingleton<_i552.MedicationRepository>(
-    () =>
-        _i521.MedicationRepositoryImpl(gh<_i694.MedicationRemoteDataSource>()),
   );
   gh.lazySingleton<_i169.DoctorDashboardRepository>(
     () => _i251.FirestoreDoctorDashboardRepository(
@@ -471,15 +497,6 @@ Future<_i174.GetIt> init(
       gh<_i173.DeleteReferral>(),
     ),
   );
-  gh.factory<_i566.GetTodaySchedule>(
-    () => _i566.GetTodaySchedule(gh<_i552.MedicationRepository>()),
-  );
-  gh.factory<_i340.MarkDoseTaken>(
-    () => _i340.MarkDoseTaken(gh<_i552.MedicationRepository>()),
-  );
-  gh.factory<_i843.RequestRefill>(
-    () => _i843.RequestRefill(gh<_i552.MedicationRepository>()),
-  );
   gh.factory<_i41.RoleSelectionBloc>(
     () => _i41.RoleSelectionBloc(
       gh<_i999.GetSelectedRole>(),
@@ -491,13 +508,6 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i104.ChwPatientListBloc>(
     () => _i104.ChwPatientListBloc(gh<_i547.ListRegisteredPatients>()),
-  );
-  gh.factory<_i92.MedicationBloc>(
-    () => _i92.MedicationBloc(
-      gh<_i566.GetTodaySchedule>(),
-      gh<_i340.MarkDoseTaken>(),
-      gh<_i843.RequestRefill>(),
-    ),
   );
   gh.factory<_i42.RegisterWithEmail>(
     () => _i42.RegisterWithEmail(gh<_i742.AuthRepository>()),
@@ -546,6 +556,7 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i282.AppRouter>(
     () => _i282.AppRouter(
       gh<_i565.AuthSessionProvider>(),
+      gh<_i359.OnboardingStatusProvider>(),
       gh<_i593.AuthRouterRefresh>(),
     ),
   );

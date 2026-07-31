@@ -22,6 +22,7 @@ class TimelineBloc extends Bloc<TimelineViewEvent, TimelineState> {
     on<TimelineStarted>(_onStarted);
     on<TimelineFilterChanged>(_onFilterChanged);
     on<TimelineSearchChanged>(_onSearchChanged);
+    on<TimelineEarlierRequested>(_onEarlierRequested);
   }
 
   Future<void> _onStarted(
@@ -59,5 +60,12 @@ class TimelineBloc extends Bloc<TimelineViewEvent, TimelineState> {
     Emitter<TimelineState> emit,
   ) {
     emit(state.copyWith(query: event.query));
+  }
+
+  void _onEarlierRequested(
+    TimelineEarlierRequested event,
+    Emitter<TimelineState> emit,
+  ) {
+    emit(state.copyWith(earlierRevealed: true));
   }
 }
