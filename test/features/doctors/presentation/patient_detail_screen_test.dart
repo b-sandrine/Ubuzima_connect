@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ubuzima_connect/core/ai/clinical_ai_service.dart';
 import 'package:ubuzima_connect/core/di/injection.dart';
 import 'package:ubuzima_connect/core/routing/app_routes.dart';
-import 'package:ubuzima_connect/features/doctors/data/repositories/mock_patient_detail_repository.dart';
 import 'package:ubuzima_connect/features/doctors/domain/repositories/patient_detail_repository.dart';
 import 'package:ubuzima_connect/features/doctors/presentation/pages/patient_detail_screen.dart';
 
-import '../../../helpers/fake_clinical_ai_service.dart';
+import '../../../helpers/fake_patient_detail_repository.dart';
 
 void main() {
   setUp(() async {
     await getIt.reset();
-    getIt.registerSingleton<ClinicalAiService>(const FakeClinicalAiService());
     getIt.registerSingleton<PatientDetailRepository>(
-      MockPatientDetailRepository(getIt()),
+      const FakePatientDetailRepository(),
     );
   });
 

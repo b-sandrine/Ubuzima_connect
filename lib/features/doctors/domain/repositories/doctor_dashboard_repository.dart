@@ -8,10 +8,7 @@ import '../models/schedule_item.dart';
 
 /// The data contract the Doctor Dashboard is built against.
 ///
-/// [MockDoctorDashboardRepository] fulfills it today with seeded,
-/// `Future.delayed` data; a later `FirestoreDoctorDashboardRepository` can
-/// implement the same interface, and `DoctorDashboardScreen` won't need to
-/// change at all.
+/// Fulfilled by `FirestoreDoctorDashboardRepository` in production.
 abstract class DoctorDashboardRepository {
   Future<Doctor> getCurrentDoctor();
 

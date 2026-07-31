@@ -2,11 +2,9 @@ import '../models/consultation.dart';
 
 /// The data contract the Consultation screen is built against.
 ///
-/// [MockConsultationRepository] fulfills it today with seeded,
-/// `Future.delayed` data; a later Firestore-backed implementation can
-/// implement the same interface without the screen changing.
+/// Fulfilled by `FirestoreConsultationRepository` in production.
 abstract class ConsultationRepository {
-  /// The doctor's in-progress consultation. Operates on the same seeded
+  /// The doctor's in-progress consultation. Operates on the same fixed
   /// demo patient as Patient Search / Timeline until a real patient-selection
   /// flow lands.
   Future<Consultation> getActiveConsultation();

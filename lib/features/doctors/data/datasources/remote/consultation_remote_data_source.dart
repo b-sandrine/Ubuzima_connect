@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/constants/app_constants.dart';
@@ -6,21 +7,18 @@ import '../../../../../core/constants/firestore_paths.dart';
 import '../../../../../core/exceptions/app_exceptions.dart';
 import '../../../domain/models/consultation.dart';
 import '../../../domain/models/patient_record.dart';
-import '../../dummy/dummy_consultation_data.dart';
 
 /// Firestore-backed store for the Consultation screen. Operates on the
-/// same fixed demo patient Patient Search/Details use. Layout, nested
-/// under the patient doc those screens already create:
+/// same fixed demo patient id Patient Search/Details use. Layout, nested
+/// under the patient doc those screens create:
 ///
 ///   doctors/{doctorId}/patients/{patientId}                      → the
-///     patient-record fields, merged in here too so Consultation is
-///     self-sufficient even if opened before Patient Search ever has been
+///     patient-record fields
 ///   doctors/{doctorId}/patients/{patientId}/consultation/active   → the
 ///     session start time and recorded vitals
 ///
-/// Unlike the mock (which always reports "started 2m46s ago" relative to
-/// whenever it's read), the session start time is seeded once and stored,
-/// so elapsed time grows naturally across app opens like a real visit.
+/// No seed data — reads back blank/zeroed fields until a real patient and
+/// an active session exist in Firestore.
 abstract interface class ConsultationRemoteDataSource {
   Future<Consultation> getActiveConsultation();
 
@@ -32,11 +30,15 @@ abstract interface class ConsultationRemoteDataSource {
 @LazySingleton(as: ConsultationRemoteDataSource)
 class ConsultationRemoteDataSourceImpl implements ConsultationRemoteDataSource {
   final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
 
-  ConsultationRemoteDataSourceImpl(this._firestore);
+  ConsultationRemoteDataSourceImpl(this._firestore, this._auth);
 
-  static const String _doctorId = AppConstants.demoDoctorId;
-  static final String _patientId = DummyConsultationData.patient.id;
+  String get _doctorId => _auth.currentUser?.uid ?? AppConstants.demoDoctorId;
+
+  /// The fixed demo patient this screen operates on — matches the id
+  /// Patient Search/Details use for the same patient.
+  static const String _patientId = 'patient-001';
 
   DocumentReference<Map<String, dynamic>> get _patientDoc => _firestore
       .collection(FirestorePaths.doctors)
@@ -47,15 +49,9 @@ class ConsultationRemoteDataSourceImpl implements ConsultationRemoteDataSource {
   DocumentReference<Map<String, dynamic>> get _consultationDoc =>
       _patientDoc.collection('consultation').doc('active');
 
-  Future<void> _ensureSeeded() async {
-    if ((await _consultationDoc.get()).exists) return;
-    await _seedFirestore();
-  }
-
   @override
   Future<Consultation> getActiveConsultation() async {
     try {
-      await _ensureSeeded();
       final results = await Future.wait([
         _patientDoc.get(),
         _consultationDoc.get(),
@@ -85,7 +81,6 @@ class ConsultationRemoteDataSourceImpl implements ConsultationRemoteDataSource {
   @override
   Future<void> saveVitalsDraft(VitalsReading vitals) async {
     try {
-      await _ensureSeeded();
       await _consultationDoc.set({
         'vitals': _vitalsToMap(vitals),
       }, SetOptions(merge: true));
@@ -136,31 +131,4 @@ class ConsultationRemoteDataSourceImpl implements ConsultationRemoteDataSource {
     temperatureC: (data['temperatureC'] as num?)?.toDouble(),
     spo2: (data['spo2'] as num?)?.toInt(),
   );
-
-  Future<void> _seedFirestore() async {
-    final patient = DummyConsultationData.patient;
-    final session = DummyConsultationData.session(DateTime.now());
-    final batch = _firestore.batch();
-
-    batch.set(_patientDoc, {
-      'name': patient.name,
-      'patientCode': patient.patientCode,
-      'gender': patient.gender,
-      'age': patient.age,
-      'location': patient.location,
-      'status': patient.status.name,
-      'tags': patient.tags,
-      'lastActivityLabel': patient.lastActivityLabel,
-      'photoUrl': patient.photoUrl,
-    }, SetOptions(merge: true));
-
-    batch.set(_consultationDoc, {
-      'doctorName': session.doctorName,
-      'visitType': session.visitType,
-      'startedAtMillis': session.startedAt.millisecondsSinceEpoch,
-      'vitals': _vitalsToMap(DummyConsultationData.vitals),
-    });
-
-    await batch.commit();
-  }
 }

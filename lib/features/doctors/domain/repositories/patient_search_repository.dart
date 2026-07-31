@@ -4,9 +4,7 @@ import '../models/patient_record.dart';
 
 /// The data contract the Patient Search screen is built against.
 ///
-/// [MockPatientSearchRepository] fulfills it today with seeded,
-/// `Future.delayed` data; a later Firestore-backed implementation can
-/// implement the same interface without the screen changing.
+/// Fulfilled by `FirestorePatientSearchRepository` in production.
 abstract class PatientSearchRepository {
   Future<List<DashboardStat>> getPatientStats();
 

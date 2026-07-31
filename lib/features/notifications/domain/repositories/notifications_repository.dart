@@ -1,12 +1,11 @@
 import '../models/notification_section.dart';
 
 /// The data contract the shared Notifications screen is built against, for
-/// both the doctor and patient audiences.
+/// the doctor, patient, and CHW audiences.
 ///
-/// [MockDoctorNotificationsRepository] / [MockPatientNotificationsRepository]
-/// fulfill it today with seeded, `Future.delayed` data; a later
-/// Firestore-backed implementation can implement the same interface, and
-/// `NotificationsPage` won't need to change at all.
+/// Fulfilled by `FirestoreDoctorNotificationsRepository` for doctors in
+/// production; patient still runs on its Mock fixture, and CHW is backed
+/// by `ChwCaseloadRepository`.
 abstract class NotificationsRepository {
   Future<List<NotificationSection>> getSections();
 }

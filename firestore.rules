@@ -71,13 +71,15 @@ service cloud.firestore {
     }
 
     // Doctor Dashboard / Patient Search / Patient Details / Consultation —
-    // keyed by doctorId, with a nested patients panel (and each patient's
-    // own risk/vitals/allergies/notes/consultation subcollections).
+    // keyed by the doctor's own Firebase Auth uid, with a nested patients
+    // panel (and each patient's own risk/vitals/allergies/notes/
+    // consultation subcollections). Owner-only: one doctor's account can't
+    // read or write another doctor's panel.
     match /doctors/{doctorId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if isOwner(doctorId);
 
       match /{document=**} {
-        allow read, write: if isSignedIn();
+        allow read, write: if isOwner(doctorId);
       }
     }
 

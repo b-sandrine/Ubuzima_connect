@@ -25,7 +25,7 @@ import '../../../community_health_workers/presentation/widgets/chw_bottom_nav.da
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
 import '../../data/repositories/mock_chw_settings_repository.dart';
-import '../../data/repositories/mock_doctor_settings_repository.dart';
+import '../../data/repositories/firestore_doctor_settings_repository.dart';
 import '../../data/repositories/mock_patient_settings_repository.dart';
 import '../../domain/models/emergency_contact.dart';
 import '../../domain/models/user_profile_summary.dart';
@@ -89,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
   SettingsRepository get _repository {
     if (widget.repository != null) return widget.repository!;
     return switch (widget.audience) {
-      SettingsAudience.doctor => const MockDoctorSettingsRepository(),
+      SettingsAudience.doctor => getIt<FirestoreDoctorSettingsRepository>(),
       SettingsAudience.patient => const MockPatientSettingsRepository(),
       SettingsAudience.chw => const MockChwSettingsRepository(),
     };

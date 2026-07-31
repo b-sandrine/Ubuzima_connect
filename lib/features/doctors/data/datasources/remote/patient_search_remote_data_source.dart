@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/constants/app_constants.dart';
@@ -7,7 +8,6 @@ import '../../../../../core/exceptions/app_exceptions.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../domain/models/dashboard_stat.dart';
 import '../../../domain/models/patient_record.dart';
-import '../../dummy/dummy_patient_search_data.dart';
 
 /// Firestore-backed store for the Patient Search / Records screen. Layout:
 ///
@@ -19,7 +19,8 @@ import '../../dummy/dummy_patient_search_data.dart';
 /// patient for the referrals/medical-records/prescriptions features, while
 /// this screen inherently needs a whole panel of patients.
 ///
-/// Seeded from [DummyPatientSearchData] on first read.
+/// No seed data — a fresh Firestore project reads back an empty list until
+/// patients are added directly in Firestore.
 abstract interface class PatientSearchRemoteDataSource {
   Future<List<DashboardStat>> getPatientStats();
 
@@ -30,10 +31,11 @@ abstract interface class PatientSearchRemoteDataSource {
 class PatientSearchRemoteDataSourceImpl
     implements PatientSearchRemoteDataSource {
   final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
 
-  PatientSearchRemoteDataSourceImpl(this._firestore);
+  PatientSearchRemoteDataSourceImpl(this._firestore, this._auth);
 
-  static const String _doctorId = AppConstants.demoDoctorId;
+  String get _doctorId => _auth.currentUser?.uid ?? AppConstants.demoDoctorId;
 
   DocumentReference<Map<String, dynamic>> get _doc =>
       _firestore.collection(FirestorePaths.doctors).doc(_doctorId);
@@ -41,19 +43,9 @@ class PatientSearchRemoteDataSourceImpl
   CollectionReference<Map<String, dynamic>> get _patients =>
       _doc.collection('patients');
 
-  /// Seeded state is checked via `patients` rather than the shared
-  /// `doctors/{doctorId}` doc's existence — that doc is also written by
-  /// [DoctorDashboardRemoteDataSourceImpl] for its own fields, so checking
-  /// the doc itself would make whichever screen loads second skip seeding.
-  Future<void> _ensureSeeded() async {
-    if ((await _patients.limit(1).get()).docs.isNotEmpty) return;
-    await _seedFirestore();
-  }
-
   @override
   Future<List<DashboardStat>> getPatientStats() async {
     try {
-      await _ensureSeeded();
       final data = (await _doc.get()).data() ?? const {};
       final stats = (data['patientStats'] as Map?) ?? const {};
       return [
@@ -84,7 +76,6 @@ class PatientSearchRemoteDataSourceImpl
   @override
   Future<List<PatientRecord>> getRecentPatients() async {
     try {
-      await _ensureSeeded();
       final docs = await _patients.orderBy('sortOrder').get();
       return docs.docs.map((d) {
         final data = d.data();
@@ -106,34 +97,5 @@ class PatientSearchRemoteDataSourceImpl
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? 'Could not load recent patients.');
     }
-  }
-
-  Future<void> _seedFirestore() async {
-    final batch = _firestore.batch();
-    final stats = {
-      for (final stat in DummyPatientSearchData.patientStats)
-        stat.id: stat.value,
-    };
-
-    batch.set(_doc, {'patientStats': stats}, SetOptions(merge: true));
-
-    final patients = DummyPatientSearchData.recentPatients;
-    for (var i = 0; i < patients.length; i++) {
-      final p = patients[i];
-      batch.set(_patients.doc(p.id), {
-        'name': p.name,
-        'patientCode': p.patientCode,
-        'gender': p.gender,
-        'age': p.age,
-        'location': p.location,
-        'status': p.status.name,
-        'tags': p.tags,
-        'lastActivityLabel': p.lastActivityLabel,
-        'photoUrl': p.photoUrl,
-        'sortOrder': i,
-      });
-    }
-
-    await batch.commit();
   }
 }

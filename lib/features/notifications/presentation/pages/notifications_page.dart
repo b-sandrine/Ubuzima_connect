@@ -13,7 +13,7 @@ import '../../../community_health_workers/data/repositories/chw_caseload_reposit
 import '../../../community_health_workers/presentation/widgets/chw_bottom_nav.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
-import '../../data/repositories/mock_doctor_notifications_repository.dart';
+import '../../data/repositories/firestore_doctor_notifications_repository.dart';
 import '../../data/repositories/mock_patient_notifications_repository.dart';
 import '../../domain/models/notification_section.dart';
 import '../../domain/repositories/notifications_repository.dart';
@@ -48,7 +48,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   NotificationsRepository get _repository {
     if (widget.repository != null) return widget.repository!;
     return switch (widget.audience) {
-      NotificationsAudience.doctor => const MockDoctorNotificationsRepository(),
+      NotificationsAudience.doctor =>
+        getIt<FirestoreDoctorNotificationsRepository>(),
       NotificationsAudience.patient =>
         const MockPatientNotificationsRepository(),
       NotificationsAudience.chw => getIt<ChwCaseloadRepository>(),

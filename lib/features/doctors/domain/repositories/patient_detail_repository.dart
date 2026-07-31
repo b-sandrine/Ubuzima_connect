@@ -8,10 +8,7 @@ import '../models/vital_sign.dart';
 
 /// The data contract the Patient Details screen is built against.
 ///
-/// [MockPatientDetailRepository] fulfills it today with seeded,
-/// `Future.delayed` data; a later Firestore-backed implementation can
-/// implement the same interface, keyed by patient id, without the screen
-/// changing.
+/// Fulfilled by `FirestorePatientDetailRepository` in production.
 abstract class PatientDetailRepository {
   Future<PatientDetail> getPatientDetail();
 
