@@ -14,12 +14,23 @@ class HealthRecordRepositoryImpl implements HealthRecordRepository {
   const HealthRecordRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Either<Failure, HealthRecord>> getHealthRecord() =>
-      _guard(() => _remoteDataSource.readHealthRecord());
+  Future<Either<Failure, HealthRecord>> getHealthRecord({String? patientId}) =>
+      _guard(() => _remoteDataSource.readHealthRecord(patientId: patientId));
 
   @override
-  Future<Either<Failure, HealthRecord>> completeNextStep(String stepId) =>
-      _guard(() => _remoteDataSource.completeNextStep(stepId));
+  Future<Either<Failure, HealthRecord>> completeNextStep(
+    String stepId, {
+    String? patientId,
+  }) => _guard(
+    () => _remoteDataSource.completeNextStep(stepId, patientId: patientId),
+  );
+
+  @override
+  Future<Either<Failure, HealthRecord>> regenerateAiAssessment({
+    String? patientId,
+  }) => _guard(
+    () => _remoteDataSource.regenerateAiAssessment(patientId: patientId),
+  );
 
   Future<Either<Failure, HealthRecord>> _guard(
     Future<HealthRecord> Function() action,

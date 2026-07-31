@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';
 import 'auth_session.dart';
+import 'onboarding_status.dart';
 import 'role_home.dart';
 
 /// Redirect logic applied to every navigation: unauthenticated users are
@@ -9,24 +10,27 @@ import 'role_home.dart';
 /// routes are sent to `/home`. Role-based redirects plug in here once
 /// feature route metadata describes which roles a route allows.
 abstract final class RouteGuards {
-  static const Set<String> _patientRoutes = {
-    AppRoutes.patientMedications,
-  };
+  static const Set<String> _patientRoutes = {AppRoutes.patientMedications};
 
   static const Set<String> _doctorRoutes = {
     AppRoutes.referralManagement,
     AppRoutes.newReferral,
     AppRoutes.patientTimeline,
+    AppRoutes.doctorDashboard,
+    AppRoutes.patientSearch,
   };
 
   static const Set<String> _chwRoutes = {
     AppRoutes.chwDashboard,
     AppRoutes.chwReferral,
-    AppRoutes.chwHealthRecord,
+    AppRoutes.chwPatientList,
+    AppRoutes.chwNotifications,
+    AppRoutes.chwSettings,
   };
 
   static String? redirect(
     AuthSessionProvider authSessionProvider,
+    OnboardingStatusProvider onboardingStatusProvider,
     GoRouterState state,
   ) {
     final status = authSessionProvider.currentStatus;
@@ -37,7 +41,23 @@ abstract final class RouteGuards {
     final atReset = location == AppRoutes.resetPassword;
     final atSplash = location == AppRoutes.splash;
     final atRoleSelection = location == AppRoutes.roleSelection;
-    final atDemoScreen = AppRoutes.demoReachable.contains(location);
+    final atOnboarding = location == AppRoutes.onboarding;
+    final atDemoScreen =
+        AppRoutes.demoReachable.contains(location) ||
+        AppRoutes.isChwHealthRecord(location);
+
+    // TUTORIAL-01 — first-time unauthenticated users get bounced to the
+    // onboarding slides before anything else (login, role selection, deep
+    // links). Exempts the splash screen itself (so branding still paints
+    // first) and the CHW offline fast-path (demoReachable), which is meant
+    // to stay frictionless.
+    if (status == AuthSessionStatus.unauthenticated &&
+        !onboardingStatusProvider.isComplete &&
+        !atSplash &&
+        !atOnboarding &&
+        !atDemoScreen) {
+      return AppRoutes.onboarding;
+    }
 
     if (status == AuthSessionStatus.unauthenticated &&
         !atLogin &&
@@ -45,6 +65,7 @@ abstract final class RouteGuards {
         !atReset &&
         !atSplash &&
         !atRoleSelection &&
+        !atOnboarding &&
         !atDemoScreen) {
       return AppRoutes.splash;
     }
@@ -83,7 +104,8 @@ abstract final class RouteGuards {
     if (_doctorRoutes.contains(location)) {
       return role == UserRole.doctor;
     }
-    if (_chwRoutes.contains(location)) {
+    if (_chwRoutes.contains(location) ||
+        AppRoutes.isChwHealthRecord(location)) {
       return role == UserRole.communityHealthWorker;
     }
     return true;

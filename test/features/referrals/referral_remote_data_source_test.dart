@@ -1,19 +1,29 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:ubuzima_connect/features/referrals/data/datasources/local/referral_local_data_source.dart';
 import 'package:ubuzima_connect/features/referrals/data/datasources/remote/referral_remote_data_source.dart';
 import 'package:ubuzima_connect/features/referrals/domain/entities/referral.dart';
 import 'package:ubuzima_connect/features/referrals/domain/entities/referral_draft.dart';
 
+class _MockFirebaseAuth extends Mock implements FirebaseAuth {}
+
+class _MockUser extends Mock implements User {}
+
 void main() {
   late FakeFirebaseFirestore firestore;
+  late _MockFirebaseAuth auth;
   late ReferralRemoteDataSourceImpl dataSource;
 
   setUp(() {
     firestore = FakeFirebaseFirestore();
+    auth = _MockFirebaseAuth();
+    when(() => auth.currentUser).thenReturn(null);
     dataSource = ReferralRemoteDataSourceImpl(
       firestore,
       ReferralLocalDataSourceImpl(),
+      auth,
     );
   });
 
@@ -78,6 +88,31 @@ void main() {
       isTrue,
     );
   });
+
+  test(
+    'a new referral is tagged with the real signed-in doctor, not a placeholder',
+    () async {
+      final user = _MockUser();
+      when(() => user.displayName).thenReturn('Dr. Jane Uwimana');
+      when(() => auth.currentUser).thenReturn(user);
+
+      final reference = await dataSource.addReferral(
+        const ReferralDraft(
+          patientName: 'Marie Uwase',
+          destinationFacility: 'CHUK',
+          specialty: 'Cardiology',
+          urgency: ReferralUrgency.urgent,
+          reason: 'Chest pain on exertion.',
+        ),
+      );
+
+      final board = await dataSource.readBoard();
+      final created = board.referrals.firstWhere(
+        (r) => r.reference == reference,
+      );
+      expect(created.referringPhysician, 'Dr. Jane Uwimana');
+    },
+  );
 
   test('deleting a referral removes it from the board', () async {
     await dataSource.readBoard();

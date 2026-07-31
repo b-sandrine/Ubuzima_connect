@@ -6,11 +6,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
 import '../../../../shared/widgets/navigation/segmented_tabs.dart';
-import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
+import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../domain/entities/referral.dart';
 import '../../domain/entities/referral_board.dart';
 import '../bloc/referral_board_bloc.dart';
@@ -44,25 +45,32 @@ class _ReferralManagementViewState extends State<_ReferralManagementView> {
   /// The routing choice per referral reference, held in the view since it is
   /// a transient UI selection until Accept is pressed.
   final Map<String, String> _routes = {};
+  int _navIndex = 1;
+
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        context.go(AppRoutes.doctorDashboard);
+      case 1:
+        context.go(AppRoutes.patientSearch);
+      case 2:
+        showComingSoon(context, 'AI Insights');
+      case 3:
+        context.go(AppRoutes.doctorNotifications);
+      case 4:
+        context.go(AppRoutes.doctorSettings);
+      default:
+        setState(() => _navIndex = index);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
-        currentIndex: 1,
-        items: [
-          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
-          BottomNavItem(icon: LucideIcons.folder, label: 'Records'),
-          BottomNavItem(icon: LucideIcons.brain, label: 'AI Insights'),
-          BottomNavItem(
-            icon: LucideIcons.bell,
-            label: 'Alerts',
-            showDot: true,
-            dotColor: AppColors.danger,
-          ),
-          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
-        ],
+      bottomNavigationBar: DoctorBottomNavigationBar(
+        currentIndex: _navIndex,
+        onTap: _onNavTap,
       ),
       body: AppGradientBackground(
         child: SafeArea(

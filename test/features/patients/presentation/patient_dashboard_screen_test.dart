@@ -6,6 +6,8 @@ import 'package:ubuzima_connect/features/patients/data/datasources/remote/patien
 import 'package:ubuzima_connect/features/patients/data/repositories/patient_dashboard_repository_impl.dart';
 import 'package:ubuzima_connect/features/patients/presentation/pages/patient_dashboard_screen.dart';
 
+import '../../../helpers/fake_clinical_ai_service.dart';
+
 void main() {
   testWidgets('renders the patient dashboard from Firestore', (tester) async {
     final repository = PatientDashboardRepositoryImpl(
@@ -13,6 +15,7 @@ void main() {
         FakeFirebaseFirestore(),
         PatientDashboardLocalDataSourceImpl(),
       ),
+      const FakeClinicalAiService(),
     );
 
     await tester.pumpWidget(

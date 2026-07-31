@@ -55,13 +55,14 @@ extension HealthRecordEventPatterns on HealthRecordEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HealthRecordStarted value)?  started,TResult Function( HealthRecordTabChanged value)?  tabChanged,TResult Function( HealthRecordStepCompleted value)?  stepCompleted,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( HealthRecordStarted value)?  started,TResult Function( HealthRecordTabChanged value)?  tabChanged,TResult Function( HealthRecordStepCompleted value)?  stepCompleted,TResult Function( HealthRecordAiAssessmentRequested value)?  aiAssessmentRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started(_that);case HealthRecordTabChanged() when tabChanged != null:
 return tabChanged(_that);case HealthRecordStepCompleted() when stepCompleted != null:
-return stepCompleted(_that);case _:
+return stepCompleted(_that);case HealthRecordAiAssessmentRequested() when aiAssessmentRequested != null:
+return aiAssessmentRequested(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return stepCompleted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HealthRecordStarted value)  started,required TResult Function( HealthRecordTabChanged value)  tabChanged,required TResult Function( HealthRecordStepCompleted value)  stepCompleted,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( HealthRecordStarted value)  started,required TResult Function( HealthRecordTabChanged value)  tabChanged,required TResult Function( HealthRecordStepCompleted value)  stepCompleted,required TResult Function( HealthRecordAiAssessmentRequested value)  aiAssessmentRequested,}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted():
 return started(_that);case HealthRecordTabChanged():
 return tabChanged(_that);case HealthRecordStepCompleted():
-return stepCompleted(_that);}
+return stepCompleted(_that);case HealthRecordAiAssessmentRequested():
+return aiAssessmentRequested(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +101,14 @@ return stepCompleted(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HealthRecordStarted value)?  started,TResult? Function( HealthRecordTabChanged value)?  tabChanged,TResult? Function( HealthRecordStepCompleted value)?  stepCompleted,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( HealthRecordStarted value)?  started,TResult? Function( HealthRecordTabChanged value)?  tabChanged,TResult? Function( HealthRecordStepCompleted value)?  stepCompleted,TResult? Function( HealthRecordAiAssessmentRequested value)?  aiAssessmentRequested,}){
 final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
 return started(_that);case HealthRecordTabChanged() when tabChanged != null:
 return tabChanged(_that);case HealthRecordStepCompleted() when stepCompleted != null:
-return stepCompleted(_that);case _:
+return stepCompleted(_that);case HealthRecordAiAssessmentRequested() when aiAssessmentRequested != null:
+return aiAssessmentRequested(_that);case _:
   return null;
 
 }
@@ -122,12 +125,13 @@ return stepCompleted(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int index)?  tabChanged,TResult Function( String stepId)?  stepCompleted,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? patientId)?  started,TResult Function( int index)?  tabChanged,TResult Function( String stepId)?  stepCompleted,TResult Function()?  aiAssessmentRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
-return started();case HealthRecordTabChanged() when tabChanged != null:
+return started(_that.patientId);case HealthRecordTabChanged() when tabChanged != null:
 return tabChanged(_that.index);case HealthRecordStepCompleted() when stepCompleted != null:
-return stepCompleted(_that.stepId);case _:
+return stepCompleted(_that.stepId);case HealthRecordAiAssessmentRequested() when aiAssessmentRequested != null:
+return aiAssessmentRequested();case _:
   return orElse();
 
 }
@@ -145,12 +149,13 @@ return stepCompleted(_that.stepId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int index)  tabChanged,required TResult Function( String stepId)  stepCompleted,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? patientId)  started,required TResult Function( int index)  tabChanged,required TResult Function( String stepId)  stepCompleted,required TResult Function()  aiAssessmentRequested,}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted():
-return started();case HealthRecordTabChanged():
+return started(_that.patientId);case HealthRecordTabChanged():
 return tabChanged(_that.index);case HealthRecordStepCompleted():
-return stepCompleted(_that.stepId);}
+return stepCompleted(_that.stepId);case HealthRecordAiAssessmentRequested():
+return aiAssessmentRequested();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +169,13 @@ return stepCompleted(_that.stepId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int index)?  tabChanged,TResult? Function( String stepId)?  stepCompleted,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? patientId)?  started,TResult? Function( int index)?  tabChanged,TResult? Function( String stepId)?  stepCompleted,TResult? Function()?  aiAssessmentRequested,}) {final _that = this;
 switch (_that) {
 case HealthRecordStarted() when started != null:
-return started();case HealthRecordTabChanged() when tabChanged != null:
+return started(_that.patientId);case HealthRecordTabChanged() when tabChanged != null:
 return tabChanged(_that.index);case HealthRecordStepCompleted() when stepCompleted != null:
-return stepCompleted(_that.stepId);case _:
+return stepCompleted(_that.stepId);case HealthRecordAiAssessmentRequested() when aiAssessmentRequested != null:
+return aiAssessmentRequested();case _:
   return null;
 
 }
@@ -181,33 +187,67 @@ return stepCompleted(_that.stepId);case _:
 
 
 class HealthRecordStarted implements HealthRecordEvent {
-  const HealthRecordStarted();
+  const HealthRecordStarted({this.patientId});
   
 
+ final  String? patientId;
 
-
+/// Create a copy of HealthRecordEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HealthRecordStartedCopyWith<HealthRecordStarted> get copyWith => _$HealthRecordStartedCopyWithImpl<HealthRecordStarted>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordStarted);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordStarted&&(identical(other.patientId, patientId) || other.patientId == patientId));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,patientId);
 
 @override
 String toString() {
-  return 'HealthRecordEvent.started()';
+  return 'HealthRecordEvent.started(patientId: $patientId)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $HealthRecordStartedCopyWith<$Res> implements $HealthRecordEventCopyWith<$Res> {
+  factory $HealthRecordStartedCopyWith(HealthRecordStarted value, $Res Function(HealthRecordStarted) _then) = _$HealthRecordStartedCopyWithImpl;
+@useResult
+$Res call({
+ String? patientId
+});
 
 
+
+
+}
+/// @nodoc
+class _$HealthRecordStartedCopyWithImpl<$Res>
+    implements $HealthRecordStartedCopyWith<$Res> {
+  _$HealthRecordStartedCopyWithImpl(this._self, this._then);
+
+  final HealthRecordStarted _self;
+  final $Res Function(HealthRecordStarted) _then;
+
+/// Create a copy of HealthRecordEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? patientId = freezed,}) {
+  return _then(HealthRecordStarted(
+patientId: freezed == patientId ? _self.patientId : patientId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
@@ -342,9 +382,41 @@ as String,
 }
 
 /// @nodoc
+
+
+class HealthRecordAiAssessmentRequested implements HealthRecordEvent {
+  const HealthRecordAiAssessmentRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordAiAssessmentRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HealthRecordEvent.aiAssessmentRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$HealthRecordState {
 
- HealthRecordStatus get status; HealthRecord? get record; int get selectedTab; String? get errorMessage;
+ HealthRecordStatus get status; HealthRecord? get record; String? get patientId; int get selectedTab; bool get isRefreshingAssessment; String? get errorMessage;
 /// Create a copy of HealthRecordState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -355,16 +427,16 @@ $HealthRecordStateCopyWith<HealthRecordState> get copyWith => _$HealthRecordStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordState&&(identical(other.status, status) || other.status == status)&&(identical(other.record, record) || other.record == record)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthRecordState&&(identical(other.status, status) || other.status == status)&&(identical(other.record, record) || other.record == record)&&(identical(other.patientId, patientId) || other.patientId == patientId)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.isRefreshingAssessment, isRefreshingAssessment) || other.isRefreshingAssessment == isRefreshingAssessment)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,record,selectedTab,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,record,patientId,selectedTab,isRefreshingAssessment,errorMessage);
 
 @override
 String toString() {
-  return 'HealthRecordState(status: $status, record: $record, selectedTab: $selectedTab, errorMessage: $errorMessage)';
+  return 'HealthRecordState(status: $status, record: $record, patientId: $patientId, selectedTab: $selectedTab, isRefreshingAssessment: $isRefreshingAssessment, errorMessage: $errorMessage)';
 }
 
 
@@ -375,7 +447,7 @@ abstract mixin class $HealthRecordStateCopyWith<$Res>  {
   factory $HealthRecordStateCopyWith(HealthRecordState value, $Res Function(HealthRecordState) _then) = _$HealthRecordStateCopyWithImpl;
 @useResult
 $Res call({
- HealthRecordStatus status, HealthRecord? record, int selectedTab, String? errorMessage
+ HealthRecordStatus status, HealthRecord? record, String? patientId, int selectedTab, bool isRefreshingAssessment, String? errorMessage
 });
 
 
@@ -392,12 +464,14 @@ class _$HealthRecordStateCopyWithImpl<$Res>
 
 /// Create a copy of HealthRecordState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? record = freezed,Object? selectedTab = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? record = freezed,Object? patientId = freezed,Object? selectedTab = null,Object? isRefreshingAssessment = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as HealthRecordStatus,record: freezed == record ? _self.record : record // ignore: cast_nullable_to_non_nullable
-as HealthRecord?,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
-as int,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as HealthRecord?,patientId: freezed == patientId ? _self.patientId : patientId // ignore: cast_nullable_to_non_nullable
+as String?,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
+as int,isRefreshingAssessment: null == isRefreshingAssessment ? _self.isRefreshingAssessment : isRefreshingAssessment // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -483,10 +557,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( HealthRecordStatus status,  HealthRecord? record,  int selectedTab,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( HealthRecordStatus status,  HealthRecord? record,  String? patientId,  int selectedTab,  bool isRefreshingAssessment,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HealthRecordState() when $default != null:
-return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);case _:
+return $default(_that.status,_that.record,_that.patientId,_that.selectedTab,_that.isRefreshingAssessment,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -504,10 +578,10 @@ return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( HealthRecordStatus status,  HealthRecord? record,  int selectedTab,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( HealthRecordStatus status,  HealthRecord? record,  String? patientId,  int selectedTab,  bool isRefreshingAssessment,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _HealthRecordState():
-return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);case _:
+return $default(_that.status,_that.record,_that.patientId,_that.selectedTab,_that.isRefreshingAssessment,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -524,10 +598,10 @@ return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( HealthRecordStatus status,  HealthRecord? record,  int selectedTab,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( HealthRecordStatus status,  HealthRecord? record,  String? patientId,  int selectedTab,  bool isRefreshingAssessment,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _HealthRecordState() when $default != null:
-return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);case _:
+return $default(_that.status,_that.record,_that.patientId,_that.selectedTab,_that.isRefreshingAssessment,_that.errorMessage);case _:
   return null;
 
 }
@@ -539,12 +613,14 @@ return $default(_that.status,_that.record,_that.selectedTab,_that.errorMessage);
 
 
 class _HealthRecordState extends HealthRecordState {
-  const _HealthRecordState({this.status = HealthRecordStatus.initial, this.record, this.selectedTab = 0, this.errorMessage}): super._();
+  const _HealthRecordState({this.status = HealthRecordStatus.initial, this.record, this.patientId, this.selectedTab = 0, this.isRefreshingAssessment = false, this.errorMessage}): super._();
   
 
 @override@JsonKey() final  HealthRecordStatus status;
 @override final  HealthRecord? record;
+@override final  String? patientId;
 @override@JsonKey() final  int selectedTab;
+@override@JsonKey() final  bool isRefreshingAssessment;
 @override final  String? errorMessage;
 
 /// Create a copy of HealthRecordState
@@ -557,16 +633,16 @@ _$HealthRecordStateCopyWith<_HealthRecordState> get copyWith => __$HealthRecordS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthRecordState&&(identical(other.status, status) || other.status == status)&&(identical(other.record, record) || other.record == record)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthRecordState&&(identical(other.status, status) || other.status == status)&&(identical(other.record, record) || other.record == record)&&(identical(other.patientId, patientId) || other.patientId == patientId)&&(identical(other.selectedTab, selectedTab) || other.selectedTab == selectedTab)&&(identical(other.isRefreshingAssessment, isRefreshingAssessment) || other.isRefreshingAssessment == isRefreshingAssessment)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,record,selectedTab,errorMessage);
+int get hashCode => Object.hash(runtimeType,status,record,patientId,selectedTab,isRefreshingAssessment,errorMessage);
 
 @override
 String toString() {
-  return 'HealthRecordState(status: $status, record: $record, selectedTab: $selectedTab, errorMessage: $errorMessage)';
+  return 'HealthRecordState(status: $status, record: $record, patientId: $patientId, selectedTab: $selectedTab, isRefreshingAssessment: $isRefreshingAssessment, errorMessage: $errorMessage)';
 }
 
 
@@ -577,7 +653,7 @@ abstract mixin class _$HealthRecordStateCopyWith<$Res> implements $HealthRecordS
   factory _$HealthRecordStateCopyWith(_HealthRecordState value, $Res Function(_HealthRecordState) _then) = __$HealthRecordStateCopyWithImpl;
 @override @useResult
 $Res call({
- HealthRecordStatus status, HealthRecord? record, int selectedTab, String? errorMessage
+ HealthRecordStatus status, HealthRecord? record, String? patientId, int selectedTab, bool isRefreshingAssessment, String? errorMessage
 });
 
 
@@ -594,12 +670,14 @@ class __$HealthRecordStateCopyWithImpl<$Res>
 
 /// Create a copy of HealthRecordState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? record = freezed,Object? selectedTab = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? record = freezed,Object? patientId = freezed,Object? selectedTab = null,Object? isRefreshingAssessment = null,Object? errorMessage = freezed,}) {
   return _then(_HealthRecordState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as HealthRecordStatus,record: freezed == record ? _self.record : record // ignore: cast_nullable_to_non_nullable
-as HealthRecord?,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
-as int,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as HealthRecord?,patientId: freezed == patientId ? _self.patientId : patientId // ignore: cast_nullable_to_non_nullable
+as String?,selectedTab: null == selectedTab ? _self.selectedTab : selectedTab // ignore: cast_nullable_to_non_nullable
+as int,isRefreshingAssessment: null == isRefreshingAssessment ? _self.isRefreshingAssessment : isRefreshingAssessment // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

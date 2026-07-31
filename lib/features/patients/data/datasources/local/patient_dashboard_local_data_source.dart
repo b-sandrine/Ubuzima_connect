@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../../core/theme/app_colors.dart';
-import '../../../domain/models/ai_health_insight.dart';
 import '../../../domain/models/bp_trend_point.dart';
 import '../../../domain/models/care_item.dart';
 import '../../../domain/models/health_score.dart';
@@ -27,8 +26,6 @@ abstract interface class PatientDashboardLocalDataSource {
   List<MedicationReminder> readMedicationReminders();
 
   List<CareItem> readUpcomingCare();
-
-  AiHealthInsight readAiHealthInsight();
 
   List<QuickLink> readQuickLinks();
 
@@ -166,16 +163,6 @@ class PatientDashboardLocalDataSourceImpl
       iconColor: _labPurple,
     ),
   ];
-
-  @override
-  AiHealthInsight readAiHealthInsight() => const AiHealthInsight(
-    title: 'Trend Detected',
-    tagLabel: 'AI',
-    message:
-        'Your blood pressure readings have been elevated for 3 consecutive '
-        'days. Consider reducing sodium intake and increasing hydration.',
-    updatedLabel: 'Updated today · 06:00 AM',
-  );
 
   @override
   List<QuickLink> readQuickLinks() => [

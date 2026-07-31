@@ -11,6 +11,8 @@ class CompleteNextStep {
 
   const CompleteNextStep(this._repository);
 
-  Future<Either<Failure, HealthRecord>> call(String stepId) =>
-      _repository.completeNextStep(stepId);
+  Future<Either<Failure, HealthRecord>> call(
+    String stepId, {
+    String? patientId,
+  }) => _repository.completeNextStep(stepId, patientId: patientId);
 }

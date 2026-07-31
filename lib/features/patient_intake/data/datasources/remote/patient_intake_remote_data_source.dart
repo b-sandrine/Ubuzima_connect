@@ -1,30 +1,42 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/constants/firestore_paths.dart';
 import '../../../../../core/exceptions/app_exceptions.dart';
 import '../../../domain/entities/patient_intake_draft.dart';
+import '../../../domain/entities/registered_patient.dart';
 
-/// Firestore-backed sink for new patient registrations — writes one document
-/// per patient to `patients/{autoId}`. Read back today by nothing else in
-/// the app (the CHW health record and doctor screens still read the seeded
-/// demo patient), so this is additive: every registration lands in the same
-/// collection those screens already use, ready for a later screen to list.
+/// Firestore API for patient registration documents under `patients/{id}`.
+///
+/// Create writes the nested intake schema (+ `ownerId` when signed in).
+/// List reads documents that have `registeredAt` (intake registrations),
+/// which excludes the seeded demo health-record docs that use a flat schema.
 abstract interface class PatientIntakeRemoteDataSource {
   Future<String> submitPatientIntake(PatientIntakeDraft draft);
+
+  /// Registered patients newest-first. When [forCurrentUserOnly] is true and
+  /// a Firebase user is signed in, results are scoped to `ownerId == uid`.
+  Future<List<RegisteredPatient>> listRegisteredPatients({
+    bool forCurrentUserOnly = false,
+  });
 }
 
 @LazySingleton(as: PatientIntakeRemoteDataSource)
 class PatientIntakeRemoteDataSourceImpl
     implements PatientIntakeRemoteDataSource {
   final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
 
-  PatientIntakeRemoteDataSourceImpl(this._firestore);
+  PatientIntakeRemoteDataSourceImpl(this._firestore, this._auth);
+
+  CollectionReference<Map<String, dynamic>> get _patients =>
+      _firestore.collection(FirestorePaths.patients);
 
   @override
   Future<String> submitPatientIntake(PatientIntakeDraft draft) async {
     try {
-      final doc = _firestore.collection(FirestorePaths.patients).doc();
+      final doc = _patients.doc();
       await doc.set(_toMap(draft));
       return doc.id;
     } on FirebaseException catch (e) {
@@ -32,11 +44,71 @@ class PatientIntakeRemoteDataSourceImpl
     }
   }
 
+  @override
+  Future<List<RegisteredPatient>> listRegisteredPatients({
+    bool forCurrentUserOnly = false,
+  }) async {
+    try {
+      Query<Map<String, dynamic>> query = _patients.orderBy(
+        'registeredAt',
+        descending: true,
+      );
+
+      final uid = _auth.currentUser?.uid;
+      if (forCurrentUserOnly && uid != null) {
+        query = _patients
+            .where('ownerId', isEqualTo: uid)
+            .orderBy('registeredAt', descending: true);
+      }
+
+      final snap = await query.get();
+      return snap.docs
+          .map(_fromDoc)
+          .where((p) => p.fullName.trim().isNotEmpty)
+          .toList();
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Could not load patients.');
+    }
+  }
+
+  RegisteredPatient _fromDoc(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data();
+    final identity =
+        (data['identity'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final household =
+        (data['household'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final contact =
+        (data['contact'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final risk =
+        (data['riskAssessment'] as Map?)?.cast<String, dynamic>() ?? const {};
+
+    final dobRaw = identity['dateOfBirth'] as String?;
+    final registered = data['registeredAt'];
+
+    return RegisteredPatient(
+      id: doc.id,
+      fullName: identity['fullName'] as String? ?? '',
+      gender: identity['gender'] as String?,
+      dateOfBirth: dobRaw != null ? DateTime.tryParse(dobRaw) : null,
+      phone:
+          (contact['primaryPhone'] as String?)?.trim().isNotEmpty == true
+          ? contact['primaryPhone'] as String
+          : identity['phone'] as String?,
+      district: household['district'] as String?,
+      province: household['province'] as String?,
+      riskScore: (risk['score'] as num?)?.toInt() ?? 0,
+      riskLevel: _risk(risk['level'] as String?),
+      registeredAt: registered is Timestamp ? registered.toDate() : null,
+    );
+  }
+
   Map<String, dynamic> _toMap(PatientIntakeDraft draft) {
     final risk = PatientRiskCalculator.calculate(draft);
+    final uid = _auth.currentUser?.uid;
 
     return {
       'registeredAt': FieldValue.serverTimestamp(),
+      'ownerId': ?uid,
       'identity': {
         'fullName': draft.fullName,
         'nationalId': draft.nationalId,
@@ -87,5 +159,12 @@ class PatientIntakeRemoteDataSourceImpl
       'emergencyFlags': draft.emergencyFlags.map((f) => f.name).toList(),
       'riskAssessment': {'score': risk.score, 'level': risk.level.name},
     };
+  }
+
+  static RiskLevel _risk(String? raw) {
+    return RiskLevel.values.firstWhere(
+      (v) => v.name == raw,
+      orElse: () => RiskLevel.moderate,
+    );
   }
 }

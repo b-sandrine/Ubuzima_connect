@@ -168,10 +168,15 @@ class FirebaseAuthRemoteDataSourceImpl implements FirebaseAuthRemoteDataSource {
 
   @override
   Future<void> signOut() async {
-    await Future.wait([
-      _firebaseAuth.signOut(),
-      _googleSignIn.signOut(),
-    ]);
+    // Always clear the Firebase session first. Google Sign-In on web asserts
+    // when no clientId is configured, so treat that path as best-effort —
+    // email/password sessions must still be able to log out.
+    await _firebaseAuth.signOut();
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Missing web clientId, plugin unavailable, or user never used Google.
+    }
   }
 
   @override

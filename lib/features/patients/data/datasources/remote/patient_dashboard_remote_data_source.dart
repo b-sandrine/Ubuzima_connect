@@ -6,7 +6,6 @@ import '../../../../../core/constants/app_constants.dart';
 import '../../../../../core/constants/firestore_paths.dart';
 import '../../../../../core/exceptions/app_exceptions.dart';
 import '../../../../../core/theme/app_colors.dart';
-import '../../../domain/models/ai_health_insight.dart';
 import '../../../domain/models/bp_trend_point.dart';
 import '../../../domain/models/care_item.dart';
 import '../../../domain/models/health_score.dart';
@@ -38,8 +37,6 @@ abstract interface class PatientDashboardRemoteDataSource {
   Future<List<MedicationReminder>> readMedicationReminders();
 
   Future<List<CareItem>> readUpcomingCare();
-
-  Future<AiHealthInsight> readAiHealthInsight();
 
   Future<List<QuickLink>> readQuickLinks();
 
@@ -169,19 +166,6 @@ class PatientDashboardRemoteDataSourceImpl
   }
 
   @override
-  Future<AiHealthInsight> readAiHealthInsight() async {
-    final data = await _readOrSeed();
-    final insight =
-        (data['aiHealthInsight'] as Map?)?.cast<String, dynamic>() ?? {};
-    return AiHealthInsight(
-      title: insight['title'] as String? ?? '',
-      tagLabel: insight['tagLabel'] as String? ?? '',
-      message: insight['message'] as String? ?? '',
-      updatedLabel: insight['updatedLabel'] as String? ?? '',
-    );
-  }
-
-  @override
   Future<List<QuickLink>> readQuickLinks() async {
     final data = await _readOrSeed();
     final cosmeticsById = {for (final q in _seed.readQuickLinks()) q.id: q};
@@ -236,7 +220,6 @@ class PatientDashboardRemoteDataSourceImpl
     final vitals = _seed.readTodayVitals();
     final medications = _seed.readMedicationReminders();
     final careItems = _seed.readUpcomingCare();
-    final aiInsight = _seed.readAiHealthInsight();
     final quickLinks = _seed.readQuickLinks();
     final bpTrend = _seed.readBpTrend();
 
@@ -281,12 +264,6 @@ class PatientDashboardRemoteDataSourceImpl
             'dateLabel': c.dateLabel,
           },
       ],
-      'aiHealthInsight': {
-        'title': aiInsight.title,
-        'tagLabel': aiInsight.tagLabel,
-        'message': aiInsight.message,
-        'updatedLabel': aiInsight.updatedLabel,
-      },
       'quickLinks': [
         for (final q in quickLinks) {'id': q.id, 'selected': q.selected},
       ],

@@ -104,6 +104,16 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
+    // Doctor Dashboard / Patient Search / Patient Details / Consultation —
+    // keyed by doctorId, with a nested patients panel (and each patient's
+    // own risk/vitals/allergies/notes/consultation subcollections).
+    match /doctors/{doctorId} {
+      allow read, write: if isSignedIn();
+
+      match /{document=**} {
+        allow read, write: if isSignedIn();
+      }
+    }
     // Everything not explicitly matched above is denied.
     match /{document=**} {
       allow read, write: if false;

@@ -21,8 +21,24 @@ abstract final class AppRoutes {
   /// CHW-06b — the community health worker's referral-to-hospital form.
   static const String chwReferral = '/chw/referral';
 
+  /// CHW-02 — searchable list of registered community patients.
+  static const String chwPatientList = '/chw/patients';
+
   /// The community health worker's patient health record.
+  /// Use [chwHealthRecordFor] when opening a specific registered patient.
   static const String chwHealthRecord = '/chw/record';
+
+  static String chwHealthRecordFor(String patientId) =>
+      '$chwHealthRecord/$patientId';
+
+  static bool isChwHealthRecord(String location) =>
+      location == chwHealthRecord || location.startsWith('$chwHealthRecord/');
+
+  /// CHW alerts / notifications feed.
+  static const String chwNotifications = '/chw/alerts';
+
+  /// CHW settings.
+  static const String chwSettings = '/chw/settings';
 
   /// The three-step New Patient Registration flow (Identity & Household,
   /// Demographics & Contact, Confirm & Submit).
@@ -45,6 +61,7 @@ abstract final class AppRoutes {
   static const String consultation = '/doctor/consultation';
   /// SETTINGS-01 — the language switcher.
   static const String languageSettings = '/settings/language';
+
   /// The doctor's patient details screen.
   static const String patientDetail = '/doctor/patients/detail';
 
@@ -69,32 +86,21 @@ abstract final class AppRoutes {
   /// The patient's main settings screen.
   static const String patientSettings = '/patient/settings';
 
-  /// Demo hub listing every delivered screen (not a product screen).
-  static const String showcase = '/showcase';
+  /// TUTORIAL-01 — the onboarding tutorial, shown once before role
+  /// selection. See `route_guards.dart` for where that redirect is wired.
+  static const String onboarding = '/onboarding';
 
-  /// Routes openable without a Firebase session.
-  /// Clinical Firestore screens require auth; only the showcase hub and the
-  /// CHW offline dashboard stay reachable for demos / offline continue.
+  /// Routes openable without a Firebase session. Clinical Firestore screens
+  /// require auth; only the CHW offline flow ("Continue Offline" on the CHW
+  /// login) and onboarding itself stay reachable pre-auth.
   static const Set<String> demoReachable = {
-    showcase,
     chwDashboard,
     chwReferral,
+    chwPatientList,
     chwHealthRecord,
+    chwNotifications,
+    chwSettings,
     newPatientIntake,
-    patientTimeline,
-    patientMedicalTimeline,
-    doctorDashboard,
-    patientSearch,
-    consultation,
-    languageSettings,
-    patientDetail,
-    patientDashboard,
-    patientRecords,
-    patientAiInsights,
-    patientMedications,
-    doctorNotifications,
-    patientNotifications,
-    doctorSettings,
-    patientSettings,
+    onboarding,
   };
 }

@@ -5,10 +5,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
+import '../../../community_health_workers/data/repositories/chw_caseload_repository.dart';
+import '../../../community_health_workers/presentation/widgets/chw_bottom_nav.dart';
 import '../../../doctors/presentation/widgets/doctor_bottom_navigation_bar.dart';
 import '../../../patients/presentation/widgets/patient_bottom_navigation_bar.dart';
 import '../../data/repositories/mock_doctor_notifications_repository.dart';
@@ -21,15 +24,10 @@ import '../widgets/notification_section_header.dart';
 /// Which role's notification feed a [NotificationsPage] renders — drives
 /// the default repository and which role's bottom nav / cross-navigation
 /// wires up, while the page layout itself stays identical.
-enum NotificationsAudience { doctor, patient }
+enum NotificationsAudience { doctor, patient, chw }
 
-/// The shared Notifications / Alerts screen for both the doctor and
-/// patient roles: one app bar, one sectioned list, one card design —
-/// [audience] only changes which seeded feed and bottom nav are used.
-///
-/// Data comes from a [NotificationsRepository] — a mock per audience by
-/// default — so swapping in a Firestore-backed implementation later only
-/// touches the constructor call, not this screen.
+/// The shared Notifications / Alerts screen for doctor, patient, and CHW
+/// roles: one app bar, one sectioned list, one card design.
 class NotificationsPage extends StatefulWidget {
   final NotificationsAudience audience;
   final NotificationsRepository? repository;
@@ -48,11 +46,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
   late Future<List<NotificationSection>> _future;
   int _navIndex = 3;
 
-  NotificationsRepository get _repository =>
-      widget.repository ??
-      (widget.audience == NotificationsAudience.doctor
-          ? const MockDoctorNotificationsRepository()
-          : getIt<PatientNotificationsRepositoryImpl>());
+  NotificationsRepository get _repository {
+    if (widget.repository != null) return widget.repository!;
+    return switch (widget.audience) {
+      NotificationsAudience.doctor => const MockDoctorNotificationsRepository(),
+      NotificationsAudience.patient => getIt<PatientNotificationsRepositoryImpl>(),
+      NotificationsAudience.chw => getIt<ChwCaseloadRepository>(),
+    };
+  }
 
   @override
   void initState() {
@@ -67,27 +68,62 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   void _onNavTap(int index) {
-    final isDoctor = widget.audience == NotificationsAudience.doctor;
-    switch (index) {
-      case 0:
-        context.go(isDoctor ? AppRoutes.doctorDashboard : AppRoutes.patientDashboard);
-      case 1:
-        context.go(isDoctor ? AppRoutes.patientSearch : AppRoutes.patientRecords);
-      case 2:
-        if (!isDoctor) context.go(AppRoutes.patientAiInsights);
-      case 3:
-        break;
-      case 4:
-        context.go(isDoctor ? AppRoutes.doctorSettings : AppRoutes.patientSettings);
-      default:
-        setState(() => _navIndex = index);
+    switch (widget.audience) {
+      case NotificationsAudience.chw:
+        ChwBottomNav.handleTap(context, index);
+      case NotificationsAudience.doctor:
+        switch (index) {
+          case 0:
+            context.go(AppRoutes.doctorDashboard);
+          case 1:
+            context.go(AppRoutes.patientSearch);
+          case 2:
+            showComingSoon(context, 'AI Insights');
+          case 3:
+            break;
+          case 4:
+            context.go(AppRoutes.doctorSettings);
+          default:
+            setState(() => _navIndex = index);
+        }
+      case NotificationsAudience.patient:
+        switch (index) {
+          case 0:
+            context.go(AppRoutes.patientDashboard);
+          case 1:
+            context.go(AppRoutes.patientRecords);
+          case 2:
+            context.go(AppRoutes.patientAiInsights);
+          case 3:
+            break;
+          case 4:
+            context.go(AppRoutes.patientSettings);
+          default:
+            setState(() => _navIndex = index);
+        }
     }
+  }
+
+  void _openItem(String itemId, String title) {
+    if (widget.audience == NotificationsAudience.chw) {
+      final patientId = _patientIdFromNotification(itemId);
+      if (patientId != null) {
+        context.push(AppRoutes.chwHealthRecordFor(patientId));
+        return;
+      }
+    }
+    debugPrint('Open · $title');
+  }
+
+  String? _patientIdFromNotification(String id) {
+    for (final prefix in ['risk-', 'flag-']) {
+      if (id.startsWith(prefix)) return id.substring(prefix.length);
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDoctor = widget.audience == NotificationsAudience.doctor;
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: AppGradientBackground(
@@ -130,9 +166,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       for (final item in section.items) ...[
                         NotificationCard(
                           item: item,
-                          onTap: () => _printAction('Open · ${item.title}'),
-                          onAction: () =>
-                              _printAction('${item.actionLabel} · ${item.title}'),
+                          onTap: () => _openItem(item.id, item.title),
+                          onAction: () => _openItem(item.id, item.title),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                       ],
@@ -145,11 +180,17 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: isDoctor
-          ? DoctorBottomNavigationBar(currentIndex: _navIndex, onTap: _onNavTap)
-          : PatientBottomNavigationBar(currentIndex: _navIndex, onTap: _onNavTap),
+      bottomNavigationBar: switch (widget.audience) {
+        NotificationsAudience.chw => const ChwBottomNav(currentIndex: 3),
+        NotificationsAudience.doctor => DoctorBottomNavigationBar(
+          currentIndex: _navIndex,
+          onTap: _onNavTap,
+        ),
+        NotificationsAudience.patient => PatientBottomNavigationBar(
+          currentIndex: _navIndex,
+          onTap: _onNavTap,
+        ),
+      },
     );
   }
-
-  void _printAction(String action) => debugPrint('Tapped: $action');
 }

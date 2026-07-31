@@ -12,19 +12,19 @@ abstract final class DoctorsRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutes.doctorDashboard,
-      builder: (context, state) => const DoctorDashboardScreen(),
+      builder: (context, state) => DoctorDashboardScreen(),
     ),
     GoRoute(
       path: AppRoutes.patientSearch,
-      builder: (context, state) => const PatientSearchScreen(),
+      builder: (context, state) => PatientSearchScreen(),
     ),
     GoRoute(
       path: AppRoutes.patientDetail,
-      builder: (context, state) => const PatientDetailScreen(),
+      builder: (context, state) => PatientDetailScreen(),
     ),
     GoRoute(
       path: AppRoutes.consultation,
-      builder: (context, state) => const ConsultationScreen(),
+      builder: (context, state) => ConsultationScreen(),
     ),
   ];
 }

@@ -6,16 +6,17 @@ import '../../features/authentication/presentation/pages/home_page.dart';
 import '../../features/community_health_workers/community_health_workers_routes.dart';
 import '../../features/doctors/doctors_routes.dart';
 import '../../features/medical_records/medical_records_routes.dart';
-import '../../features/patient_intake/patient_intake_routes.dart';
 import '../../features/notifications/notifications_routes.dart';
+import '../../features/onboarding/onboarding_routes.dart';
+import '../../features/patient_intake/patient_intake_routes.dart';
 import '../../features/patients/patients_routes.dart';
 import '../../features/prescriptions/prescriptions_routes.dart';
 import '../../features/referrals/referrals_routes.dart';
 import '../../features/settings/settings_routes.dart';
-import '../../features/showcase/showcase_routes.dart';
 import 'app_routes.dart';
 import 'auth_router_refresh.dart';
 import 'auth_session.dart';
+import 'onboarding_status.dart';
 import 'pages/not_found_page.dart';
 import 'route_guards.dart';
 
@@ -27,16 +28,24 @@ import 'route_guards.dart';
 @lazySingleton
 class AppRouter {
   final AuthSessionProvider _authSessionProvider;
+  final OnboardingStatusProvider _onboardingStatusProvider;
   final AuthRouterRefresh _authRouterRefresh;
 
-  AppRouter(this._authSessionProvider, this._authRouterRefresh);
+  AppRouter(
+    this._authSessionProvider,
+    this._onboardingStatusProvider,
+    this._authRouterRefresh,
+  );
 
   late final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.showcase,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     refreshListenable: _authRouterRefresh,
-    redirect: (context, state) =>
-        RouteGuards.redirect(_authSessionProvider, state),
+    redirect: (context, state) => RouteGuards.redirect(
+      _authSessionProvider,
+      _onboardingStatusProvider,
+      state,
+    ),
     routes: [
       GoRoute(
         path: AppRoutes.home,
@@ -48,10 +57,10 @@ class AppRouter {
       ...CommunityHealthWorkersRoutes.routes,
       ...PatientIntakeRoutes.routes,
       ...MedicalRecordsRoutes.routes,
+      ...OnboardingRoutes.routes,
       ...PatientsRoutes.routes,
       ...NotificationsRoutes.routes,
       ...SettingsRoutes.routes,
-      ...ShowcaseRoutes.routes,
       ...DoctorsRoutes.routes,
     ],
     errorBuilder: (context, state) => const NotFoundPage(),

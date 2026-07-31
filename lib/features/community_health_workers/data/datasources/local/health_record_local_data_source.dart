@@ -36,14 +36,12 @@ class HealthRecordLocalDataSourceImpl implements HealthRecordLocalDataSource {
         DemographicRow('Language', 'Kinyarwanda'),
       ],
       assessment: HealthAssessment(
-        riskScore: 62,
+        riskScore: 0,
         riskLevel: RiskLevel.moderate,
-        updatedLabel: 'Updated today',
-        summary:
-            'Fatigue and nausea in a 24-week pregnancy. Swelling observed. '
-            'Recommend ANC follow-up within 3 days and hydration monitoring.',
-        keyRiskFactor: 'Pregnancy + Swelling',
-        recommendation: 'ANC Visit in 3d',
+        updatedLabel: '',
+        summary: '',
+        keyRiskFactor: '',
+        recommendation: '',
       ),
       conditions: ConditionsSummary(
         activeSymptoms: [
