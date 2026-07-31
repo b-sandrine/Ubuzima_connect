@@ -22,6 +22,7 @@ abstract final class RouteGuards {
   static const Set<String> _chwRoutes = {
     AppRoutes.chwDashboard,
     AppRoutes.chwReferral,
+    AppRoutes.chwPatientList,
     AppRoutes.chwHealthRecord,
   };
 

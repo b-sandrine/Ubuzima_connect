@@ -52,6 +52,8 @@ class _HealthRecordView extends StatelessWidget {
       bottomNavigationBar: UbuzimaBottomNav(
         currentIndex: 1,
         onTap: (index) {
+          if (index == 0) context.go(AppRoutes.chwDashboard);
+          if (index == 1) context.go(AppRoutes.chwPatientList);
           if (index == 2) context.push(AppRoutes.newPatientIntake);
         },
         items: const [
