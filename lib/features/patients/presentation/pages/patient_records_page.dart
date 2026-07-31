@@ -110,6 +110,8 @@ class _PatientRecordsPageState extends State<PatientRecordsPage> {
         context.go(AppRoutes.patientDashboard);
       case 1:
         break;
+      case 2:
+        context.go(AppRoutes.patientAiInsights);
       case 3:
         context.go(AppRoutes.patientNotifications);
       case 4:

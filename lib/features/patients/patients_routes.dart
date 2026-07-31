@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../core/routing/app_routes.dart';
+import 'presentation/pages/ai_insights_page.dart';
 import 'presentation/pages/patient_medical_timeline_page.dart';
 import 'presentation/pages/patient_dashboard_screen.dart';
 import 'presentation/pages/patient_records_page.dart';
@@ -16,6 +17,10 @@ abstract final class PatientsRoutes {
         GoRoute(
           path: AppRoutes.patientRecords,
           builder: (context, state) => const PatientRecordsPage(),
+        ),
+        GoRoute(
+          path: AppRoutes.patientAiInsights,
+          builder: (context, state) => const AiInsightsPage(),
         ),
         GoRoute(
           path: AppRoutes.patientMedicalTimeline,

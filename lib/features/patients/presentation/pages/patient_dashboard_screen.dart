@@ -197,18 +197,21 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                     _SectionHeader(
                       title: 'AI Health Insight',
                       actionLabel: 'See All',
-                      onAction: () => _printAction('AI Health Insight · See All'),
+                      onAction: () => context.go(AppRoutes.patientAiInsights),
                       uppercase: true,
                     ),
                     const SizedBox(height: AppSpacing.sm + 2),
                     AiHealthInsightCard(
                       insight: data.insight,
-                      onLearnMore: () => _printAction('AI Health Insight · Learn More'),
+                      onLearnMore: () => context.go(AppRoutes.patientAiInsights),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const _SectionTitle('Quick Actions', uppercase: true),
                     const SizedBox(height: AppSpacing.sm + 2),
-                    _QuickLinksRow(links: data.quickLinks, onTap: _printAction),
+                    _QuickLinksRow(
+                      links: data.quickLinks,
+                      onTap: _onQuickLinkTap,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
                     _SectionHeader(
                       title: 'BP Trend · Last 7 Days',
@@ -237,6 +240,8 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
         break;
       case 1:
         context.go(AppRoutes.patientRecords);
+      case 2:
+        context.go(AppRoutes.patientAiInsights);
       case 3:
         context.go(AppRoutes.patientNotifications);
       case 4:
@@ -247,6 +252,19 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   }
 
   void _printAction(String action) => debugPrint('Tapped: $action');
+
+  void _onQuickLinkTap(QuickLink link) {
+    switch (link.id) {
+      case 'quick-records':
+        context.go(AppRoutes.patientRecords);
+      case 'quick-meds':
+        context.go(AppRoutes.patientMedications);
+      case 'quick-ai-insights':
+        context.go(AppRoutes.patientAiInsights);
+      default:
+        _printAction('Quick Actions · ${link.label}');
+    }
+  }
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -351,7 +369,7 @@ class _VitalsGrid extends StatelessWidget {
 
 class _QuickLinksRow extends StatelessWidget {
   final List<QuickLink> links;
-  final ValueChanged<String> onTap;
+  final ValueChanged<QuickLink> onTap;
 
   const _QuickLinksRow({required this.links, required this.onTap});
 
@@ -361,10 +379,7 @@ class _QuickLinksRow extends StatelessWidget {
       children: [
         for (final link in links) ...[
           Expanded(
-            child: QuickLinkCard(
-              link: link,
-              onTap: () => onTap('Quick Actions · ${link.label}'),
-            ),
+            child: QuickLinkCard(link: link, onTap: () => onTap(link)),
           ),
           if (link != links.last) const SizedBox(width: AppSpacing.sm),
         ],

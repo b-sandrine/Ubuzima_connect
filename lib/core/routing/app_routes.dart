@@ -54,6 +54,9 @@ abstract final class AppRoutes {
   /// The patient's medical records screen.
   static const String patientRecords = '/patient/records';
 
+  /// The patient's AI Insights screen.
+  static const String patientAiInsights = '/patient/ai-insights';
+
   /// The doctor's notifications / alerts feed.
   static const String doctorNotifications = '/doctor/notifications';
 
@@ -87,6 +90,7 @@ abstract final class AppRoutes {
     patientDetail,
     patientDashboard,
     patientRecords,
+    patientAiInsights,
     patientMedications,
     doctorNotifications,
     patientNotifications,

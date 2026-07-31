@@ -72,6 +72,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
         context.go(isDoctor ? AppRoutes.doctorDashboard : AppRoutes.patientDashboard);
       case 1:
         context.go(isDoctor ? AppRoutes.patientSearch : AppRoutes.patientRecords);
+      case 2:
+        if (!isDoctor) context.go(AppRoutes.patientAiInsights);
       case 3:
         break;
       case 4:
