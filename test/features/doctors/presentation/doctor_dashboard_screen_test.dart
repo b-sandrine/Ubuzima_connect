@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ubuzima_connect/core/ai/clinical_ai_service.dart';
+import 'package:ubuzima_connect/core/di/injection.dart';
+import 'package:ubuzima_connect/features/doctors/data/repositories/mock_doctor_dashboard_repository.dart';
+import 'package:ubuzima_connect/features/doctors/domain/repositories/doctor_dashboard_repository.dart';
 import 'package:ubuzima_connect/features/doctors/presentation/pages/doctor_dashboard_screen.dart';
 
+import '../../../helpers/fake_clinical_ai_service.dart';
+
 void main() {
+  setUp(() async {
+    await getIt.reset();
+    getIt.registerSingleton<ClinicalAiService>(const FakeClinicalAiService());
+    getIt.registerSingleton<DoctorDashboardRepository>(
+      MockDoctorDashboardRepository(getIt()),
+    );
+  });
+
+  tearDown(() async {
+    await getIt.reset();
+  });
+
   testWidgets('renders the doctor dashboard from the mock repository', (
     tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: DoctorDashboardScreen()));
+    await tester.pumpWidget(MaterialApp(home: DoctorDashboardScreen()));
 
     // Loading state first.
     expect(find.byType(CircularProgressIndicator), findsOneWidget);

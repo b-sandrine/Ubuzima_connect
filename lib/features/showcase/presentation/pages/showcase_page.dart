@@ -57,6 +57,14 @@ class ShowcasePage extends StatelessWidget {
       route: AppRoutes.chwDashboard,
     ),
     _ShowcaseEntry(
+      task: 'CHW-02',
+      title: 'CHW Patient List',
+      subtitle: 'CHW · search registered patients from Firestore',
+      icon: Icons.groups_outlined,
+      color: AppColors.roleChw,
+      route: AppRoutes.chwPatientList,
+    ),
+    _ShowcaseEntry(
       task: 'PAT-03',
       title: 'Current Medications',
       subtitle: 'Patient · today’s doses, adherence & refills',
@@ -106,19 +114,19 @@ class ShowcasePage extends StatelessWidget {
     ),
     _ShowcaseEntry(
       task: 'DOCTOR',
-      title: 'Consultation · Vitals',
-      subtitle: 'Doctor · active visit, editable vitals & quick actions',
-      icon: Icons.monitor_heart_outlined,
-      color: AppColors.roleDoctor,
-      route: AppRoutes.consultation,
-    ),
-    _ShowcaseEntry(
-      task: 'DOCTOR',
       title: 'Patient Details',
       subtitle: 'Doctor · risk scores, vitals, allergies & clinical notes',
       icon: Icons.medical_information_outlined,
       color: AppColors.roleDoctor,
       route: AppRoutes.patientDetail,
+    ),
+    _ShowcaseEntry(
+      task: 'DOCTOR',
+      title: 'Consultation · Vitals',
+      subtitle: 'Doctor · active visit, editable vitals & quick actions',
+      icon: Icons.monitor_heart_outlined,
+      color: AppColors.roleDoctor,
+      route: AppRoutes.consultation,
     ),
     _ShowcaseEntry(
       task: 'PATIENT',

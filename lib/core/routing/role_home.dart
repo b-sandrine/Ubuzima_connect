@@ -6,7 +6,7 @@ abstract final class RoleHome {
   static String forRole(UserRole role) => switch (role) {
         UserRole.communityHealthWorker => AppRoutes.chwDashboard,
         UserRole.patient => AppRoutes.patientDashboard,
-        UserRole.doctor => AppRoutes.referralManagement,
+        UserRole.doctor => AppRoutes.doctorDashboard,
         // Never return `/home` here — HomePage redirects through this helper,
         // so `unknown → home` would trap the user on an endless spinner.
         UserRole.unknown => AppRoutes.roleSelection,

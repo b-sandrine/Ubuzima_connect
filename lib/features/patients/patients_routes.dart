@@ -12,7 +12,7 @@ abstract final class PatientsRoutes {
   static List<RouteBase> get routes => [
         GoRoute(
           path: AppRoutes.patientDashboard,
-          builder: (context, state) => const PatientDashboardScreen(),
+          builder: (context, state) => PatientDashboardScreen(),
         ),
         GoRoute(
           path: AppRoutes.patientRecords,
