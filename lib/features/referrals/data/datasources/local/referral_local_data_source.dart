@@ -109,7 +109,6 @@ class ReferralLocalDataSourceImpl implements ReferralLocalDataSource {
               'months ago. T2DM with poor glycaemic control (HbA1c 9.1%).',
           requestedTimeline: 'Within 4 weeks',
           timelineIsUrgent: false,
-          routeOptions: ['Ophthalmology', 'Endocrinology'],
         ),
         Referral(
           reference: 'RW-REF-0035',

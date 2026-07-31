@@ -35,6 +35,7 @@ abstract final class RouteGuards {
     final atReset = location == AppRoutes.resetPassword;
     final atSplash = location == AppRoutes.splash;
     final atRoleSelection = location == AppRoutes.roleSelection;
+    final atOnboarding = location == AppRoutes.onboarding;
     final atDemoScreen = AppRoutes.demoReachable.contains(location);
 
     if (status == AuthSessionStatus.unauthenticated &&
