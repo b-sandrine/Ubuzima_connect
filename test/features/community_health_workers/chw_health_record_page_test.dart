@@ -7,6 +7,7 @@ import 'package:ubuzima_connect/core/errors/failure.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/entities/health_record.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/complete_next_step.dart';
 import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/get_health_record.dart';
+import 'package:ubuzima_connect/features/community_health_workers/domain/usecases/regenerate_ai_assessment.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/bloc/health_record_bloc.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/pages/chw_health_record_page.dart';
 import 'package:ubuzima_connect/features/community_health_workers/presentation/widgets/next_steps_section.dart';
@@ -14,6 +15,9 @@ import 'package:ubuzima_connect/features/community_health_workers/presentation/w
 class _MockGetHealthRecord extends Mock implements GetHealthRecord {}
 
 class _MockCompleteNextStep extends Mock implements CompleteNextStep {}
+
+class _MockRegenerateAiAssessment extends Mock
+    implements RegenerateAiAssessment {}
 
 const _record = HealthRecord(
   sector: 'CHW · Kigali Sector',
@@ -68,15 +72,21 @@ const _record = HealthRecord(
 void main() {
   late _MockGetHealthRecord getHealthRecord;
   late _MockCompleteNextStep completeNextStep;
+  late _MockRegenerateAiAssessment regenerateAiAssessment;
 
   setUp(() {
     getHealthRecord = _MockGetHealthRecord();
     completeNextStep = _MockCompleteNextStep();
+    regenerateAiAssessment = _MockRegenerateAiAssessment();
     when(
-      () => getHealthRecord(),
+      () => getHealthRecord(patientId: any(named: 'patientId')),
     ).thenAnswer((_) async => const Right<Failure, HealthRecord>(_record));
     getIt.registerFactory<HealthRecordBloc>(
-      () => HealthRecordBloc(getHealthRecord, completeNextStep),
+      () => HealthRecordBloc(
+        getHealthRecord,
+        completeNextStep,
+        regenerateAiAssessment,
+      ),
     );
   });
 

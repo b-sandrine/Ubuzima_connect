@@ -5,10 +5,10 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
-import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
 import '../../../../shared/widgets/pills/status_pill.dart';
 import '../../../referrals/presentation/bloc/referral_form_bloc.dart';
 import '../../../referrals/presentation/widgets/referral_form_view.dart';
+import '../widgets/chw_bottom_nav.dart';
 
 /// CHW-06b — the community health worker's referral-to-hospital form. Reuses
 /// the shared referrals form, framed for a CHW escalating a patient from the
@@ -33,20 +33,7 @@ class _ChwReferralView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: const UbuzimaBottomNav(
-        currentIndex: 2,
-        items: [
-          BottomNavItem(icon: Icons.home_outlined, label: 'Home'),
-          BottomNavItem(icon: Icons.people_outline, label: 'Patients'),
-          BottomNavItem(
-            icon: Icons.local_hospital_outlined,
-            label: 'Refer',
-            isPrimary: true,
-          ),
-          BottomNavItem(icon: Icons.notifications_outlined, label: 'Alerts'),
-          BottomNavItem(icon: Icons.settings_outlined, label: 'Settings'),
-        ],
-      ),
+      bottomNavigationBar: const ChwBottomNav(currentIndex: 0),
       body: AppGradientBackground(
         child: SafeArea(
           child: SingleChildScrollView(

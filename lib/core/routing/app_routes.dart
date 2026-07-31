@@ -25,7 +25,20 @@ abstract final class AppRoutes {
   static const String chwPatientList = '/chw/patients';
 
   /// The community health worker's patient health record.
+  /// Use [chwHealthRecordFor] when opening a specific registered patient.
   static const String chwHealthRecord = '/chw/record';
+
+  static String chwHealthRecordFor(String patientId) =>
+      '$chwHealthRecord/$patientId';
+
+  static bool isChwHealthRecord(String location) =>
+      location == chwHealthRecord || location.startsWith('$chwHealthRecord/');
+
+  /// CHW alerts / notifications feed.
+  static const String chwNotifications = '/chw/alerts';
+
+  /// CHW settings.
+  static const String chwSettings = '/chw/settings';
 
   /// The three-step New Patient Registration flow (Identity & Household,
   /// Demographics & Contact, Confirm & Submit).
@@ -93,6 +106,8 @@ abstract final class AppRoutes {
     chwReferral,
     chwPatientList,
     chwHealthRecord,
+    chwNotifications,
+    chwSettings,
     newPatientIntake,
     patientTimeline,
     patientMedicalTimeline,

@@ -10,11 +10,10 @@ import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
 import '../../../../shared/widgets/navigation/app_top_bar.dart';
-import '../../../../shared/widgets/navigation/ubuzima_bottom_nav.dart';
-import '../../../authentication/domain/usecases/sign_out.dart';
 import '../../../patient_intake/domain/entities/patient_intake_draft.dart';
 import '../../../patient_intake/domain/entities/registered_patient.dart';
 import '../bloc/chw_patient_list_bloc.dart';
+import '../widgets/chw_bottom_nav.dart';
 
 /// CHW-02 — searchable list of patients registered via intake, loaded from
 /// Firestore `patients/{id}`.
@@ -35,47 +34,11 @@ class ChwPatientListPage extends StatelessWidget {
 class _ChwPatientListView extends StatelessWidget {
   const _ChwPatientListView();
 
-  Future<void> _onNavTap(BuildContext context, int index) async {
-    switch (index) {
-      case 0:
-        context.go(AppRoutes.chwDashboard);
-      case 2:
-        context.push(AppRoutes.newPatientIntake);
-      case 4:
-        final result = await getIt<SignOut>()();
-        if (!context.mounted) return;
-        result.fold(
-          (failure) => ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(failure.message))),
-          (_) => context.go(AppRoutes.splash),
-        );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: UbuzimaBottomNav(
-        currentIndex: 1,
-        onTap: (i) => _onNavTap(context, i),
-        items: const [
-          BottomNavItem(icon: LucideIcons.house, label: 'Home'),
-          BottomNavItem(icon: LucideIcons.users, label: 'Patients'),
-          BottomNavItem(
-            icon: LucideIcons.userPlus,
-            label: 'Register',
-            isPrimary: true,
-          ),
-          BottomNavItem(
-            icon: LucideIcons.triangleAlert,
-            label: 'Alerts',
-            badgeCount: 2,
-          ),
-          BottomNavItem(icon: LucideIcons.settings, label: 'Settings'),
-        ],
-      ),
+      bottomNavigationBar: const ChwBottomNav(currentIndex: 1),
       body: AppGradientBackground(
         child: SafeArea(
           child: BlocBuilder<ChwPatientListBloc, ChwPatientListState>(
@@ -253,7 +216,9 @@ class _PatientList extends StatelessWidget {
           final patient = patients[index];
           return _PatientCard(
             patient: patient,
-            onTap: () => context.push(AppRoutes.chwHealthRecord),
+            onTap: () => context.push(
+              AppRoutes.chwHealthRecordFor(patient.id),
+            ),
           );
         },
       ),

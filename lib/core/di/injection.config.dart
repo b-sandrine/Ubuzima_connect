@@ -60,6 +60,8 @@ import '../../features/community_health_workers/data/datasources/local/health_re
     as _i554;
 import '../../features/community_health_workers/data/datasources/remote/health_record_remote_data_source.dart'
     as _i552;
+import '../../features/community_health_workers/data/repositories/chw_caseload_repository.dart'
+    as _i913;
 import '../../features/community_health_workers/data/repositories/health_record_repository_impl.dart'
     as _i74;
 import '../../features/community_health_workers/domain/repositories/health_record_repository.dart'
@@ -68,6 +70,8 @@ import '../../features/community_health_workers/domain/usecases/complete_next_st
     as _i665;
 import '../../features/community_health_workers/domain/usecases/get_health_record.dart'
     as _i509;
+import '../../features/community_health_workers/domain/usecases/regenerate_ai_assessment.dart'
+    as _i718;
 import '../../features/community_health_workers/presentation/bloc/chw_patient_list_bloc.dart'
     as _i104;
 import '../../features/community_health_workers/presentation/bloc/health_record_bloc.dart'
@@ -220,6 +224,12 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i671.ClinicalAiService>(
     () => _i671.GeminiClinicalAiService(),
   );
+  gh.lazySingleton<_i913.ChwCaseloadRepository>(
+    () => _i913.ChwCaseloadRepository(
+      gh<_i974.FirebaseFirestore>(),
+      gh<_i671.ClinicalAiService>(),
+    ),
+  );
   gh.lazySingleton<_i33.ReferralLocalDataSource>(
     () => _i33.ReferralLocalDataSourceImpl(),
   );
@@ -299,6 +309,9 @@ Future<_i174.GetIt> init(
   gh.factory<_i509.GetHealthRecord>(
     () => _i509.GetHealthRecord(gh<_i245.HealthRecordRepository>()),
   );
+  gh.factory<_i718.RegenerateAiAssessment>(
+    () => _i718.RegenerateAiAssessment(gh<_i245.HealthRecordRepository>()),
+  );
   gh.lazySingleton<_i694.MedicationRemoteDataSource>(
     () => _i694.MedicationRemoteDataSourceImpl(
       gh<_i974.FirebaseFirestore>(),
@@ -370,6 +383,7 @@ Future<_i174.GetIt> init(
     () => _i1071.HealthRecordBloc(
       gh<_i509.GetHealthRecord>(),
       gh<_i665.CompleteNextStep>(),
+      gh<_i718.RegenerateAiAssessment>(),
     ),
   );
   gh.lazySingleton<_i552.MedicationRepository>(

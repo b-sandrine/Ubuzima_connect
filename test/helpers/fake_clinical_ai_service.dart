@@ -57,4 +57,10 @@ class FakeClinicalAiService implements ClinicalAiService {
         keyRiskFactor: 'Pregnancy + Swelling',
         recommendation: 'ANC Visit in 3d',
       );
+
+  @override
+  Future<String> generateChwDayBriefing({
+    required String clinicalContext,
+  }) async =>
+      'Test CHW day briefing: prioritize emergency flags, then finish visits.';
 }
