@@ -10,8 +10,19 @@ import 'health_record_style.dart';
 /// action row.
 class PatientHeaderCard extends StatelessWidget {
   final HealthRecordPatient patient;
+  final VoidCallback? onNewVisit;
+  final VoidCallback? onRefer;
+  final VoidCallback? onAiAssist;
+  final ValueChanged<String>? onOverflowSelected;
 
-  const PatientHeaderCard({super.key, required this.patient});
+  const PatientHeaderCard({
+    super.key,
+    required this.patient,
+    this.onNewVisit,
+    this.onRefer,
+    this.onAiAssist,
+    this.onOverflowSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +51,6 @@ class PatientHeaderCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name and risk badge share the top line so the id and
-                    // status line below can run the full column width.
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -110,30 +119,31 @@ class PatientHeaderCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Horizontally scrollable so the four actions never clip on the
-          // narrowest phones, while sitting flush in one row on the design.
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                const _PrimaryAction(
+                _PrimaryAction(
                   icon: LucideIcons.clipboardPlus,
                   label: 'New Visit',
+                  onTap: onNewVisit,
                 ),
                 const SizedBox(width: 6),
                 _SecondaryAction(
                   icon: LucideIcons.share2,
                   label: 'Refer',
                   color: AppColors.secondary,
+                  onTap: onRefer,
                 ),
                 const SizedBox(width: 6),
                 _SecondaryAction(
                   icon: LucideIcons.brain,
                   label: 'AI Assist',
                   color: const Color(0xFF7C3AED),
+                  onTap: onAiAssist,
                 ),
                 const SizedBox(width: 6),
-                const _OverflowAction(),
+                _OverflowAction(onSelected: onOverflowSelected),
               ],
             ),
           ),
@@ -186,7 +196,11 @@ class _Avatar extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
-                child: const Icon(LucideIcons.baby, size: 11, color: Colors.white),
+                child: const Icon(
+                  LucideIcons.baby,
+                  size: 11,
+                  color: Colors.white,
+                ),
               ),
             ),
         ],
@@ -236,10 +250,7 @@ class _MetaItem extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
     );
@@ -249,8 +260,13 @@ class _MetaItem extends StatelessWidget {
 class _PrimaryAction extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _PrimaryAction({required this.icon, required this.label});
+  const _PrimaryAction({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +285,7 @@ class _PrimaryAction extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
           borderRadius: BorderRadius.circular(14),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 11),
@@ -299,11 +315,13 @@ class _SecondaryAction extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final VoidCallback? onTap;
 
   const _SecondaryAction({
     required this.icon,
     required this.label,
     required this.color,
+    this.onTap,
   });
 
   @override
@@ -312,7 +330,7 @@ class _SecondaryAction extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         borderRadius: BorderRadius.circular(14),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 11),
@@ -342,15 +360,24 @@ class _SecondaryAction extends StatelessWidget {
 }
 
 class _OverflowAction extends StatelessWidget {
-  const _OverflowAction();
+  final ValueChanged<String>? onSelected;
+
+  const _OverflowAction({this.onSelected});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        onTap: () {},
+    return PopupMenuButton<String>(
+      onSelected: onSelected,
+      tooltip: 'More actions',
+      offset: const Offset(0, 44),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: 'patients', child: Text('All patients')),
+        PopupMenuItem(value: 'alerts', child: Text('Alerts')),
+        PopupMenuItem(value: 'settings', child: Text('Settings')),
+      ],
+      child: Material(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         child: Container(
           padding: const EdgeInsets.all(10),

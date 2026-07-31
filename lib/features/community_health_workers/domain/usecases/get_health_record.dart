@@ -12,5 +12,6 @@ class GetHealthRecord {
 
   const GetHealthRecord(this._repository);
 
-  Future<Either<Failure, HealthRecord>> call() => _repository.getHealthRecord();
+  Future<Either<Failure, HealthRecord>> call({String? patientId}) =>
+      _repository.getHealthRecord(patientId: patientId);
 }

@@ -10,8 +10,15 @@ import 'section_header.dart';
 /// factor and recommendation chips, and the assistant call-to-action.
 class HealthAssessmentCard extends StatelessWidget {
   final HealthAssessment assessment;
+  final VoidCallback? onAskAi;
+  final bool isRefreshing;
 
-  const HealthAssessmentCard({super.key, required this.assessment});
+  const HealthAssessmentCard({
+    super.key,
+    required this.assessment,
+    this.onAskAi,
+    this.isRefreshing = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +116,10 @@ class HealthAssessmentCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              const _AssistButton(),
+              _AssistButton(
+                onTap: isRefreshing ? null : onAskAi,
+                isRefreshing: isRefreshing,
+              ),
             ],
           ),
         ),
@@ -225,7 +235,10 @@ class _InfoTile extends StatelessWidget {
 }
 
 class _AssistButton extends StatelessWidget {
-  const _AssistButton();
+  final VoidCallback? onTap;
+  final bool isRefreshing;
+
+  const _AssistButton({this.onTap, this.isRefreshing = false});
 
   @override
   Widget build(BuildContext context) {
@@ -233,29 +246,42 @@ class _AssistButton extends StatelessWidget {
       color: const Color(0xFF7C3AED).withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           height: 44,
           alignment: Alignment.center,
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(LucideIcons.sparkles, size: 16, color: Color(0xFF7C3AED)),
-              SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  'Ask AI Health Assistant',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w700,
+          child: isRefreshing
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.2,
                     color: Color(0xFF7C3AED),
                   ),
+                )
+              : const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      LucideIcons.sparkles,
+                      size: 16,
+                      color: Color(0xFF7C3AED),
+                    ),
+                    SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'Ask AI Health Assistant',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF7C3AED),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
