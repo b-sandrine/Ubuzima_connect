@@ -5,6 +5,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../shared/utils/coming_soon.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
 import '../../../../shared/widgets/loading/loading_indicator.dart';
@@ -275,6 +276,8 @@ class _PatientSearchScreenState extends State<PatientSearchScreen> {
         context.go(AppRoutes.doctorDashboard);
       case 1:
         break;
+      case 2:
+        showComingSoon(context, 'AI Insights');
       case 3:
         context.go(AppRoutes.doctorNotifications);
       case 4:

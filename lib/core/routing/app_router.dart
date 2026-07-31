@@ -16,6 +16,7 @@ import '../../features/settings/settings_routes.dart';
 import 'app_routes.dart';
 import 'auth_router_refresh.dart';
 import 'auth_session.dart';
+import 'onboarding_status.dart';
 import 'pages/not_found_page.dart';
 import 'route_guards.dart';
 
@@ -27,16 +28,24 @@ import 'route_guards.dart';
 @lazySingleton
 class AppRouter {
   final AuthSessionProvider _authSessionProvider;
+  final OnboardingStatusProvider _onboardingStatusProvider;
   final AuthRouterRefresh _authRouterRefresh;
 
-  AppRouter(this._authSessionProvider, this._authRouterRefresh);
+  AppRouter(
+    this._authSessionProvider,
+    this._onboardingStatusProvider,
+    this._authRouterRefresh,
+  );
 
   late final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     refreshListenable: _authRouterRefresh,
-    redirect: (context, state) =>
-        RouteGuards.redirect(_authSessionProvider, state),
+    redirect: (context, state) => RouteGuards.redirect(
+      _authSessionProvider,
+      _onboardingStatusProvider,
+      state,
+    ),
     routes: [
       GoRoute(
         path: AppRoutes.home,
