@@ -93,6 +93,23 @@ class PatientDetailRemoteDataSourceImpl
       .collection('patients')
       .doc(_patientId);
 
+  /// The same patient identity record the referrals feature (DOC-06) owns
+  /// — read as a fallback so a referred patient's name/status show up here
+  /// immediately, even before this doctor-scoped chart has ever been
+  /// written to.
+  DocumentReference<Map<String, dynamic>> get _referralPatientDoc => _firestore
+      .collection(FirestorePaths.patients)
+      .doc(AppConstants.demoPatientId);
+
+  PatientRecordStatus _statusFromCriticality(String criticality) =>
+      switch (criticality.toLowerCase()) {
+        'critical' => PatientRecordStatus.critical,
+        'urgent' => PatientRecordStatus.urgent,
+        'stable' => PatientRecordStatus.stable,
+        'scheduled' => PatientRecordStatus.scheduled,
+        _ => PatientRecordStatus.routine,
+      };
+
   CollectionReference<Map<String, dynamic>> get _riskIndicators =>
       _doc.collection('risk_indicators');
 
@@ -112,19 +129,39 @@ class PatientDetailRemoteDataSourceImpl
   Future<PatientDetail> getPatientDetail() async {
     try {
       final data = (await _doc.get()).data() ?? const {};
+      final hasChart = data['name'] != null;
+      // Falls back to the referred patient's real identity (name,
+      // criticality, summary) until this doctor-scoped chart has actually
+      // been filled in — otherwise a freshly-referred patient shows up as a
+      // blank page even though a real referral for them exists.
+      final referral = hasChart
+          ? null
+          : (await _referralPatientDoc.get()).data();
+
+      final tags = ((data['detailTags'] as List?) ?? const []).cast<String>();
+      final summary = referral?['summary'] as String?;
+
       return PatientDetail(
         id: _patientId,
-        name: data['name'] as String? ?? '',
-        patientCode: data['patientCode'] as String? ?? '',
+        name: data['name'] as String? ?? referral?['name'] as String? ?? '',
+        patientCode:
+            data['patientCode'] as String? ?? referral?['displayId'] as String? ?? '',
         gender: data['detailGender'] as String? ?? '',
         age: (data['age'] as num?)?.toInt() ?? 0,
         dateOfBirth: data['dateOfBirth'] as String? ?? '',
         location: data['location'] as String? ?? '',
         hospital: data['hospital'] as String? ?? '',
         status: PatientRecordStatus.values.byName(
-          data['status'] as String? ?? 'routine',
+          data['status'] as String? ??
+              (referral != null
+                  ? _statusFromCriticality(
+                      referral['criticality'] as String? ?? '',
+                    ).name
+                  : 'routine'),
         ),
-        tags: ((data['detailTags'] as List?) ?? const []).cast<String>(),
+        tags: tags.isNotEmpty
+            ? tags
+            : (summary != null && summary.isNotEmpty ? [summary] : const []),
         photoUrl: data['photoUrl'] as String?,
       );
     } on FirebaseException catch (e) {

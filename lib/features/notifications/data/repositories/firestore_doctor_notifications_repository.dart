@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/firestore_paths.dart';
 import '../../../../core/exceptions/app_exceptions.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -35,9 +36,10 @@ const Map<String, Color> _colorByKey = {
 ///     tagged with a `sectionTitle` grouped into a [NotificationSection]
 ///     here, in the order sections first appear.
 ///
-/// No seed data — there's no real event/trigger system generating clinical
-/// alerts yet, so a fresh account reads back an empty feed instead of
-/// fabricated demo content.
+/// Also derives live "Priority Alerts" / "Referral Updates" entries from
+/// the real `referrals` collection DOC-06 owns (incoming, not declined) —
+/// there's no real event/trigger system writing to `notifications` yet, so
+/// without this a referred patient would never show up as an alert at all.
 @LazySingleton()
 class FirestoreDoctorNotificationsRepository
     implements NotificationsRepository {
@@ -53,12 +55,20 @@ class FirestoreDoctorNotificationsRepository
       .doc(_uid)
       .collection('notifications');
 
+  CollectionReference<Map<String, dynamic>> get _referrals =>
+      _firestore.collection(FirestorePaths.referrals);
+
+  DocumentReference<Map<String, dynamic>> get _referralPatientDoc => _firestore
+      .collection(FirestorePaths.patients)
+      .doc(AppConstants.demoPatientId);
+
   @override
   Future<List<NotificationSection>> getSections() async {
     try {
-      final docs = await _notifications.orderBy('sortOrder').get();
       final sections = <String, List<NotificationItem>>{};
+      await _addReferralNotifications(sections);
 
+      final docs = await _notifications.orderBy('sortOrder').get();
       for (final d in docs.docs) {
         final data = d.data();
         final title = data['sectionTitle'] as String? ?? 'Notifications';
@@ -102,6 +112,54 @@ class FirestoreDoctorNotificationsRepository
       ];
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? 'Could not load notifications.');
+    }
+  }
+
+  /// Adds one notification per incoming, non-declined referral — urgent
+  /// ones under "Priority Alerts" (with an Accept Referral action), the
+  /// rest under "Referral Updates" (View Patient) — inserted before any
+  /// stored notifications so the live, real signal always appears first.
+  Future<void> _addReferralNotifications(
+    Map<String, List<NotificationItem>> sections,
+  ) async {
+    final referralDocs = await _referrals
+        .where('direction', isEqualTo: 'incoming')
+        .get();
+    final relevant = referralDocs.docs.where(
+      (d) => d.data()['status'] != 'declined',
+    );
+    if (relevant.isEmpty) return;
+
+    final patientName =
+        (await _referralPatientDoc.get()).data()?['name'] as String? ?? '';
+
+    for (final d in relevant) {
+      final data = d.data();
+      final isUrgent = data['urgency'] == 'urgent';
+      final title = isUrgent ? 'Priority Alerts' : 'Referral Updates';
+      final specialty = data['specialty'] as String? ?? 'Specialist';
+
+      sections
+          .putIfAbsent(title, () => [])
+          .add(
+            NotificationItem(
+              id: 'referral-${d.id}',
+              title: isUrgent
+                  ? 'Urgent Referral · $specialty'
+                  : 'New Referral · $specialty',
+              subtitleLine: patientName,
+              description: data['reason'] as String? ?? '',
+              timestampLabel: data['receivedLabel'] as String? ?? '',
+              badgeLabel: isUrgent ? 'URGENT' : 'New',
+              badgeColor: isUrgent ? AppColors.danger : AppColors.success,
+              accentColor: isUrgent ? AppColors.danger : AppColors.success,
+              icon: isUrgent ? LucideIcons.triangleAlert : LucideIcons.share2,
+              actionLabel: isUrgent ? 'Accept Referral' : 'View Patient',
+              actionIcon: isUrgent
+                  ? LucideIcons.check
+                  : LucideIcons.userRound,
+            ),
+          );
     }
   }
 

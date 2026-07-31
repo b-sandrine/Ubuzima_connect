@@ -100,11 +100,18 @@ class DoctorDashboardRemoteDataSourceImpl
     }
   }
 
+  /// Merges any manually-stored alerts (a future real trigger — e.g. a
+  /// critical-vitals flag from Consultation — writes here) with alerts
+  /// derived live from urgent incoming referrals, so an urgent referral
+  /// always surfaces as an Emergency Alert even before that trigger system
+  /// exists.
   @override
   Future<List<EmergencyAlert>> getEmergencyAlerts() async {
     try {
-      final docs = await _alerts.orderBy('sortOrder').get();
-      return docs.docs.map((d) {
+      final stored = await _alerts.orderBy('sortOrder').get();
+      final incoming = await _incomingReferrals();
+
+      final storedAlerts = stored.docs.map((d) {
         final data = d.data();
         return EmergencyAlert(
           id: d.id,
@@ -115,36 +122,59 @@ class DoctorDashboardRemoteDataSourceImpl
           location: data['location'] as String? ?? '',
           description: data['description'] as String? ?? '',
         );
-      }).toList();
+      });
+
+      final referralAlerts = incoming
+          .where((r) => r.$1.data()['urgency'] == 'urgent')
+          .map((r) {
+            final data = r.$1.data();
+            return EmergencyAlert(
+              id: 'referral-${r.$1.id}',
+              severity: AlertSeverity.urgent,
+              patientName: r.$2,
+              location: data['facility'] as String? ?? '',
+              description: data['reason'] as String? ?? 'Urgent referral',
+            );
+          });
+
+      return [...storedAlerts, ...referralAlerts];
     } on FirebaseException catch (e) {
       throw ServerException(e.message ?? 'Could not load emergency alerts.');
     }
   }
 
+  /// Derived live from real referral activity rather than a manually-kept
+  /// counter, so the numbers can never drift from what's actually in the
+  /// queue/referral list.
   @override
   Future<List<DashboardStat>> getDashboardStats() async {
     try {
-      final data = (await _doc.get()).data() ?? const {};
-      final stats = (data['stats'] as Map?) ?? const {};
+      final incoming = await _incomingReferrals();
+      final allReferrals = await _referrals.get();
+      final distinctPatients = incoming
+          .map((r) => r.$2)
+          .where((name) => name.isNotEmpty)
+          .toSet();
+
       return [
         DashboardStat(
           id: 'stat-patients',
           label: 'Patients Today',
-          value: (stats['stat-patients'] as num?)?.toInt() ?? 0,
+          value: distinctPatients.length,
           icon: LucideIcons.users,
           color: AppColors.primary,
         ),
         DashboardStat(
           id: 'stat-queue',
           label: 'In Queue',
-          value: (stats['stat-queue'] as num?)?.toInt() ?? 0,
+          value: incoming.length,
           icon: LucideIcons.clock,
           color: AppColors.secondary,
         ),
         DashboardStat(
           id: 'stat-referrals',
           label: 'Referrals',
-          value: (stats['stat-referrals'] as num?)?.toInt() ?? 0,
+          value: allReferrals.docs.length,
           icon: LucideIcons.send,
           color: AppColors.warning,
         ),

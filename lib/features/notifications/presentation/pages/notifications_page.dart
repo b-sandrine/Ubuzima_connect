@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/routing/app_routes.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/backgrounds/app_gradient_background.dart';
 import '../../../../shared/widgets/error/error_view.dart';
@@ -111,6 +112,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
         return;
       }
     }
+    if (widget.audience == NotificationsAudience.doctor &&
+        itemId.startsWith('referral-')) {
+      context.push(AppRoutes.patientDetail);
+      return;
+    }
     debugPrint('Open · $title');
   }
 
@@ -159,19 +165,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    for (final section in sections) ...[
-                      NotificationSectionHeader(section: section),
-                      const SizedBox(height: AppSpacing.sm + 2),
-                      for (final item in section.items) ...[
-                        NotificationCard(
-                          item: item,
-                          onTap: () => _openItem(item.id, item.title),
-                          onAction: () => _openItem(item.id, item.title),
-                        ),
+                    if (sections.isEmpty)
+                      const _EmptyNotifications()
+                    else
+                      for (final section in sections) ...[
+                        NotificationSectionHeader(section: section),
+                        const SizedBox(height: AppSpacing.sm + 2),
+                        for (final item in section.items) ...[
+                          NotificationCard(
+                            item: item,
+                            onTap: () => _openItem(item.id, item.title),
+                            onAction: () => _openItem(item.id, item.title),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                        ],
                         const SizedBox(height: AppSpacing.sm),
                       ],
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
                   ],
                 ),
               );
@@ -190,6 +199,29 @@ class _NotificationsPageState extends State<NotificationsPage> {
           onTap: _onNavTap,
         ),
       },
+    );
+  }
+}
+
+class _EmptyNotifications extends StatelessWidget {
+  const _EmptyNotifications();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 64),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(LucideIcons.bellOff, size: 40, color: AppColors.textTertiary),
+            SizedBox(height: 12),
+            Text(
+              'No notifications yet',
+              style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
