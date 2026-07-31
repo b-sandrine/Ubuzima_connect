@@ -5,7 +5,7 @@ import 'auth_session.dart';
 abstract final class RoleHome {
   static String forRole(UserRole role) => switch (role) {
         UserRole.communityHealthWorker => AppRoutes.chwDashboard,
-        UserRole.patient => AppRoutes.patientMedications,
+        UserRole.patient => AppRoutes.patientDashboard,
         UserRole.doctor => AppRoutes.referralManagement,
         // Never return `/home` here — HomePage redirects through this helper,
         // so `unknown → home` would trap the user on an endless spinner.

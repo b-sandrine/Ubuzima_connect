@@ -266,6 +266,8 @@ Future<_i174.GetIt> init(
   gh.lazySingleton<_i579.PatientIntakeRepository>(
     () => _i66.PatientIntakeRepositoryImpl(
       gh<_i96.PatientIntakeRemoteDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i504.FirebaseAuthRemoteDataSource>(
     () => _i504.FirebaseAuthRemoteDataSourceImpl(
       gh<_i59.FirebaseAuth>(),
@@ -382,6 +384,7 @@ Future<_i174.GetIt> init(
   );
   gh.factory<_i377.PatientIntakeBloc>(
     () => _i377.PatientIntakeBloc(gh<_i277.SubmitPatientIntake>()),
+  );
   gh.factory<_i996.RegisterBloc>(
     () => _i996.RegisterBloc(
       gh<_i42.RegisterWithEmail>(),

@@ -106,13 +106,14 @@ class ShowcasePage extends StatelessWidget {
     ),
     _ShowcaseEntry(
       task: 'DOCTOR',
-<<<<<<< HEAD
       title: 'Consultation · Vitals',
       subtitle: 'Doctor · active visit, editable vitals & quick actions',
       icon: Icons.monitor_heart_outlined,
       color: AppColors.roleDoctor,
       route: AppRoutes.consultation,
-=======
+    ),
+    _ShowcaseEntry(
+      task: 'DOCTOR',
       title: 'Patient Details',
       subtitle: 'Doctor · risk scores, vitals, allergies & clinical notes',
       icon: Icons.medical_information_outlined,
@@ -126,6 +127,14 @@ class ShowcasePage extends StatelessWidget {
       icon: Icons.favorite_outline,
       color: AppColors.rolePatient,
       route: AppRoutes.patientDashboard,
+    ),
+    _ShowcaseEntry(
+      task: 'PATIENT',
+      title: 'AI Insights',
+      subtitle: 'Patient · health score, risk signals & personalized guidance',
+      icon: Icons.psychology_outlined,
+      color: AppColors.rolePatient,
+      route: AppRoutes.patientAiInsights,
     ),
     _ShowcaseEntry(
       task: 'PATIENT',
@@ -166,7 +175,6 @@ class ShowcasePage extends StatelessWidget {
       icon: Icons.settings_outlined,
       color: AppColors.rolePatient,
       route: AppRoutes.patientSettings,
->>>>>>> 7160e82a73a43d4127d4e76ecb2d6d0b5dd7aee7
     ),
     _ShowcaseEntry(
       task: 'DOC-06',
